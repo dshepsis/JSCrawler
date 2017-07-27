@@ -1,3 +1,6 @@
+/* @incomplete The script won't create any output if no requests are made, i.e.
+ * the page contains no internal links */
+
 /* Quit out if we are in admin mode: */
 const QUIT_ELEMENTS = ["#admin-menu", "#log-out", "#log-out-button", "#edit"];
 for (let i = 0, len = QUIT_ELEMENTS.length; i < len; ++i) {
@@ -10,7 +13,8 @@ for (let i = 0, len = QUIT_ELEMENTS.length; i < len; ++i) {
 }
 
 /* Settings variables: */
-const RECOGNIZED_FILE_TYPES = ["pdf", "doc", "docx", "png", "xls", "xlsx", "ppt", "pptx"];
+const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "ppt", "pptx", "xls", "xlsx"];
+
 const BANNED_STRINGS = ["drupaldev"];
 function containsBannedString(href) {
   for (var i = 0, len = BANNED_STRINGS.length; i < len; ++i) {
@@ -29,36 +33,61 @@ var visited = {};
 var allLinks = {};
 var redirects = {};
 var notFound = {};
+var forbidden = {};
 var accessDenied = {};
 var bannedStrings = {};
 var files = {};
 
-var siteMap = classifyLinks(document, window.location.origin.toLowerCase(), window.location.href);
-visited[window.location.href] = [true];
-
 /* Function definitions: */
-var instances = 0;
-var disp = document.createElement("p");
-var text = document.createTextNode(instances);
-disp.appendChild(text);
-disp.id="instancesDisplay";
-disp.style.border = "5px solid green";
-disp.style.backgroundColor = "white";
-disp.style.position = "relative";
-disp.style.zIndex = "999999";
-disp.style.display = "table";
 
+/* Makes a box appear on the user interface with a counter showing
+ * the number of live (unresolved) http requests currently waiting: */
+const requestCounter = function() {
+  /* Counter variable: */
+  console.log("safe");
 
-document.body.insertBefore(disp, document.body.childNodes[0]);
+  /* Create display: */
+  const disp = document.createElement("p");
+  var text = document.createTextNode("0");
+  disp.appendChild(text);
+  disp.id="instancesDisplay";
+  disp.style.padding = "2px";
+  disp.style.border = "5px solid green";
+  disp.style.backgroundColor = "white";
+  disp.style.position = "fixed";
+  disp.style.zIndex = "999999";
+  disp.style.top = "2em";
+  disp.style.left = "2em";
+  disp.style.margin = "0";
+  disp.style.display = "table";
 
+  document.body.insertBefore(disp, document.body.childNodes[0]);
 
-/*  Check all of the local links on a given page, and make requests to
+  /* Return an object which will allow other code
+   * to increment and decrement the counter: */
+  return {
+    display: disp,
+    count: 0,
+    setText: function setText(text) {
+      disp.innerHTML = text;
+    },
+    increment: function increment() {
+      ++this.count;
+      disp.innerHTML = this.count;
+    },
+    decrement: function decrement() {
+      --this.count;
+      disp.innerHTML = this.count;
+    }
+  }
+}();
+
+/* Check all of the local links on a given page, and make requests to
  * get the coresponding HTML documents so they can also be analyzed for
  * links. This is done recursively until all internal links have been
  * marked as visited. This effectively forms a map of the site as reachable
  * by a user simply links from the page at which the script is run */
 function visitLinks(curPage, linkObj) {
-  disp.innerHTML = instances;
   if (timedOut) {
     throw new Error("***REACHED MAX TIMEOUT OF " + MAX_TIMEOUT + "ms BEFORE FINISHING CRAWL.***");
     window.alert("Sorry, the crawl took longer than the maximum timeout of " + Math.round(MAX_TIMEOUT/100)/10 + " seconds. All operations were cancelled.");
@@ -94,45 +123,35 @@ function visitLinks(curPage, linkObj) {
      * For example, a request may fail if the server returns a 404
      * (file not found) or if the link redirects to an external
      * location, which would violate the common-origin policy. */
-    // ++instances;
-    // disp.innerHTML = instances;
-    HTMLDocLoader (function normalResponseHandler (page, details) {
+    requestCounter.increment();
+    HTMLDocLoader (url,
+      function normalResponseHandler (page, details) {
         /* Checks if the request resolved to a file rather than an HTML document: */
         let extension = findURLExtension(details.responseURL)
         let isFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
-        if  (isFile) {
+        if (isFile) {
           console.warn("Found " + extension + " file at: " + url + "\n\tLinked-to from: " + curPage);
           if (files[url] === undefined) {
             files[url] = [curPage];
           } else {
             files[url].push(curPage)
           }
-          // --instances;
-          // disp.innerHTML = instances;
           return;
         }
         if (page === null) {
           console.error("Null response from " + url + ". It may be an unrecognizes file type.\n\tIt was linked-to from " + curPage);
           console.error(details);
-          // --instances;
-          // disp.innerHTML = instances;
           return;
         }
 
-        if (timedOut) {
-          throw new Error("***REACHED MAX TIMEOUT OF " + MAX_TIMEOUT + "ms BEFORE FINISHING CRAWL.***");
-        }
         /* Recursively check the links found on the given page: */
         var newLinks = classifyLinks(page, window.location.origin.toLowerCase(), url,  true);
         visitLinks(url, newLinks);
-        // --instances;
-        // disp.innerHTML = instances;
       }, //Close normal-respone-handler callback-function,
-      url,
-      function errorHandler(details) {
+      function errorHandler (details) {
         if (details.readyState === 4 && details.status === 0) {
-          let msg = "The url " + url + " is either invalid, or redirects to an external site.";
-          msg += "Unfortunately, this script cannot distinguish between those possibilities.";
+          let msg = "The request to " + url + " caused an undefined error. The url robably either redirects to an external site. or is invalid. There may also be a networking issue, or another problem entirely.";
+          msg += "\nUnfortunately, this script cannot distinguish between those possibilities.";
           msg += "\n\tLinked-to from " + curPage;
           if (redirects[url] === undefined) {
             redirects[url] = [curPage];
@@ -149,6 +168,15 @@ function visitLinks(curPage, linkObj) {
           let msg = "A 404 Error occurred when requesting " + url + ". That means the server could not find the given page.";
           msg += "\n\tLinked-to from: " + curPage;
           console.error(msg)
+        } else if (details.readyState === 4 && details.status === 403) {
+          if (forbidden[url] === undefined) {
+            forbidden[url] = [curPage];
+          } else {
+            forbidden[url].push(curPage)
+          }
+          let msg = "A 403 Error occurred when requesting " + url + ". That means the server considers access to the resource absolutely forbidden.";
+          msg += "\n\tLinked-to from: " + curPage;
+          console.error(msg)
         } else if (details.readyState === 4 && details.status === 401) {
           if (accessDenied[url] === undefined) {
             accessDenied[url] = [curPage];
@@ -162,9 +190,21 @@ function visitLinks(curPage, linkObj) {
          else {
           console.error("AN UNIDENTIFIED ERROR OCURRED!", details);
         }
-        // --instances;
-        // disp.innerHTML = instances;
-      } //Close error-handler callback-function
+      }, //Close error-handler callback-function
+      /* This function will execute whenever a document request fully resolves,
+       * regardless of whether it was successful or not.
+       *
+       * By incrementing the instances counter before a request is made (aove
+       * this method call) and decrementing it when a request completes, we can
+       * execute code exactly when crawling is fully complete, by checking when
+       * the total number of unresolved requests reaches 0.
+       */
+      function onComplete () {
+        requestCounter.decrement();
+        if (requestCounter.count === 0) {
+          requestCounter.setText("All requests complete!");
+        }
+      }
     ); //Close call to HTMLDocLoader
   } //Close for loop iterating over links
 } //Close function visitLinks
@@ -289,7 +329,7 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
 }
 
 /* A function for acquiring an HTML document from a server: */
-function HTMLDocLoader(responseCallBack, pageURL, errorHandler) {
+function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
   var httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = function() {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
@@ -303,17 +343,22 @@ function HTMLDocLoader(responseCallBack, pageURL, errorHandler) {
           errorHandler(httpRequest);
         }
       }
-      --instances;
-      disp.innerHTML = instances;
-      if (instances === 0) disp.innerHTML = "DONE!";
+      /* This call-back function will be the last thing executed during this
+       * request: */
+      if (onComplete !== undefined) {
+        onComplete();
+      }
     }
   }
   httpRequest.open("GET", pageURL);
   httpRequest.responseType = "document";
-  ++instances;
-  disp.innerHTML = instances;
   httpRequest.send();
 }
 
+
 /* Run Script: */
+
+var siteMap = classifyLinks(document, window.location.origin.toLowerCase(), window.location.href);
+visited[window.location.href] = [true];
+
 visitLinks(window.location.href, siteMap);
