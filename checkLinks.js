@@ -1,23 +1,15 @@
 /* @incomplete The script won't create any output if no requests are made, i.e.
  * the page contains no internal links */
 
-/* Quit out if we are in admin mode: */
-const QUIT_ELEMENTS = ["#admin-menu", "#log-out", "#log-out-button", "#edit"];
-for (let i = 0, len = QUIT_ELEMENTS.length; i < len; ++i) {
-  let ele = document.querySelector(QUIT_ELEMENTS[i])
-  if (ele !== null) {
-    window.alert("ERROR: FOUND TERMINATING ELEMENT.\n\nCheck console for details");
-    let tag = ele.innerHTML ? ele.outerHTML.slice(0,ele.outerHTML.indexOf(ele.innerHTML)) : ele.outerHTML;
-    throw new Error("FOUND TERMINATING ELEMENT:\t" + tag);
-  }
-}
+ /* @incomplete Add support for no robots.txt file (i.e. 404 error) */
+
 
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "ppt", "pptx", "xls", "xlsx"];
 
 const BANNED_STRINGS = ["drupaldev"];
 function containsBannedString(href) {
-  for (var i = 0, len = BANNED_STRINGS.length; i < len; ++i) {
+  for (let i = 0, len = BANNED_STRINGS.length; i < len; ++i) {
     let badStr = BANNED_STRINGS[i];
     if (href.indexOf(badStr) !== -1) return badStr;
     return false;
@@ -29,26 +21,31 @@ let timedOut = false;
 let timer = window.setTimeout(()=>timedOut = true, MAX_TIMEOUT);
 
 /* Script relevant: */
-var visited = {};
-var allLinks = {};
-var redirects = {};
-var notFound = {};
-var forbidden = {};
-var accessDenied = {};
-var bannedStrings = {};
-var files = {};
+let visited = {};
+let allLinks = {};
+
+let robotsDisallowed = {};
+let redirects = {};
+let notFound = {};
+let forbidden = {};
+let accessDenied = {};
+let bannedStrings = {};
+let files = {};
+let localFiles = {};
+let badProtocol = {};
+let ipAddresses = {};
+
+/* Collecting them for reference */
+let loggingObjects = {visited, allLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, badProtocol, ipAddresses};
 
 /* Function definitions: */
 
 /* Makes a box appear on the user interface with a counter showing
  * the number of live (unresolved) http requests currently waiting: */
 const requestCounter = function() {
-  /* Counter variable: */
-  console.log("safe");
-
   /* Create display: */
   const disp = document.createElement("p");
-  var text = document.createTextNode("0");
+  let text = document.createTextNode("0");
   disp.appendChild(text);
   disp.id="instancesDisplay";
   disp.style.padding = "2px";
@@ -96,13 +93,26 @@ function visitLinks(curPage, linkObj) {
   let foundNewPage = false;
   console.log("Checking links found on: " + curPage)
   for (let url in linkObj) {
+    /* Note: this version is slightly different to the one found in classifyLinks,
+     * as it uses linkObj which is already filled out by classifyLinks. */
+    function recordLinkTo(...loggingObjects) {
+      let linkData = linkObj[url];
+      for (let i = 0, len = loggingObjects.length; i < len; ++i) {
+        let obj = loggingObjects[i];
+        if (obj[url] !== undefined) obj[url].push(linkData);
+        else obj[url] = [linkData];
+      }
+    }
+
     if (redirects[url] !== undefined) {
-      redirects[url].push(curPage)
+      recordLinkTo(redirects);
+      //redirects[url].push(curPage)
       continue;
     }
     /* Do not re-analyze a page we have already visited: */
     if (visited[url] !== undefined) {
-      visited[url].push(curPage)
+      recordLinkTo(visited);
+      //visited[url].push(curPage)
       continue;
     }
     /* Mark this page as having been "visited" or checked for links. This is done
@@ -131,11 +141,12 @@ function visitLinks(curPage, linkObj) {
         let isFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
         if (isFile) {
           console.warn("Found " + extension + " file at: " + url + "\n\tLinked-to from: " + curPage);
-          if (files[url] === undefined) {
-            files[url] = [curPage];
-          } else {
-            files[url].push(curPage)
-          }
+          recordLinkTo(files);
+          // if (files[url] === undefined) {
+          //   files[url] = [curPage];
+          // } else {
+          //   files[url].push(curPage)
+          // }
           return;
         }
         if (page === null) {
@@ -145,51 +156,41 @@ function visitLinks(curPage, linkObj) {
         }
 
         /* Recursively check the links found on the given page: */
-        var newLinks = classifyLinks(page, window.location.origin.toLowerCase(), url,  true);
+        let newLinks = classifyLinks(page, url,  true);
         visitLinks(url, newLinks);
       }, //Close normal-respone-handler callback-function,
       function errorHandler (details) {
-        if (details.readyState === 4 && details.status === 0) {
-          let msg = "The request to " + url + " caused an undefined error. The url robably either redirects to an external site. or is invalid. There may also be a networking issue, or another problem entirely.";
-          msg += "\nUnfortunately, this script cannot distinguish between those possibilities.";
-          msg += "\n\tLinked-to from " + curPage;
-          if (redirects[url] === undefined) {
-            redirects[url] = [curPage];
-          } else {
-            redirects[url].push(curPage)
-          }
-          console.error(msg);
-        } else if (details.readyState === 4 && details.status === 404) {
-          if (notFound[url] === undefined) {
-            notFound[url] = [curPage];
-          } else {
-            notFound[url].push(curPage)
-          }
-          let msg = "A 404 Error occurred when requesting " + url + ". That means the server could not find the given page.";
-          msg += "\n\tLinked-to from: " + curPage;
-          console.error(msg)
-        } else if (details.readyState === 4 && details.status === 403) {
-          if (forbidden[url] === undefined) {
-            forbidden[url] = [curPage];
-          } else {
-            forbidden[url].push(curPage)
-          }
-          let msg = "A 403 Error occurred when requesting " + url + ". That means the server considers access to the resource absolutely forbidden.";
-          msg += "\n\tLinked-to from: " + curPage;
-          console.error(msg)
-        } else if (details.readyState === 4 && details.status === 401) {
-          if (accessDenied[url] === undefined) {
-            accessDenied[url] = [curPage];
-          } else {
-            accessDenied[url].push(curPage)
-          }
-          let msg = "A 401 Error occurred when requesting " + url + ". That means access was denied to the client by the server.";
-          msg += "\n\tLinked-to from: " + curPage;
-          console.error(msg)
+        if (details.readyState !== 4) {
+          console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", details);
+
         }
-         else {
-          console.error("AN UNIDENTIFIED ERROR OCURRED!", details);
+        let msg = "";
+        switch (details.status) {
+          case 0:
+            recordLinkTo(redirects);
+            msg = "The request to " + url + " caused an undefined error. The url robably either redirects to an external site. or is invalid. There may also be a networking issue, or another problem entirely.";
+            msg += "\nUnfortunately, this script cannot distinguish between those possibilities.";
+            msg += "\n\tLinked-to from " + curPage;
+            break;
+          case 401:
+            recordLinkTo(accessDenied);
+            msg = "A 401 Error occurred when requesting " + url + ". That means access was denied to the client by the server.";
+            msg += "\n\tLinked-to from: " + curPage;
+            break;
+          case 403:
+            recordLinkTo(forbidden);
+            msg = "A 403 Error occurred when requesting " + url + ". That means the server considers access to the resource absolutely forbidden.";
+            msg += "\n\tLinked-to from: " + curPage;
+            break;
+          case 404:
+            recordLinkTo(notFound);
+            msg = "A 404 Error occurred when requesting " + url + ". That means the server could not find the given page.";
+            msg += "\n\tLinked-to from: " + curPage;
+            break;
+          detault:
+            console.error("AN UNIDENTIFIED ERROR OCURRED!", details);
         }
+        if (msg !== "") console.error(msg);
       }, //Close error-handler callback-function
       /* This function will execute whenever a document request fully resolves,
        * regardless of whether it was successful or not.
@@ -216,22 +217,21 @@ function findURLExtension(url) {
   return undefined;
 }
 
-function classifyLinks(doc, domain, curPageURL, quiet) {
+function classifyLinks(doc, curPageURL, quiet) {
   /* Default "quiet" to false. That is, by default, this function prints A LOT
    * of stuff to console. */
   if (quiet === undefined) quiet = false;
 
+  const LINKS = doc.getElementsByTagName("a");
+  const DOMAIN = window.location.origin.toLowerCase();
 
-  const links = doc.getElementsByTagName("a");
-  domain = domain.toLowerCase();
-  const domainStrLen = domain.length;
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
   let localLinksFromThisPage = {};
 
   /* Loop over links: */
-  for (let i = 0, len = links.length; i < len; ++i) {
-    let link = links[i];
+  for (let i = 0, len = LINKS.length; i < len; ++i) {
+    let link = LINKS[i];
     let href = link.getAttribute("href");
     /* Handle links with no HREF attribute, such as anchors or those used as
      * buttons: */
@@ -251,7 +251,7 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
     function recordLinkTo(...loggingObjects) {
       let linkData = {};
       linkData[curPageURL] = href;
-      for (var i = 0, len = loggingObjects.length; i < len; ++i) {
+      for (let i = 0, len = loggingObjects.length; i < len; ++i) {
         let obj = loggingObjects[i];
         if (obj[link.href] !== undefined) obj[link.href].push(linkData);
         else obj[link.href] = [linkData];
@@ -269,8 +269,16 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
 
     /* PARSING LINK TYPES: */
     /* Absolute internal link: */
-    if (href.substr(0, domainStrLen) === domain) {
-      recordLinkTo(allLinks, localLinksFromThisPage)
+    if (href.substr(0, DOMAIN.length) === DOMAIN) {
+      recordLinkTo(allLinks);
+
+      if (isPageCrawlable(link.href)) {
+        recordLinkTo(localLinksFromThisPage);
+      } else {
+        recordLinkTo(robotsDisallowed);
+        link.style.color = "orange"
+        link.title = (link.title) ? link.title + "\nCrawling dissalowed by robots.txt" : "Crawling dissalowed by robots.txt";
+      }
 
       if (!quiet) {
         console.log(link);
@@ -281,11 +289,19 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
     else if (href.substr(0,4) === "http") {
       recordLinkTo(allLinks)
 
+      /* If the link contains a string which resembles an IP address: */
+      if (/(?:\d{1,3}\.){3}\d{1,3}/i.test(href)) {
+        recordLinkTo(ipAddresses);
+      }
+
       link.style.border = "2px dotted gray";
       link.title = (link.title) ? link.title + "\nAbsolute external link" : "Absolute external link";
     }
     /* Special Link types: */
     else {
+      if (href.indexOf("//") !== -1) {
+        recordLinkTo(badProtocol);
+      }
       /* Anchor Link: */
       if (href.substr(0,1) === "#") {
         link.style.border = "2px solid pink";
@@ -300,14 +316,22 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
       }
       /* File link: */
       else if (href.substr(0,4) === "file") {
-        recordLinkTo(allLinks);
+        recordLinkTo(allLinks, localFiles);
 
         link.style.border = "2px dashed blue";
         link.title = (link.title) ? link.title + "\nFile link" : "File link";
       }
       /* Site-Root-Relative Link: */
       else if (href.substr(0,1) === "/") {
-        recordLinkTo(allLinks, localLinksFromThisPage);
+        recordLinkTo(allLinks);
+
+        if (isPageCrawlable(link.href)) {
+          recordLinkTo(localLinksFromThisPage);
+        } else {
+          recordLinkTo(robotsDisallowed);
+          link.style.color = "orange"
+          link.title = (link.title) ? link.title + "\nCrawling dissalowed by robots.txt" : "Crawling dissalowed by robots.txt";
+        }
 
         if (!quiet) {
           console.log(link);
@@ -316,7 +340,15 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
       }
       /* Page-Relative and other links: */
       else {
-        recordLinkTo(allLinks, localLinksFromThisPage);
+        recordLinkTo(allLinks);
+
+        if (isPageCrawlable(link.href)) {
+          recordLinkTo(localLinksFromThisPage);
+        } else {
+          recordLinkTo(robotsDisallowed);
+          link.style.color = "orange"
+          link.title = (link.title) ? link.title + "\nCrawling dissalowed by robots.txt" : "Crawling dissalowed by robots.txt";
+        }
 
         if (!quiet) {
           console.log(link);
@@ -329,36 +361,287 @@ function classifyLinks(doc, domain, curPageURL, quiet) {
 }
 
 /* A function for acquiring an HTML document from a server: */
-function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
-  var httpRequest = new XMLHttpRequest();
+// function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
+//   let httpRequest = new XMLHttpRequest();
+//   httpRequest.onreadystatechange = function() {
+//     if (httpRequest.readyState === XMLHttpRequest.DONE) {
+//       if (httpRequest.status === 200) { //Code for "Good"
+//         responseCallBack(httpRequest.responseXML, httpRequest);
+//       } else {
+//         if (errorHandler === undefined) {
+//           console.error("AJAX attempt failed while requesting a document at " + pageURL, "Error code: " + httpRequest.status + "\n", httpRequest);
+//           console.log("Things might still load, though. Multiple attempts are made per resource.");
+//         } else {
+//           errorHandler(httpRequest);
+//         }
+//       }
+//       /* This call-back function will be the last thing executed during this
+//        * request: */
+//       if (onComplete !== undefined) {
+//         onComplete();
+//       }
+//     }
+//   }
+//   httpRequest.open("GET", pageURL);
+//   httpRequest.responseType = "document";
+//   httpRequest.send();
+// }
+
+/* ROBOTS.TXT PARSING: */
+/**
+ * General purpose asynchronous loading function.
+ *
+ * NOTE: This isn't really meant to be used on its own. Instead, I make other
+ *     functions for each specific application (e.g. text loading, document
+ *     loading, etc.) and write functions which serve to partially-apply arguments
+ *     to AJAXLoader. See below for examples.
+ *
+ * @param {string} requestURL - The url of the request to be made. It may be
+ *     relative or absolute.
+ * @param {function} onGoodResponse - A callback for handling the httpRequest
+ *     when the request is complete and valid (i.e. its readyState is DONE and
+ *     its status is 200).
+ * @param {*} [onError] - Used for handling of errors. Behavior depends on type:
+ *     If onError is missing or undefined, a standard error will be thrown.
+ *     If it is null, no error will be thrown (except by the browser itself) and
+ *       the request will fail silently.
+ *     If it is a function, it will be executed with the httpRequest object as
+ *       its parameter.
+ *     If it is of any other type, it will be printed as an error message using
+ *       console.error.
+ * @param {*} [onComplete] - Handles any remaining tasks after a request has been
+ * completed. Behavior depends on type:
+ *     If it is a function, it will be called as the last piece of code in a
+ *       request. This occurs regardless of whether an error is called, and
+ *       always happens after onGoodResponse and onError.
+ *     If it is undefined, nothing will happen after onGoodResponse or onError.
+ *     If it is of any other type, it will be printed using console.log (again,
+ *       after onGoodResponse and onError).
+ * @param {string} [responseType] - Sets the responseType property of the
+ *     httpRequest object before it is sent. Valid values include "text", "json"
+ *     "document" and "blob". This doesn't affect the parameters of the above 3
+ *     callback functions, but it does affect how the response is parsed.
+ *     If this parameter is omitted or set to undefined, no responseType will be
+ *     set. This causes equivalent behavior to setting responseType to "text".
+ */
+function AJAXLoader(requestURL, onGoodResponse, onError, onComplete, responseType) {
+  let httpRequest = new XMLHttpRequest();
   httpRequest.onreadystatechange = function() {
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
       if (httpRequest.status === 200) { //Code for "Good"
-        responseCallBack(httpRequest.responseXML, httpRequest);
+        onGoodResponse(httpRequest);
       } else {
-        if (errorHandler === undefined) {
-          console.error("AJAX attempt failed while requesting a document at " + pageURL, "Error code: " + httpRequest.status + "\n", httpRequest);
-          console.log("Things might still load, though. Multiple attempts are made per resource.");
-        } else {
-          errorHandler(httpRequest);
+        /* onError is optional, but we should still emit an error if it's absent: */
+        if (onError === undefined) {
+          throw new Error("XHR Error: " + httpRequest.status);
+        }
+        /* If onError is a function, allow it to handle the error: */
+        else if (typeof onError === 'function') {
+          onError(httpRequest);
+        }
+        /* If onError is null, it must have been explicitly to null, defining
+         * a deliberate lack of an error handler. In that case, fail silently.
+         *
+         * Otherwise, just print onError to console as an error message: */
+        else if (onError !== null) {
+          console.error(onError);
         }
       }
-      /* This call-back function will be the last thing executed during this
-       * request: */
-      if (onComplete !== undefined) {
-        onComplete();
+      /* onComplete is optional. If it is a function, execute it: */
+      if (typeof onComplete === 'function') {
+        onComplete(httpRequest);
       }
+      /* ...Otherwise, just print it. This mainly assumes onComplete is a string,
+       * bt it could be anything: */
+      else if (onComplete !== undefined) console.log(onComplete);
     }
   }
-  httpRequest.open("GET", pageURL);
-  httpRequest.responseType = "document";
+  httpRequest.open("GET", requestURL);
+  if (responseType !== undefined) httpRequest.responseType = responseType;
   httpRequest.send();
 }
+/* Partially-applied version of the general-purpose loading function
+ * AJAXLoader to be specific to HTML documents: */
+function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
+  AJAXLoader(pageURL,
+    function onGoodResponse(httpRequest) {
+      responseCallBack(httpRequest.responseXML, httpRequest);
+    },
+    function onError(httpRequest) {
+      if (errorHandler === undefined) {
+        console.error("AJAX attempt failed while requesting a document at " + pageURL, "Error code: " + httpRequest.status + "\n", httpRequest);
+      } else errorHandler(httpRequest);
+    },
+    onComplete,
+    "document"
+  );
+}
+/* Partially applied version of AJAXLoader specialized for loading files
+ * as plain-text. */
+function textLoader(fileURL, responseCallBack, errorHandler, onComplete) {
+  AJAXLoader(fileURL,
+    function onGoodResponse(httpRequest) {
+      responseCallBack(httpRequest.responseText);
+    },
+    errorHandler,
+    onComplete,
+  );
+}
 
+function parseRobotsTxt(robotsTxt) {
+  let disallowed = [];
+  let allowed = [];
+  let sitemap = [];
+
+  let lines = robotsTxt.split(/[\n\r]/);
+
+  /* Do allow/disallow statements in this block apply to us? I.e. are they
+   * preceded by a user-agent statement which matches us? */
+  let validUserAgentSection = true;
+  for (let i = 0, len = lines.length; i < len; ++i) {
+    let line = lines[i].trim();
+
+    /* Skip empty and comment lines: */
+    if (line.length === 0 || line.charAt(0) === "#") continue;
+
+    /* Check for sitemaps before checking the user agent so that they are always
+     * visible to us: */
+    else if (/^sitemap: /i.test(line)) {
+      const SITEMAP_LEN = 9;
+      sitemap.push(line.substr(SITEMAP_LEN));
+    }
+
+    /* Make sure the user agent matches this crawler: */
+    else if (/^user-agent: /i.test(line)) {
+      const USER_AGENT_LENGTH = 12;
+      validUserAgentSection = (line.substr(USER_AGENT_LENGTH) === "*");
+    }
+    /* Skip the remaining section until a matching user-agent directive is found: */
+    else if (!validUserAgentSection) continue;
+
+    /* If the line is a disallow clause, add the pattern to the array of
+     * disallowed patterns: */
+    else if (/^disallow: /i.test(line)) {
+      const DISALLOW_LEN = 10;
+      disallowed.push(line.substr(DISALLOW_LEN));
+    }
+
+    /* If the line is an allow clause, add the pattern to the array of
+     * allowed patterns: */
+    else if (/^allow: /i.test(line)) {
+      const ALLOW_LEN = 7;
+      allowed.push(line.substr(ALLOW_LEN));
+    }
+
+    /* An empty disallow string is considered equal to a global allow. */
+    else if (/^disallow:$/i.test(line)) {
+      allowed.push("/");
+    }
+    else console.error('Don\'t understand: "' + line + '" ' + line.length);
+  }
+  let pendRet = {
+    Allow: allowed,
+    Disallow: disallowed,
+    Sitemap: sitemap
+  }
+  return pendRet;
+}
+
+function matchesPattern(str, basePattern) {
+  let parsedPattern = basePattern;
+  /* If a pattern ends in "$", the string must with the pattern to pass:
+   *
+   * E.G. "/*.php" will match "/files/documents/letter.php" but
+   * won't match "/files/my.php.data/settings.txt". */
+  const REQUIRE_END_WITH_PATTERN = (parsedPattern.charAt(parsedPattern.length-1) === "$");
+  if (REQUIRE_END_WITH_PATTERN){
+    /* Remove the $ character from the pattern: */
+    parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
+  }
+  /* Removing trailing asterisks, which are extraneous: */
+  for (let i = parsedPattern.length-1; /*@noConditional*/; --i) {
+    /* If the entire pattern is asterisks, then anything will match: */
+    if (i <= 0) return true;
+
+    if (parsedPattern.charAt(i) !== "*") {
+      parsedPattern = parsedPattern.substr(0, i+1);
+      break;
+    }
+  }
+
+  let patternSections = parsedPattern.split("*");
+  let patternIndex = 0;
+  for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
+    let subPat = patternSections[patternIndex];
+    /*Skip empty patterns: */
+    if (subPat === "") {
+      ++patternIndex;
+      continue;
+    }
+    if (subPat === str.substr(strIndex, subPat.length)) {
+      ++patternIndex;
+      strIndex += subPat.length;
+
+      /* If we've reached the end of the pattern: */
+      if (patternIndex === patternSections.length) {
+        if (REQUIRE_END_WITH_PATTERN) {
+          return (strIndex === len);
+        }
+        /* Otherwise, the pattern is definitely a match: */
+        return true;
+      }
+    }
+    /* If this sub-pattern didn't match at this point, move 1 character over: */
+    else {
+      ++strIndex;
+    }
+  }
+  /* If we reached the end of the string without finishing the pattern, it's not
+   * a match: */
+  return false;
+}
 
 /* Run Script: */
+function isPageCrawlable(fullUrl) {
+  const DOMAIN = window.location.origin;
+  if (DOMAIN !== fullUrl.substr(0, DOMAIN.length)) {
+    throw new Error("URL is not within the same domain!");
+  }
+  /* The path portion of the fullURL. That is, the part
+   * following the ".com" or ".net" or ".edu" or whatever.
+   *
+   * For example, on a site's homepage, the path is "/", and
+   * on an faq page, it might be "/faq.html" */
+  let pagePath = fullUrl.substr(DOMAIN.length);
 
-var siteMap = classifyLinks(document, window.location.origin.toLowerCase(), window.location.href);
-visited[window.location.href] = [true];
+  /* Allow statements supersede disallow statements, so we can
+   * check the allowed list first and shortcut to true if we
+   * find a match: */
+  for (let i = 0, len = robotsTxtData.Allow.length; i < len; ++i) {
+    let pattern = robotsTxtData.Allow[i]
+    if (matchesPattern(pagePath, pattern)) return true;
+  }
+  for (let i = 0, len = robotsTxtData.Disallow.length; i < len; ++i) {
+    let pattern = robotsTxtData.Disallow[i]
+    if (matchesPattern(pagePath, pattern)) return false;
+  }
+  /* If this page is on neither the allowed nor disallowed
+   * list, then we can assume it's allowed: */
+  return true;
+}
 
-visitLinks(window.location.href, siteMap);
+textLoader("/robots.txt",
+  function fileIsPresent(fileText) {
+    window.robotsTxtData = parseRobotsTxt(fileText)
+  },
+  function fileIsMissing() {
+    /* If there is no robots.txt file, assume all pages are allowed: */
+    window.isPageCrawlable = function () {return true};
+  },
+  function regardless() {
+    let initialPageLinks = classifyLinks(document, window.location.href);
+    visited[window.location.href] = [true];
+
+    visitLinks(window.location.href, initialPageLinks);
+  }
+);
