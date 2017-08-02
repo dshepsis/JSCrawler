@@ -12,8 +12,8 @@ function containsBannedString(href) {
   for (let i = 0, len = BANNED_STRINGS.length; i < len; ++i) {
     let badStr = BANNED_STRINGS[i];
     if (href.indexOf(badStr) !== -1) return badStr;
-    return false;
   }
+  return false;
 }
 
 const MAX_TIMEOUT = 60*1000; //60,000 Miliseconds, or 1 minute
@@ -32,11 +32,11 @@ let accessDenied = {};
 let bannedStrings = {};
 let files = {};
 let localFiles = {};
-let badProtocol = {};
+let badScheme = {};
 let ipAddresses = {};
 
 /* Collecting them for reference */
-let loggingObjects = {visited, allLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, badProtocol, ipAddresses};
+let loggingObjects = {visited, allLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, badScheme, ipAddresses};
 
 /* Function definitions: */
 
@@ -106,13 +106,11 @@ function visitLinks(curPage, linkObj) {
 
     if (redirects[url] !== undefined) {
       recordLinkTo(redirects);
-      //redirects[url].push(curPage)
       continue;
     }
     /* Do not re-analyze a page we have already visited: */
     if (visited[url] !== undefined) {
       recordLinkTo(visited);
-      //visited[url].push(curPage)
       continue;
     }
     /* Mark this page as having been "visited" or checked for links. This is done
@@ -142,11 +140,6 @@ function visitLinks(curPage, linkObj) {
         if (isFile) {
           console.warn("Found " + extension + " file at: " + url + "\n\tLinked-to from: " + curPage);
           recordLinkTo(files);
-          // if (files[url] === undefined) {
-          //   files[url] = [curPage];
-          // } else {
-          //   files[url].push(curPage)
-          // }
           return;
         }
         if (page === null) {
@@ -204,6 +197,7 @@ function visitLinks(curPage, linkObj) {
         requestCounter.decrement();
         if (requestCounter.count === 0) {
           requestCounter.setText("All requests complete!");
+          presentResults();
         }
       }
     ); //Close call to HTMLDocLoader
@@ -243,7 +237,7 @@ function classifyLinks(doc, curPageURL, quiet) {
     href = href.toLowerCase();
     /* Protocol-relative link correction: */
     if (href.substr(0,2) == "//") {
-      let curPageProtocol = /^(\w+?):\/\//i.exec(curPageURL)[1];
+      let curPageProtocol = /^(\w+?:)\/\//i.exec(curPageURL)[1];
       href = curPageProtocol + href;
     }
 
@@ -257,6 +251,8 @@ function classifyLinks(doc, curPageURL, quiet) {
         else obj[link.href] = [linkData];
       }
     }
+    /* All non-null links are recorded to the allLinks object: */
+    recordLinkTo(allLinks);
 
     /* If the link contains a banned string, record it: */
     if (containsBannedString(href)) {
@@ -265,13 +261,14 @@ function classifyLinks(doc, curPageURL, quiet) {
       console.error("Found link " + href+ " containing a banned string: " + bannedStr + ".\n\tLinked-to from: " + curPageURL);
       link.style.border = "4px dashed red";
       link.title = (link.title) ? link.title + "\nBANNED WORD LINK" : "BANNED WORD LINK";
+      /* Don't parse the link if it is banned. This avoids the link
+       * being crawled. */
+      continue;
     }
 
     /* PARSING LINK TYPES: */
     /* Absolute internal link: */
     if (href.substr(0, DOMAIN.length) === DOMAIN) {
-      recordLinkTo(allLinks);
-
       if (isPageCrawlable(link.href)) {
         recordLinkTo(localLinksFromThisPage);
       } else {
@@ -286,9 +283,7 @@ function classifyLinks(doc, curPageURL, quiet) {
       }
     }
     /* Absolute external link: */
-    else if (href.substr(0,4) === "http") {
-      recordLinkTo(allLinks)
-
+    else if (/^https?:\/\//i.test(href)) {
       /* If the link contains a string which resembles an IP address: */
       if (/(?:\d{1,3}\.){3}\d{1,3}/i.test(href)) {
         recordLinkTo(ipAddresses);
@@ -299,32 +294,32 @@ function classifyLinks(doc, curPageURL, quiet) {
     }
     /* Special Link types: */
     else {
-      if (href.indexOf("//") !== -1) {
-        recordLinkTo(badProtocol);
+      /* If there is a colon before the first forward slash, the link
+       * is specifying some scheme besides http (such as file: or
+       * internal:) which is almost definitely invalid. */
+      let colonIndex = href.indexOf(":");
+      if ((colonIndex !== -1) && (colonIndex < href.indexOf("/"))) {
+        recordLinkTo(badScheme);
       }
       /* Anchor Link: */
-      if (href.substr(0,1) === "#") {
+      else if (href.substr(0,1) === "#") {
         link.style.border = "2px solid pink";
         link.title = (link.title) ? link.title + "\nAnchor link" : "Anchor link";
       }
       /* Email link: */
       else if (href.substr(0,6) === "mailto") {
-        recordLinkTo(allLinks);
-
         link.style.border = "2px solid yellow";
         link.title = (link.title) ? link.title + "\nEmail link" : "Email link";
       }
       /* File link: */
       else if (href.substr(0,4) === "file") {
-        recordLinkTo(allLinks, localFiles);
+        recordLinkTo(localFiles);
 
         link.style.border = "2px dashed blue";
         link.title = (link.title) ? link.title + "\nFile link" : "File link";
       }
       /* Site-Root-Relative Link: */
       else if (href.substr(0,1) === "/") {
-        recordLinkTo(allLinks);
-
         if (isPageCrawlable(link.href)) {
           recordLinkTo(localLinksFromThisPage);
         } else {
@@ -340,8 +335,6 @@ function classifyLinks(doc, curPageURL, quiet) {
       }
       /* Page-Relative and other links: */
       else {
-        recordLinkTo(allLinks);
-
         if (isPageCrawlable(link.href)) {
           recordLinkTo(localLinksFromThisPage);
         } else {
@@ -359,33 +352,6 @@ function classifyLinks(doc, curPageURL, quiet) {
   } //Close for loop iterating over link elements
   return localLinksFromThisPage;
 }
-
-/* A function for acquiring an HTML document from a server: */
-// function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
-//   let httpRequest = new XMLHttpRequest();
-//   httpRequest.onreadystatechange = function() {
-//     if (httpRequest.readyState === XMLHttpRequest.DONE) {
-//       if (httpRequest.status === 200) { //Code for "Good"
-//         responseCallBack(httpRequest.responseXML, httpRequest);
-//       } else {
-//         if (errorHandler === undefined) {
-//           console.error("AJAX attempt failed while requesting a document at " + pageURL, "Error code: " + httpRequest.status + "\n", httpRequest);
-//           console.log("Things might still load, though. Multiple attempts are made per resource.");
-//         } else {
-//           errorHandler(httpRequest);
-//         }
-//       }
-//       /* This call-back function will be the last thing executed during this
-//        * request: */
-//       if (onComplete !== undefined) {
-//         onComplete();
-//       }
-//     }
-//   }
-//   httpRequest.open("GET", pageURL);
-//   httpRequest.responseType = "document";
-//   httpRequest.send();
-// }
 
 /* ROBOTS.TXT PARSING: */
 /**
@@ -605,7 +571,7 @@ function matchesPattern(str, basePattern) {
 function isPageCrawlable(fullUrl) {
   const DOMAIN = window.location.origin;
   if (DOMAIN !== fullUrl.substr(0, DOMAIN.length)) {
-    throw new Error("URL is not within the same domain!");
+    throw new Error("URL " + fullUrl + " is not within the same domain!");
   }
   /* The path portion of the fullURL. That is, the part
    * following the ".com" or ".net" or ".edu" or whatever.
@@ -645,3 +611,38 @@ textLoader("/robots.txt",
     visitLinks(window.location.href, initialPageLinks);
   }
 );
+
+function setStyle(element, styleObj) {
+  for (property in styleObj) {
+    element.style[property] = styleObj[property]
+  }
+}
+
+/* This is called when the crawling is fully complete. it is the last
+ * part of the script ot be executed: */
+function presentResults() {
+  /* Remove the counter now that requests are finished */
+  requestCounter.display.remove();
+  const modal = document.createElement("div");
+  let text = document.createTextNode("Hello world!");
+  modal.appendChild(text);
+  setStyle(modal, {
+    padding: "2em",
+    border: "5px solid blue",
+    borderRadius: "1em",
+    backgroundColor: "white",
+    position: "fixed",
+    zIndex: "99999999999999",
+    top: "2em",
+    left: "2em",
+    height: "calc(100% - 4em)",
+    width: "calc(100% - 4em)",
+    margin: "0",
+    display: "block",
+    opacity: "1",
+    transition: "opacity .2s"
+  });
+  modal.onmouseenter = ()=>modal.style.opacity = "0";
+  modal.onmouseleave = ()=>modal.style.opacity = "1";
+  document.body.insertBefore(modal, document.body.childNodes[0]);
+}
