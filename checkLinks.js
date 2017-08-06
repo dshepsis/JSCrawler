@@ -3,6 +3,23 @@
 
  /* @incomplete Add support for no robots.txt file (i.e. 404 error) */
 
+ /* @incomplete Use HTTP Response Header data to terminate the loading of
+  * non-page files early. */
+
+/* @idea Use some kind of heuristics to estimate how much time in a crawl is
+ * remaining, so it can be shown to the user. Like, record current timing and
+ * then record number of new internal links found on a given page as a
+ * function of that page's depth from the origin. We should then be able to
+ * apply some kind of regression to the data to extrapolate when we'll reach
+ * 0 new links */
+
+/* @idea If the user navigates away from the page w/ a results modal open,
+ * save the data to local storage or something so that they can return to it
+ * later if they want. Like, if they come back to the page w/o clearing storage,
+ * it will automatically re-open the modal w/ the same data. Make sure that
+ * there is also some extra prompt saying that it's old crawl-data, and asking
+ * them if they'd like to close it or run a new crawl. */
+'use strict';
 
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "ppt", "pptx", "xls", "xlsx"];
@@ -16,9 +33,22 @@ function containsBannedString(href) {
   return false;
 }
 
-const MAX_TIMEOUT = 60*1000; //60,000 Miliseconds, or 1 minute
+const MAX_TIMEOUT = 2*1000; //60,000 Miliseconds, or 1 minute
 let timedOut = false;
-let timer = window.setTimeout(()=>timedOut = true, MAX_TIMEOUT);
+let allRequests = [];
+// let timer = window.setTimeout(()=>{
+//     timedOut = true;
+//     for (let r = 0, len = allRequests.length; r < len; ++r) {
+//       let request = allRequests[r];
+//       request.recordedByTimeout = true;
+//       if (request.readyState === 4 && !request.callbackComplete) request.callbackFailed = true;
+//       if (request.readyState === 4) continue;
+//       request.readyStateBeforeAbort = request.readyState;
+//       request.abort();
+//       request.aborted = true;
+//       console.log("Aborting request " + r + " out of " + len);
+//     }
+//   }, MAX_TIMEOUT);
 
 /* Script relevant: */
 let visited = {};
@@ -63,7 +93,7 @@ const requestCounter = function() {
   /* Return an object which will allow other code
    * to increment and decrement the counter: */
   return {
-    display: disp,
+    displayElement: disp,
     count: 0,
     setText: function setText(text) {
       disp.innerHTML = text;
@@ -132,7 +162,7 @@ function visitLinks(curPage, linkObj) {
      * (file not found) or if the link redirects to an external
      * location, which would violate the common-origin policy. */
     requestCounter.increment();
-    HTMLDocLoader (url,
+    let req = HTMLDocLoader (url,
       function normalResponseHandler (page, details) {
         /* Checks if the request resolved to a file rather than an HTML document: */
         let extension = findURLExtension(details.responseURL)
@@ -150,7 +180,7 @@ function visitLinks(curPage, linkObj) {
 
         /* Recursively check the links found on the given page: */
         let newLinks = classifyLinks(page, url,  true);
-        visitLinks(url, newLinks);
+        //visitLinks(url, newLinks);@debug
       }, //Close normal-respone-handler callback-function,
       function errorHandler (details) {
         if (details.readyState !== 4) {
@@ -193,7 +223,8 @@ function visitLinks(curPage, linkObj) {
        * execute code exactly when crawling is fully complete, by checking when
        * the total number of unresolved requests reaches 0.
        */
-      function onComplete () {
+      function onComplete (xhr) {
+        xhr.callbackComplete = true;
         requestCounter.decrement();
         if (requestCounter.count === 0) {
           requestCounter.setText("All requests complete!");
@@ -201,6 +232,7 @@ function visitLinks(curPage, linkObj) {
         }
       }
     ); //Close call to HTMLDocLoader
+    allRequests.push(req);
   } //Close for loop iterating over links
 } //Close function visitLinks
 
@@ -211,6 +243,7 @@ function findURLExtension(url) {
   return undefined;
 }
 
+/* @incomplete Log null links somehow (should I?) */
 function classifyLinks(doc, curPageURL, quiet) {
   /* Default "quiet" to false. That is, by default, this function prints A LOT
    * of stuff to console. */
@@ -285,7 +318,7 @@ function classifyLinks(doc, curPageURL, quiet) {
     /* Absolute external link: */
     else if (/^https?:\/\//i.test(href)) {
       /* If the link contains a string which resembles an IP address: */
-      if (/(?:\d{1,3}\.){3}\d{1,3}/i.test(href)) {
+      if (/(?:\d{1,3}\.){3}\d{1,3}/.test(href)) {
         recordLinkTo(ipAddresses);
       }
 
@@ -294,11 +327,14 @@ function classifyLinks(doc, curPageURL, quiet) {
     }
     /* Special Link types: */
     else {
-      /* If there is a colon before the first forward slash, the link
-       * is specifying some scheme besides http (such as file: or
-       * internal:) which is almost definitely invalid. */
+      /* If there is a colon before the first forward slash, or a colon
+       * without any forward slash, the link is probably specifying some
+       * scheme besides http (such as file: or internal:) which is almost
+       * definitely invalid. */
       let colonIndex = href.indexOf(":");
-      if ((colonIndex !== -1) && (colonIndex < href.indexOf("/"))) {
+      let slashIndex = href.indexOf("/");
+      if (colonIndex !== -1
+          && (slashIndex === -1 || colonIndex < slashIndex)) {
         recordLinkTo(badScheme);
       }
       /* Anchor Link: */
@@ -392,7 +428,10 @@ function classifyLinks(doc, curPageURL, quiet) {
  */
 function AJAXLoader(requestURL, onGoodResponse, onError, onComplete, responseType) {
   let httpRequest = new XMLHttpRequest();
+  httpRequest.readyStateHistory = [];
+  httpRequest.readyStateHistory.push(httpRequest.readyState);
   httpRequest.onreadystatechange = function() {
+    httpRequest.readyStateHistory.push(httpRequest.readyState);
     if (httpRequest.readyState === XMLHttpRequest.DONE) {
       if (httpRequest.status === 200) { //Code for "Good"
         onGoodResponse(httpRequest);
@@ -422,14 +461,17 @@ function AJAXLoader(requestURL, onGoodResponse, onError, onComplete, responseTyp
       else if (onComplete !== undefined) console.log(onComplete);
     }
   }
+  httpRequest.givenURL = requestURL; //@debug
   httpRequest.open("GET", requestURL);
   if (responseType !== undefined) httpRequest.responseType = responseType;
   httpRequest.send();
+  httpRequest.sent = true;
+  return httpRequest;
 }
 /* Partially-applied version of the general-purpose loading function
  * AJAXLoader to be specific to HTML documents: */
 function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
-  AJAXLoader(pageURL,
+  return AJAXLoader(pageURL,
     function onGoodResponse(httpRequest) {
       responseCallBack(httpRequest.responseXML, httpRequest);
     },
@@ -445,7 +487,7 @@ function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
 /* Partially applied version of AJAXLoader specialized for loading files
  * as plain-text. */
 function textLoader(fileURL, responseCallBack, errorHandler, onComplete) {
-  AJAXLoader(fileURL,
+  return AJAXLoader(fileURL,
     function onGoodResponse(httpRequest) {
       responseCallBack(httpRequest.responseText);
     },
@@ -567,7 +609,6 @@ function matchesPattern(str, basePattern) {
   return false;
 }
 
-/* Run Script: */
 function isPageCrawlable(fullUrl) {
   const DOMAIN = window.location.origin;
   if (DOMAIN !== fullUrl.substr(0, DOMAIN.length)) {
@@ -596,6 +637,9 @@ function isPageCrawlable(fullUrl) {
   return true;
 }
 
+/**
+ * CRAWLING STARTS HERE:
+ */
 textLoader("/robots.txt",
   function fileIsPresent(fileText) {
     window.robotsTxtData = parseRobotsTxt(fileText)
@@ -612,37 +656,364 @@ textLoader("/robots.txt",
   }
 );
 
-function setStyle(element, styleObj) {
-  for (property in styleObj) {
-    element.style[property] = styleObj[property]
+/**
+ * Code for presenting results to the user when crawling is done:
+ */
+
+/**
+ * Code for presenting results to the user when crawling is done:
+ */
+
+/**
+ * Makes an HTML element with content. This is similar to the
+ * document.createElement() method, but allows text or other elements to be
+ * added as children in-place. The optional attrObj parameter allows for
+ * attributes such as id, class, src, and href to also be specified in-place.
+ *
+ * For example:
+ * > makeElement("p", "Hello world!");
+ * <p>Hello world!</p>
+ *
+ * > makeElement("span", 3.14);
+ * <span>3.14</span>
+ *
+ * > makeElement("a", "FAQ", {href:"/faq.html"})
+ * <a href="/faq.html">FAQ</a>
+ *
+ * The equivalent using default tools is much longer, and takes at least 2 lines:
+ * > var ele = document.createElement("p");
+ * > ele.appendChild(document.createTextNode("Hello world!"));
+ *
+ * makeElement be used without specifying the content parameter, in which case
+ * it becomes equivalent to document.createElement.
+ *
+ * More importantly, the content attribute can be another HTMLElement, in which
+ * case the element is appended directly to the newly created element.
+ *
+ * For example,
+ * > var item = makeElement("li", "Get eggs");
+ * > makeElement("ul", item)
+ * <ul><li>Get eggs</li></p>
+ *
+ * You can even chain the methods together directly, without intermediate
+ * variables:
+ * > makeElement("ul", makeElement("li", "Get milk"));
+ * <ul><li>Get milk</li></p>
+ *
+ * If content is an array, then each item will be individually appended using
+ * the same logic as for a single piece of content:
+ *
+ * > let ingredients = ["Milk", "Eggs", "Flour"];
+ * > let eles = ingredients.map((ingredient)=>makeElement("li", ingredient));
+ * > makeElement("ul", eles);
+ * <ul><li>Milk</li><li>Eggs</li><li>Flour</li></ul>
+ */
+function makeElement (type, content, attrObj) {
+  /* The new element being populated: */
+  var newEle = document.createElement(type);
+
+  /* Inner function for appending children to newEle: */
+  function appendItem(item) {
+    if (item instanceof HTMLElement) {
+     newEle.appendChild(item);
+    }
+    /* Otherwise, coerce item into a string and make a text node out of it.
+    * Then, append that text node to newEle: */
+    else {
+     var text = document.createTextNode(String(item));
+     newEle.appendChild(text);
+    }
   }
+
+  /* If no content parameter was passed, leave the element childless:
+  *
+  * NOTE: This function is basically equivalent to document.createElement()
+  * if you use this feature. It's only here for code consistency should you
+  * need to create both childed and childless elements */
+  if (content === undefined) {
+    /* Make no changes */
+  }
+  /* If the content parameter was an array, iterate through and add each item
+   * as a child to newEle: */
+  else if (Array.isArray(content)) {
+    for (let i = 0, len = content.length; i < len; ++i) {
+      appendItem(content[i]);
+    }
+  }
+  /* If content is just a single item, simply append it on its own to newEle */
+  else appendItem(content);
+
+  /* Apply information from the attributes object: */
+  if (attrObj !== undefined) {
+   for (let attribute in attrObj) {
+     newEle.setAttribute(attribute, attrObj[attribute]);
+   }
+  }
+
+  return newEle;
 }
 
 /* This is called when the crawling is fully complete. it is the last
  * part of the script ot be executed: */
 function presentResults() {
   /* Remove the counter now that requests are finished */
-  requestCounter.display.remove();
-  const modal = document.createElement("div");
-  let text = document.createTextNode("Hello world!");
-  modal.appendChild(text);
-  setStyle(modal, {
-    padding: "2em",
-    border: "5px solid blue",
-    borderRadius: "1em",
-    backgroundColor: "white",
-    position: "fixed",
-    zIndex: "99999999999999",
-    top: "2em",
-    left: "2em",
-    height: "calc(100% - 4em)",
-    width: "calc(100% - 4em)",
-    margin: "0",
-    display: "block",
-    opacity: "1",
-    transition: "opacity .2s"
-  });
-  modal.onmouseenter = ()=>modal.style.opacity = "0";
-  modal.onmouseleave = ()=>modal.style.opacity = "1";
+  requestCounter.displayElement.remove();
+
+  /* Make new style sheet for modal: */
+  let myCSS = `/* Reset style on modal elements: */
+  #crlr-modal, #crlr-modal * {
+    all: initial;
+    box-sizing: border-box;
+  }
+  /* all: initial sets everything to display: inline, so reset block elements to
+   * display: block (yes this has to be this verbose, sadly): */
+  #crlr-modal p, #crlr-modal h1, #crlr-modal h2, #crlr-modal h3, #crlr-modal h4, #crlr-modal h5, #crlr-modal h6, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
+    display: block;
+  }
+
+  /* Gives headers proper size: */
+  #crlr-modal h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+  }
+  #crlr-modal h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+  }
+  #crlr-modal h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+  #crlr-modal h4 {
+    font-weight: bold;
+    margin-top: 1.33em;
+    margin-bottom: 1.33em;
+  }
+  #crlr-modal h5 {
+    font-size: .83em;
+    font-weight: bold;
+    margin-top: 1.67em;
+    margin-bottom: 1.67em;
+  }
+  #crlr-modal h6 {
+    font-size: .67em;
+    font-weight: bold;
+    margin-top: 2.33em;
+    margin-bottom: 2.33em;
+  }
+
+  #crlr-modal * {
+    font-family: sans-serif;
+  }
+  #crlr-modal pre, #crlr-modal pre * {
+    font-family: monospace;
+    white-space: pre;
+  }
+  /* Reset link styling: */
+  #crlr-modal a:link { /* Unvisited */
+    color: #00e;
+    text-decoration: underline;
+  }
+  /* visited link */
+  a:visited { /* Visited */
+    color: #551a8b
+  }
+
+  /* mouse over link */
+  a:hover {
+    color: darkred;
+  }
+
+  /* selected link */
+  a:active {
+    color: red;
+  }
+
+  /* Base-Styling for modal: */
+  #crlr-modal {
+    border: 5px solid #0000a3; /* Darkish blue */
+    border-radius: 1em;
+    background-color: #fcfcfe; /* Very-slightly blueish white */
+    position: fixed;
+    z-index: 99999999999999;
+    top: 2em;
+    bottom: 2em;
+    left: 2em;
+    right: 2em;
+    margin: 0;
+    overflow: hidden;
+    opacity: 0.2;
+    transition: opacity .2s;
+
+    color: #222;
+    box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    flex-direction: column;
+  }
+  #crlr-modal:hover {
+    opacity: 1;
+  }
+
+  #crlr-modal #crlr-min {
+    border: 1px solid gray;
+    padding: 0.5em;
+    border-radius: 5px;
+    margin-right: 1em;
+    background-color: rgba(0,0,20,0.1);
+  }
+  #crlr-modal #crlr-min:hover {
+    border-color: blue;
+    background-color: rgba(0,0,20,0.2);
+  }
+
+  #crlr-modal #crlr-header {
+    display: flex;
+    align-items: flex-end;
+
+    padding: 0.5em;
+    border-bottom: 1px dotted #808080;
+    width: 100%;
+    background-color: #e1e1ea;
+  }
+  #crlr-modal #crlr-header > * {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 16px;
+  }
+  #crlr-modal #crlr-header > *:last-child {
+    margin-right: 0;
+  }
+
+  #crlr-modal #crlr-content {
+    flex: 1;
+    padding: 1em;
+    overflow-y: auto;
+    /* For some zoom levels, a horizontal scrollbar appears (this is probably a
+     * floating-point bug or something) which is undesirable. Content isn't
+     * supposed to actually escape the content-div horizontally, so it's save
+     * to hide it: */
+    overflow-x: hidden;
+  }
+  #crlr-modal #crlr-content > * {
+    margin-bottom: 10px;
+  }
+  #crlr-modal #crlr-content > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Hide all elements but the minimize button... */
+  #crlr-modal.minimized *:not(#crlr-min) {
+    display:none;
+  }
+  /* ...Then re-appear the headeer element, which contains the button, so that
+   * the button doesn't get hidden: */
+  #crlr-modal.minimized #crlr-header {
+    display: flex;
+    margin: 0;
+    border: none;
+  }
+  #crlr-modal.minimized {
+    display: table;
+    background-color: #e1e1ea;
+  }
+  #crlr-modal.minimized #crlr-min {
+    margin: 0;
+  }
+  #crlr-modal .crlr-output > pre {
+    max-height: 200px;
+    padding: 0.5em;
+    overflow: auto;
+    border: 1px dashed gray;
+    background-color: #e1e1ea;
+  }
+  #crlr-modal .crlr-output {
+    display: flex;
+    max-width: 100%;
+  }`;
+
+  let styleEle = makeElement("style", myCSS, {title:"crlr.js.css"});
+  document.head.appendChild(styleEle);
+  window.crlrCSS = styleEle.sheet;
+  if (crlrCSS.title !== "crlr.js.css") console.error("Someone stole our stylesheet!");
+
+  /* Create modal for showing results: */
+  const modal = makeElement("div", undefined, {id: "crlr-modal"});
+
+  /* Create button for minimizing modal so that the site can be used normally: */
+  const minimizeButton = makeElement("button", "🗕", {id: "crlr-min"});
+
+  minimizeButton.type = "button";
+  /* Make the button toggle other content in the modal to/from display: none:
+   * (using a closure to make the toggle var private) */
+  minimizeButton.onclick = () => modal.classList.toggle("minimized");
+  modal.appendChild(minimizeButton);
+
+
+  const modalTitle = makeElement("h1", "Results: ", {id:"crlr-title"})
+  const modalHeader = makeElement("header", [minimizeButton,modalTitle],
+      {id:"crlr-header"}
+  );
+  modal.appendChild(modalHeader);
+
+  const modalContent = makeElement("div", undefined, {id:"crlr-content"});
+  modal.appendChild(modalContent);
+
+  modalContent.appendChild(makeElement("p", "All links: "));
+
+
+  let allLinksJSON = JSON.stringify(allLinks, null, 2);
+  /* Put objects which only have one key:value pair on a single line, rather
+   * than putting the opening bracket and closing bracket on separate lines: */
+  allLinksJSON = allLinksJSON.replace(
+      /(^[^\S\r\n]*\{)[^\S\r\n]*$[\r\n]*^\s*([^\r\n}]+$)[\r\n]*^\s*(\})/gm,
+      "$1$2$3"
+  );
+  /* Cuts the parameter string off at the given number of characters. If the
+   * parameter string is already shorter than maxLen, it is returned  without
+   * modification.
+   *
+   * Optionally, you may specify a break-string at which the string will be cut.
+   * If you do, the string will be cut just before the last instance of breakStr
+   * before the cutoff-point. If no instance can be found, an empty string is
+   * returned. */
+  function cutOff(str, maxLen, breakStr) {
+    let cutOff = maxLen;
+    /* If the string is already shorter than maxLen: */
+    if (cutOff > str.length) return str;
+    /* If not break-string is given, cutOff right on the character: */
+    if (breakStr === undefined) return str.substring(0, cutOff);
+
+    cutOff = str.lastIndexOf(breakStr, cutOff);
+    /* If the breakStr character can't be found, return an empty string: */
+    if (cutOff === -1) return "";
+    return str.substring(0, cutOff);
+  }
+
+  let reducedAllLinks = cutOff(allLinksJSON, 2000, "\n");
+
+  let pre = makeElement("pre", reducedAllLinks + "\n...");
+
+  var blob = new Blob([allLinksJSON], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+
+  let preCont = makeElement("div", pre, {class:"crlr-output"});
+
+  modalContent.appendChild(preCont);
+  let dlLink = makeElement("a", "Download full JSON",
+    {
+      href: url,
+      download: window.location.hostname.replace(/^www\./i, "") + "_allLinks.json",
+      class: "crlr-download"
+    }
+  );
+  modalContent.appendChild(makeElement("p", dlLink));
+
   document.body.insertBefore(modal, document.body.childNodes[0]);
 }
