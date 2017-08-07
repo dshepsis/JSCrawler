@@ -41,3 +41,19 @@ allRequests.forEach(r=>{
   else histTypes[histString] = [r];
 })
 console.log(histTypes);
+
+//separate:::::
+httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = function() {
+console.log(httpRequest);
+if (httpRequest.readyState === 2) {
+      headers = httpRequest.getAllResponseHeaders();
+      console.log(headers);
+	  httpRequest.abort();
+    }
+
+  }
+
+  httpRequest.open("GET", "http://rbhs.rutgers.edu/facultyaffairs/resources/faculty_handbook/index.html");
+httpRequest.setRequestHeader("Authorization", `BasicCustom`);
+  httpRequest.send();
