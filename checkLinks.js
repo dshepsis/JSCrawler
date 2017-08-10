@@ -1,11 +1,3 @@
-/* @incomplete The script won't create any output if no requests are made, i.e.
- * the page contains no internal links */
-
- /* @incomplete Add support for no robots.txt file (i.e. 404 error) */
-
- /* @incomplete Use HTTP Response Header data to terminate the loading of
-  * non-page files early. */
-
 /* @idea Use some kind of heuristics to estimate how much time in a crawl is
  * remaining, so it can be shown to the user. Like, record current timing and
  * then record number of new internal links found on a given page as a
@@ -20,33 +12,17 @@
  * there is also some extra prompt saying that it's old crawl-data, and asking
  * them if they'd like to close it or run a new crawl. */
 
-/* @incomplete Find out if there's a way to prevent the dialogue box for
- * permission-denied errors from coming up. Maybe reading response headers can
- * allow this. */
-
 /* @note For links with leading spaces in their href attribute, the link will be
  * mistakenly filed under badScheme. Maybe separately check links for extraneous
  * leading- and trailing-whitepsace, and log them under a separate object. */
 
- /* @weird Sometimes the modal poppingup on-timeout causes a 401 prompt to close
-  * ^^^Actually figured out this, partially.
-  * When a request gets 401'd, the prompt IMMEDIATELY appears, before the
-  * onreadystatechange callback has time to fire with readyState=2. The result
-  * is that you can't really cancel the request after checking the response
-  * header. However, **if the request is aborted** from asynchronous
-  * code while the dialogue box is open,then the dialogue box *is*
-  * cancelled. This means you could, hypothetically, use window.setTimeout
-  * to stop the request, but if the timeout function is set *before*
-  * readyState 2. Even checking the readyState from asynchronous code will
-  * return 1 until the dialogue box is closed (even though the headers have
-  * clearly been received). Thus, as far as I can tell, there is no way to use
-  * code to distinguish between a request which has 401'd with the prompt open
-  * (and thus, should be aborted) and a request which is taking a while to
-  * have the headers received. */
 'use strict';
+const startTime = performance.now();
 
 /* Warn the user about navigating away during crawl: */
 window.addEventListener("beforeunload", function (e) {
+  /* Note: In modern browsers, these messages are ignored as a security feature,
+   * and a default message is displayed instead. */
   const confirmationMessage = "Warning: Navigating away from the page during a site-crawl will cancel the crawl, losing all progress. Are you sure you want to continue?";
 
   e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
@@ -68,19 +44,23 @@ function containsBannedString(href) {
 const MAX_TIMEOUT = 1*1000; //60,000 Miliseconds, or 1 minute
 let timedOut = false;
 let allRequests = [];
-const timer = window.setTimeout(()=>{
+const TIMEOUT_TIMER = window.setTimeout(()=>{
     timedOut = true;
     for (let r = 0, len = allRequests.length; r < len; ++r) {
       let request = allRequests[r];
-      request.recordedByTimeout = true;
-      if (request.readyState === 4 && !request.callbackComplete) request.callbackFailed = true;
+      /* If the request has already completed, don't abort it */
       if (request.readyState === 4) continue;
-      request.readyStateBeforeAbort = request.readyState;
+
+      /* We have to assign this property before calling the abort method,
+       * because the abort method will call the requests onreadystatechange
+       * method, which needs to know why the request failed. */
+      request.abortedDueToTimeout = true;
       request.abort();
-      request.aborted = true;
-      console.log("Aborting request " + r + " out of " + len);
+      console.log("Aborting request at index " + r + " of allRequests");
     }
-  }, MAX_TIMEOUT);
+  },
+  MAX_TIMEOUT
+);
 
 /* Script relevant: */
 let visited = {};
@@ -96,10 +76,10 @@ let files = {};
 let localFiles = {};
 let badScheme = {};
 let ipAddresses = {};
-let badContentType = {};
+let unknownContentType = {};
 
 /* Collecting them for reference */
-let loggingObjects = {visited, allLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, badScheme, ipAddresses, badContentType};
+let loggingObjects = {visited, allLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, badScheme, ipAddresses, unknownContentType};
 
 /* Function definitions: */
 
@@ -142,9 +122,7 @@ const requestCounter = function() {
   }
 }();
 
-
-//@test
-function visitLinks2(curPage, linkObj) {
+function visitLinks(curPage, linkObj) {
 
   console.log("Checking links found on: " + curPage)
 
@@ -180,20 +158,45 @@ function visitLinks2(curPage, linkObj) {
     /**
      * Making the HTTP Request:
      */
+
     let httpRequest = new XMLHttpRequest();
     allRequests.push(httpRequest);
 
-    /* Callbacks: */
-    function normalResponseHandler (page, details) {
+    /*  Callbacks: */
+
+    /* Before the full requested-resource is loaded, we can view the response
+     * header for information such as the data type of the resource
+     * (e.g. text/html vs application/pdf) and use that information to make
+     * decisions on how to proceed w/o having to let the entire file be loaded. */
+    function checkRequestHeaders(request) {
       /* Checks if the request resolved to a file rather than an HTML document: */
-      let extension = findURLExtension(details.responseURL)
-      let isFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
-      if (isFile) {
-        console.warn("Found " + extension + " file at: " + url + "\n\tLinked-to from: " + curPage);
-        recordLinkTo(files);
-        return;
+      if (request.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+        function findURLExtension(url) {
+          for (let i = url.length - 1; i >= 0; --i) {
+            if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
+          }
+          return undefined;
+        }
+        let extension = findURLExtension(request.responseURL)
+        let isRecognizedFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
+        if (isRecognizedFile) {
+          recordLinkTo(files);
+        }
+
+        let contentType = request.getResponseHeader("Content-Type");
+        let validContentType = "text/html";
+        if (contentType.substr(0, validContentType.length) !== validContentType) {
+          /* If something isn't already recognized as a file, separately record
+           * it as having an unknown content-type */
+          if (!isRecognizedFile) recordLinkTo(unknownContentType);
+          request.resolvedToFile = true;
+          request.abort();
+        }
       }
-      if (page === null) {
+    }
+
+    function normalResponseHandler(page, details) {
+      if (!page) {
         console.error("Null response from " + url + ". It may be an unrecognizes file type.\n\tIt was linked-to from " + curPage);
         console.error(details);
         return;
@@ -201,10 +204,19 @@ function visitLinks2(curPage, linkObj) {
 
       /* Recursively check the links found on the given page: */
       let newLinks = classifyLinks(page, url,  true);
-      visitLinks2(url, newLinks);
+      visitLinks(url, newLinks);
     }
 
-    function errorHandler (details) {
+    function errorHandler(details) {
+      /* If we aborted the request early due to the header telling us the
+       * resource is a file, we shouldn't log another error, as everything
+       * should've already been handled by checkRequestHeaders. */
+      if (details.resolvedToFile) return;
+      /* And if we aborted the request at the timeout, also don't log further
+       * errors */
+      if (details.abortedDueToTimeout) return;
+
+      /* Otherwise, something went wrong with the request: */
       if (details.readyState !== 4) {
         console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", details);
         throw new Error ("AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(details));
@@ -246,32 +258,20 @@ function visitLinks2(curPage, linkObj) {
     * execute code exactly when crawling is fully complete, by checking when
     * the total number of unresolved requests reaches 0.
     */
-    function onComplete (xhr) {
+    function onComplete(xhr) {
       xhr.callbackComplete = true;
       requestCounter.decrement();
       if (requestCounter.count === 0) {
         requestCounter.setText("All requests complete!");
+        window.clearTimeout(TIMEOUT_TIMER);
         presentResults();
-      }
-    }
-
-    function onReadyStateChange (request) {
-      if (request.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-        let contentType = request.getResponseHeader("Content-Type");
-        console.warn(contentType);
-        let validContentType = "text/html";
-        if (contentType.substr(0, validContentType.length) !== validContentType) {
-          recordLinkTo(badContentType);
-          console.warn("aborting...")
-          request.abort();
-        }
       }
     }
 
     /* Start filing request: */
 
     httpRequest.onreadystatechange = function() {
-      onReadyStateChange(httpRequest);
+      checkRequestHeaders(httpRequest);
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) { //Code for "Good"
           normalResponseHandler(httpRequest.responseXML, httpRequest);
@@ -281,7 +281,6 @@ function visitLinks2(curPage, linkObj) {
         onComplete(httpRequest);
       }
     }
-    httpRequest.givenURL = url; //@debug
     httpRequest.open("GET", url);
     httpRequest.responseType = "document";
 
@@ -290,143 +289,16 @@ function visitLinks2(curPage, linkObj) {
 
     requestCounter.increment();
   } //Close for loop iterating over links
-} //Close function visitLinks2
-
-//@endTest
-
-/* Check all of the local links on a given page, and make requests to
- * get the coresponding HTML documents so they can also be analyzed for
- * links. This is done recursively until all internal links have been
- * marked as visited. This effectively forms a map of the site as reachable
- * by a user simply links from the page at which the script is run */
-function visitLinks(curPage, linkObj) {
-  if (timedOut) {
-    throw new Error("***REACHED MAX TIMEOUT OF " + MAX_TIMEOUT + "ms BEFORE FINISHING CRAWL.***");
-    window.alert("Sorry, the crawl took longer than the maximum timeout of " + Math.round(MAX_TIMEOUT/100)/10 + " seconds. All operations were cancelled.");
-  }
-
-  console.log("Checking links found on: " + curPage)
-  for (let url in linkObj) {
-    /* Note: this version is slightly different to the one found in classifyLinks,
-     * as it uses linkObj which is already filled out by classifyLinks. */
-    function recordLinkTo(...loggingObjects) {
-      let linkData = linkObj[url];
-      for (let i = 0, len = loggingObjects.length; i < len; ++i) {
-        let obj = loggingObjects[i];
-        if (obj[url] !== undefined) obj[url].push(linkData);
-        else obj[url] = [linkData];
-      }
-    }
-
-    if (redirects[url] !== undefined) {
-      recordLinkTo(redirects);
-      continue;
-    }
-    /* Do not re-analyze a page we have already visited: */
-    if (visited[url] !== undefined) {
-      recordLinkTo(visited);
-      continue;
-    }
-    /* Mark this page as having been "visited" or checked for links. This is done
-     * as soon as possible to mitigate the chances of a race condition where a page
-     * is checked twice, which is possible due to this code being asynchronous. */
-    visited[url] = [curPage];
-
-    /* This function takes 3 parameters (in order):
-     *
-     * - A callback function for handling normal responses
-     * - The URL of the page to to request
-     * - A callback function for handling errors
-     *
-     * The error handler is optional, but we pass one so that we can distinguish
-     * between different kinds of errors.
-     *
-     * For example, a request may fail if the server returns a 404
-     * (file not found) or if the link redirects to an external
-     * location, which would violate the common-origin policy. */
-    requestCounter.increment();
-    let req = HTMLDocLoader (url,
-      function normalResponseHandler (page, details) {
-        /* Checks if the request resolved to a file rather than an HTML document: */
-        let extension = findURLExtension(details.responseURL)
-        let isFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
-        if (isFile) {
-          console.warn("Found " + extension + " file at: " + url + "\n\tLinked-to from: " + curPage);
-          recordLinkTo(files);
-          return;
-        }
-        if (page === null) {
-          console.error("Null response from " + url + ". It may be an unrecognizes file type.\n\tIt was linked-to from " + curPage);
-          console.error(details);
-          return;
-        }
-
-        /* Recursively check the links found on the given page: */
-        let newLinks = classifyLinks(page, url,  true);
-        visitLinks(url, newLinks);
-      }, //Close normal-respone-handler callback-function,
-      function errorHandler (details) {
-        if (details.readyState !== 4) {
-          console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", details);
-
-        }
-        let msg = "";
-        switch (details.status) {
-          case 0:
-            recordLinkTo(redirects);
-            msg = "The request to " + url + " caused an undefined error. The url robably either redirects to an external site. or is invalid. There may also be a networking issue, or another problem entirely.";
-            msg += "\nUnfortunately, this script cannot distinguish between those possibilities.";
-            msg += "\n\tLinked-to from " + curPage;
-            break;
-          case 401:
-            recordLinkTo(accessDenied);
-            msg = "A 401 Error occurred when requesting " + url + ". That means access was denied to the client by the server.";
-            msg += "\n\tLinked-to from: " + curPage;
-            break;
-          case 403:
-            recordLinkTo(forbidden);
-            msg = "A 403 Error occurred when requesting " + url + ". That means the server considers access to the resource absolutely forbidden.";
-            msg += "\n\tLinked-to from: " + curPage;
-            break;
-          case 404:
-            recordLinkTo(notFound);
-            msg = "A 404 Error occurred when requesting " + url + ". That means the server could not find the given page.";
-            msg += "\n\tLinked-to from: " + curPage;
-            break;
-          detault:
-            console.error("AN UNIDENTIFIED ERROR OCURRED!", details);
-        }
-        if (msg !== "") console.error(msg);
-      }, //Close error-handler callback-function
-      /* This function will execute whenever a document request fully resolves,
-       * regardless of whether it was successful or not.
-       *
-       * By incrementing the instances counter before a request is made (aove
-       * this method call) and decrementing it when a request completes, we can
-       * execute code exactly when crawling is fully complete, by checking when
-       * the total number of unresolved requests reaches 0.
-       */
-      function onComplete (xhr) {
-        xhr.callbackComplete = true;
-        requestCounter.decrement();
-        if (requestCounter.count === 0) {
-          requestCounter.setText("All requests complete!");
-          presentResults();
-        }
-      }
-    ); //Close call to HTMLDocLoader
-    allRequests.push(req);
-  } //Close for loop iterating over links
+  /* If no links were ever found (e.g. single-page site), then the request
+   * counter will be set to 0 and never incremented or decremented. No HTTP
+   * requests will ever be sent, so the onComplete function above will never
+   * be called. The below condition ensures that the results modal is displayed
+   * even in this scenario: */
+  if (requestCounter.count === 0) presentResults();
 } //Close function visitLinks
 
-function findURLExtension(url) {
-  for (let i = url.length - 1; i >= 0; --i) {
-    if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
-  }
-  return undefined;
-}
-
-/* @incomplete Log null links somehow (should I?) */
+//@incomplete Log null links somehow (should I?)
+//@refactor Do the robotsDisallowed check ONCE rather than many times
 function classifyLinks(doc, curPageURL, quiet) {
   /* Default "quiet" to false. That is, by default, this function prints A LOT
    * of stuff to console. */
@@ -573,6 +445,7 @@ function classifyLinks(doc, curPageURL, quiet) {
 }
 
 /* ROBOTS.TXT PARSING: */
+//@refactor Remove this and make parseRobotsTxt use XHR on its own
 /**
  * General purpose asynchronous loading function.
  *
@@ -611,10 +484,7 @@ function classifyLinks(doc, curPageURL, quiet) {
  */
 function AJAXLoader(requestURL, onGoodResponse, onError, onComplete, responseType, onReadyStateChange) {
   let httpRequest = new XMLHttpRequest();
-  httpRequest.readyStateHistory = []; //@debug
-  httpRequest.readyStateHistory.push(httpRequest.readyState); //@debug
   httpRequest.onreadystatechange = function() {
-    httpRequest.readyStateHistory.push(httpRequest.readyState); //@debug
     if (typeof onReadyStateChange === 'function') {
       onReadyStateChange(httpRequest);
     }
@@ -647,28 +517,11 @@ function AJAXLoader(requestURL, onGoodResponse, onError, onComplete, responseTyp
       else if (onComplete !== undefined) console.log(onComplete);
     }
   }
-  httpRequest.givenURL = requestURL; //@debug
   httpRequest.open("GET", requestURL);
   if (responseType !== undefined) httpRequest.responseType = responseType;
   httpRequest.send();
   httpRequest.sent = true;
   return httpRequest;
-}
-/* Partially-applied version of the general-purpose loading function
- * AJAXLoader to be specific to HTML documents: */
-function HTMLDocLoader(pageURL, responseCallBack, errorHandler, onComplete) {
-  return AJAXLoader(pageURL,
-    function onGoodResponse(httpRequest) {
-      responseCallBack(httpRequest.responseXML, httpRequest);
-    },
-    function onError(httpRequest) {
-      if (errorHandler === undefined) {
-        console.error("AJAX attempt failed while requesting a document at " + pageURL, "Error code: " + httpRequest.status + "\n", httpRequest);
-      } else errorHandler(httpRequest);
-    },
-    onComplete,
-    "document"
-  );
 }
 /* Partially applied version of AJAXLoader specialized for loading files
  * as plain-text. */
@@ -682,6 +535,7 @@ function textLoader(fileURL, responseCallBack, errorHandler, onComplete) {
   );
 }
 
+//@refactor To parse no spaces after colon
 function parseRobotsTxt(robotsTxt) {
   let disallowed = [];
   let allowed = [];
@@ -838,7 +692,7 @@ textLoader("/robots.txt",
     let initialPageLinks = classifyLinks(document, window.location.href);
     visited[window.location.href] = [true];
 
-    visitLinks2(window.location.href, initialPageLinks);
+    visitLinks(window.location.href, initialPageLinks);
   }
 );
 
@@ -894,7 +748,7 @@ textLoader("/robots.txt",
  * > makeElement("ul", eles);
  * <ul><li>Milk</li><li>Eggs</li><li>Flour</li></ul>
  */
-function makeElement (type, content, attrObj) {
+function makeElement(type, content, attrObj) {
   /* The new element being populated: */
   let newEle = document.createElement(type);
 
@@ -1051,7 +905,6 @@ function presentResults() {
     border: 1px solid gray;
     padding: 0.5em;
     border-radius: 5px;
-    margin-right: 1em;
     background-color: rgba(0,0,20,0.1);
   }
   #crlr-modal #crlr-min:hover {
@@ -1059,8 +912,20 @@ function presentResults() {
     background-color: rgba(0,0,20,0.2);
   }
 
-  #crlr-modal #crlr-header {
+  /* Header stuff */
+  #crlr-modal .flex-row {
     display: flex;
+  }
+  #crlr-modal .flex-row > * {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 16px;
+  }
+  #crlr-modal .flex-row > *:last-child {
+    margin-right: 0;
+  }
+
+  #crlr-modal #crlr-header {
     align-items: flex-end;
 
     padding: 0.5em;
@@ -1068,14 +933,10 @@ function presentResults() {
     width: 100%;
     background-color: #e1e1ea;
   }
-  #crlr-modal #crlr-header > * {
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-right: 16px;
+  #crlr-modal #crlr-header #crlr-header-msg {
+    align-items: baseline;
   }
-  #crlr-modal #crlr-header > *:last-child {
-    margin-right: 0;
-  }
+
 
   #crlr-modal #crlr-content {
     flex: 1;
@@ -1152,8 +1013,17 @@ function presentResults() {
   let headerStr = "Results";
   headerStr += (timedOut) ? " (incomplete):" : ":";
   const modalTitle = makeElement("h1", headerStr, {id:"crlr-title"});
-  const modalHeader = makeElement("header", [minimizeButton,modalTitle],
-      {id:"crlr-header"}
+  const modalHeaderMsg = makeElement("div", modalTitle,
+    {
+      id: "crlr-header-msg",
+      class: "flex-row"
+    }
+  );
+  const modalHeader = makeElement("header", [minimizeButton, modalHeaderMsg],
+    {
+      id:"crlr-header",
+      class: "flex-row"
+    }
   );
   modal.appendChild(modalHeader);
 
@@ -1179,21 +1049,26 @@ function presentResults() {
    * before the cutoff-point. If no instance can be found, an empty string is
    * returned. */
   function cutOff(str, maxLen, breakStr) {
-    let cutOff = maxLen;
+    let cutOffPoint = maxLen;
     /* If the string is already shorter than maxLen: */
-    if (cutOff > str.length) return str;
-    /* If not break-string is given, cutOff right on the character: */
-    if (breakStr === undefined) return str.substring(0, cutOff);
+    if (cutOffPoint > str.length) return str;
+    /* If not break-string is given, cutOffPoint right on the character: */
+    if (breakStr === undefined) return str.substring(0, cutOffPoint);
 
-    cutOff = str.lastIndexOf(breakStr, cutOff);
+    cutOffPoint = str.lastIndexOf(breakStr, cutOffPoint);
     /* If the breakStr character can't be found, return an empty string: */
-    if (cutOff === -1) return "";
-    return str.substring(0, cutOff);
+    if (cutOffPoint === -1) return "";
+    return str.substring(0, cutOffPoint);
   }
 
-  let reducedAllLinks = cutOff(allLinksJSON, 2000, "\n");
+  const MAX_OUTPUT_LENGTH = 5000;
+  let reducedAllLinks = allLinksJSON;
+  if (reducedAllLinks.length > MAX_OUTPUT_LENGTH) {
+    reducedAllLinks = cutOff(allLinksJSON, MAX_OUTPUT_LENGTH, "\n");
+    reducedAllLinks += "\n...";
+  }
 
-  let pre = makeElement("pre", reducedAllLinks + "\n...");
+  let pre = makeElement("pre", reducedAllLinks);
 
   let blob = new Blob([allLinksJSON], {type: 'application/json'});
   let url = URL.createObjectURL(blob);
@@ -1216,4 +1091,11 @@ function presentResults() {
   modalContent.appendChild(makeElement("p", dlLink));
 
   document.body.insertBefore(modal, document.body.childNodes[0]);
+
+  const endTime = performance.now();
+  let runningTime = Math.round((endTime - startTime)/10)/100;
+  let timeInfoEle = makeElement("p","(Crawling took " + runningTime + " seconds)",
+      {id:"crlr-time"}
+  );
+  modalHeaderMsg.appendChild(timeInfoEle);
 }

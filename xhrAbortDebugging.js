@@ -44,16 +44,18 @@ console.log(histTypes);
 
 //separate:::::
 httpRequest = new XMLHttpRequest();
+state = [];
   httpRequest.onreadystatechange = function() {
 console.log(httpRequest);
 if (httpRequest.readyState === 2) {
       headers = httpRequest.getAllResponseHeaders();
       console.log(headers);
+      for (prop in httpRequest) state.push(`${prop}: ${httpRequest[prop]}`);
 	  httpRequest.abort();
     }
 
   }
 
-  httpRequest.open("GET", "http://rbhs.rutgers.edu/facultyaffairs/resources/faculty_handbook/index.html");
+  httpRequest.open("GET", "/files/financingyoured12915pdf");
 httpRequest.setRequestHeader("Authorization", `BasicCustom`);
   httpRequest.send();
