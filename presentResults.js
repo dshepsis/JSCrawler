@@ -1,8 +1,4 @@
 /**
- * Code for presenting results to the user when crawling is done:
- */
-
-/**
  * Makes an HTML element with content. This is similar to the
  * document.createElement() method, but allows text or other elements to be
  * added as children in-place. The optional attrObj parameter allows for
@@ -91,70 +87,66 @@ function makeElement (type, content, attrObj) {
   return newEle;
 }
 
-/* This is called when the crawling is fully complete. it is the last
- * part of the script ot be executed: */
 function presentResults() {
-  /* Remove the counter now that requests are finished */
-  //requestCounter.displayElement.remove();
 
   /* Make new style sheet for modal: */
   let myCSS = `/* Reset style on modal elements: */
-  #crlr-modal, #crlr-modal * {
+  #mytest-modal, #mytest-modal * {
     all: initial;
     box-sizing: border-box;
   }
   /* all: initial sets everything to display: inline, so reset block elements to
    * display: block (yes this has to be this verbose, sadly): */
-  #crlr-modal p, #crlr-modal h1, #crlr-modal h2, #crlr-modal h3, #crlr-modal h4, #crlr-modal h5, #crlr-modal h6, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
+  #mytest-modal p, #mytest-modal h1, #mytest-modal h2, #mytest-modal h3, #mytest-modal h4, #mytest-modal h5, #mytest-modal h6, #mytest-modal ol, #mytest-modal ul, #mytest-modal pre, #mytest-modal address, #mytest-modal blockquote, #mytest-modal dl, #mytest-modal div, #mytest-modal fieldset, #mytest-modal form, #mytest-modal hr, #mytest-modal noscript, #mytest-modal table {
     display: block;
   }
 
   /* Gives headers proper size: */
-  #crlr-modal h1 {
+  #mytest-modal h1 {
     font-size: 2em;
     font-weight: bold;
     margin-top: 0.67em;
     margin-bottom: 0.67em;
   }
-  #crlr-modal h2 {
+  #mytest-modal h2 {
     font-size: 1.5em;
     font-weight: bold;
     margin-top: 0.83em;
     margin-bottom: 0.83em;
   }
-  #crlr-modal h3 {
+  #mytest-modal h3 {
     font-size: 1.17em;
     font-weight: bold;
     margin-top: 1em;
     margin-bottom: 1em;
   }
-  #crlr-modal h4 {
+  #mytest-modal h4 {
     font-weight: bold;
     margin-top: 1.33em;
     margin-bottom: 1.33em;
   }
-  #crlr-modal h5 {
+  #mytest-modal h5 {
     font-size: .83em;
     font-weight: bold;
     margin-top: 1.67em;
     margin-bottom: 1.67em;
   }
-  #crlr-modal h6 {
+  #mytest-modal h6 {
     font-size: .67em;
     font-weight: bold;
     margin-top: 2.33em;
     margin-bottom: 2.33em;
   }
 
-  #crlr-modal * {
+  #mytest-modal * {
     font-family: sans-serif;
   }
-  #crlr-modal pre, #crlr-modal pre * {
+  #mytest-modal pre, #mytest-modal pre * {
     font-family: monospace;
     white-space: pre;
   }
   /* Reset link styling: */
-  #crlr-modal a:link { /* Unvisited */
+  #mytest-modal a:link { /* Unvisited */
     color: #00e;
     text-decoration: underline;
   }
@@ -174,7 +166,7 @@ function presentResults() {
   }
 
   /* Base-Styling for modal: */
-  #crlr-modal {
+  #mytest-modal {
     border: 5px solid #0000a3; /* Darkish blue */
     border-radius: 1em;
     background-color: #fcfcfe; /* Very-slightly blueish white */
@@ -195,24 +187,35 @@ function presentResults() {
     display: flex;
     flex-direction: column;
   }
-  #crlr-modal:hover {
+  #mytest-modal:hover {
     opacity: 1;
   }
 
-  #crlr-modal #crlr-min {
+  #mytest-modal #mytest-min {
     border: 1px solid gray;
     padding: 0.5em;
     border-radius: 5px;
-    margin-right: 1em;
     background-color: rgba(0,0,20,0.1);
   }
-  #crlr-modal #crlr-min:hover {
+  #mytest-modal #mytest-min:hover {
     border-color: blue;
     background-color: rgba(0,0,20,0.2);
   }
 
-  #crlr-modal #crlr-header {
+  /* Header stuff */
+  #mytest-modal .flex-row {
     display: flex;
+  }
+  #mytest-modal .flex-row > * {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 16px;
+  }
+  #mytest-modal .flex-row > *:last-child {
+    margin-right: 0;
+  }
+
+  #mytest-modal #mytest-header {
     align-items: flex-end;
 
     padding: 0.5em;
@@ -220,16 +223,12 @@ function presentResults() {
     width: 100%;
     background-color: #e1e1ea;
   }
-  #crlr-modal #crlr-header > * {
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-right: 16px;
-  }
-  #crlr-modal #crlr-header > *:last-child {
-    margin-right: 0;
+  #mytest-modal #mytest-header #mytest-header-msg {
+    align-items: baseline;
   }
 
-  #crlr-modal #crlr-content {
+
+  #mytest-modal #mytest-content {
     flex: 1;
     padding: 1em;
     overflow-y: auto;
@@ -239,73 +238,124 @@ function presentResults() {
      * to hide it: */
     overflow-x: hidden;
   }
-  #crlr-modal #crlr-content > * {
+  #mytest-modal #mytest-content > * {
     margin-bottom: 10px;
   }
-  #crlr-modal #crlr-content > :last-child {
+  #mytest-modal #mytest-content > :last-child {
     margin-bottom: 0;
   }
 
   /* Hide all elements but the minimize button... */
-  #crlr-modal.minimized *:not(#crlr-min) {
+  #mytest-modal.minimized *:not(#mytest-min) {
     display:none;
   }
-  /* ...Then re-appear the headeer element, which contains the button, so that
+  /* ...Then re-appear the header element, which contains the button, so that
    * the button doesn't get hidden: */
-  #crlr-modal.minimized #crlr-header {
+  #mytest-modal.minimized #mytest-header {
     display: flex;
     margin: 0;
     border: none;
   }
-  #crlr-modal.minimized {
+  #mytest-modal.minimized {
     display: table;
     background-color: #e1e1ea;
   }
-  #crlr-modal.minimized #crlr-min {
+  #mytest-modal.minimized #mytest-min {
     margin: 0;
   }
-  #crlr-modal .crlr-output > pre {
+
+  /* Output styling: */
+  #mytest-modal #mytest-data-select-input {
+    font-size: 1.25em;
+    border: 2px solid transparent;
+    border-bottom: 2px solid #b0b0b0;
+    background-color: #ededf2;
+    transition: border 0.2s;
+  }
+  #mytest-modal #mytest-data-select-input:focus {
+    border: 2px solid #a6c7ff; /* Light blue */
+  }
+  #mytest-modal .mytest-output > pre {
     max-height: 200px;
     padding: 0.5em;
     overflow: auto;
     border: 1px dashed gray;
     background-color: #e1e1ea;
   }
-  #crlr-modal .crlr-output {
+  #mytest-modal .mytest-output {
     display: flex;
     max-width: 100%;
   }`;
 
-  let styleEle = makeElement("style", myCSS, {title:"crlr.js.css"});
+  let styleEle = makeElement("style", myCSS, {title:"mytest.js.css"});
   document.head.appendChild(styleEle);
-  window.crlrCSS = styleEle.sheet;
-  if (crlrCSS.title !== "crlr.js.css") console.error("Someone stole our stylesheet!");
+  window.mytestCSS = styleEle.sheet;
+  if (mytestCSS.title !== "mytest.js.css") console.error("Someone stole our stylesheet!");
 
   /* Create modal for showing results: */
-  const modal = makeElement("div", undefined, {id: "crlr-modal"});
+  const modal = makeElement("div", undefined, {id: "mytest-modal"});
+
+  /* Prevent click events on the modal affecting events on the rest of the page: */
+  modal.addEventListener("click", function(e){
+      if (!e) e = window.event;
+      e.cancelBubble = true;
+      if (e.stopPropagation) e.stopPropagation();
+    }
+  );
 
   /* Create button for minimizing modal so that the site can be used normally: */
-  const minimizeButton = makeElement("button", "🗕", {id: "crlr-min"});
+  const minimizeButton = makeElement("button", "🗕", {id: "mytest-min"});
 
   minimizeButton.type = "button";
-  /* Make the button toggle other content in the modal to/from display: none:
-   * (using a closure to make the toggle var private) */
+  /* Make the button toggle other content in the modal to/from display: none: */
   minimizeButton.onclick = () => modal.classList.toggle("minimized");
   modal.appendChild(minimizeButton);
 
 
-  const modalTitle = makeElement("h1", "Results: ", {id:"crlr-title"})
-  const modalHeader = makeElement("header", [minimizeButton,modalTitle],
-      {id:"crlr-header"}
+  let headerStr = "Results";
+  const modalTitle = makeElement("h1", headerStr, {id:"mytest-title"});
+  const modalHeaderMsg = makeElement("div", modalTitle,
+    {
+      id: "mytest-header-msg",
+      class: "flex-row"
+    }
+  );
+  const modalHeader = makeElement("header", [minimizeButton, modalHeaderMsg],
+    {
+      id:"mytest-header",
+      class: "flex-row"
+    }
   );
   modal.appendChild(modalHeader);
 
-  const modalContent = makeElement("div", undefined, {id:"crlr-content"});
+  const modalContent = makeElement("div", undefined, {id:"mytest-content"});
   modal.appendChild(modalContent);
 
-  modalContent.appendChild(makeElement("p", "All links: "));
+  let dataObjInputEle = makeElement("input", undefined,
+    {
+      id: "mytest-data-select-input",
+      type: "text",
+      value:"Fjorbanks glyph vext quiz."
+    }
+  );
+  let pre = makeElement("pre");
+  let preCont = makeElement("div", pre, {class:"mytest-output"});
+  let dlLinkPara = makeElement("p");
+  modalContent.appendChild(dataObjInputEle);
+  modalContent.appendChild(preCont);
 
-  let lorem = `1
+  let dataObjName = dataObjInputEle.value;
+  function updateOutput () {
+    pre.innerText = dataObjInputEle.value;
+  }
+  dataObjInputEle.addEventListener("input", updateOutput);
+  dataObjInputEle.addEventListener("propertychange", updateOutput);
+  updateOutput();
+
+
+  document.body.insertBefore(modal, document.body.childNodes[0]);
+
+  let lorem = `  1
   2
   3
   4
@@ -355,23 +405,23 @@ function presentResults() {
 23
 24`;
 
-  let pre = makeElement("pre", lorem);
-  let preCont = makeElement("div", pre, {class:"crlr-output"});
+  let preA = makeElement("pre", lorem);
+  let preContA = makeElement("div", preA, {class:"mytest-output"});
 
-  modalContent.appendChild(preCont);
+  modalContent.appendChild(preContA);
 
   let preb = makeElement("pre", lorem);
-  let preContb = makeElement("div", preb, {class:"crlr-output"});
+  let preContb = makeElement("div", preb, {class:"mytest-output"});
 
   modalContent.appendChild(preContb);
 
   let pre2 = makeElement("pre", ipsum);
-  let preCont2 = makeElement("div", pre2, {class:"crlr-output"});
+  let preCont2 = makeElement("div", pre2, {class:"mytest-output"});
 
   modalContent.appendChild(preCont2);
 
   let pre3 = makeElement("pre", combo);
-  let preCont3 = makeElement("div", pre3, {class:"crlr-output"});
+  let preCont3 = makeElement("div", pre3, {class:"mytest-output"});
 
   modalContent.appendChild(preCont3);
 
