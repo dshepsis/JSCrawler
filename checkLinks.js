@@ -12,14 +12,7 @@
  * there is also some extra prompt saying that it's old crawl-data, and asking
  * them if they'd like to close it or run a new crawl. */
 
-/* @note For links with leading spaces in their href attribute, the link will be
- * mistakenly filed under badScheme. Maybe separately check links for extraneous
- * leading- and trailing-whitepsace, and log them under a separate object. */
-
-/* @idea Give the modal a dropdown for selecting logging objects, and mark empty
- * ones with "(empty)" and make them gray-ed out if possible. */
-
-/* @todo Make it more clear when a JSON preview is complete or incomplete. */
+/* @TODO Fix the object selection textbox in the modal for Firefox */
 
 'use strict';
 const startTime = performance.now();
@@ -34,7 +27,9 @@ window.addEventListener("beforeunload", function (e) {
 });
 
 /* Settings variables: */
-const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "ppt", "pptx", "xls", "xlsm", "xlsx"];
+const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf",
+    "png", "ppt", "pptx", "xls", "xlsm", "xlsx"];
+const RECOGNIZED_SCHEMES = ["mailto:", "tel:"];
 
 const BANNED_STRINGS = ["drupaldev"];
 function containsBannedString(href) {
@@ -45,7 +40,7 @@ function containsBannedString(href) {
   return false;
 }
 
-const MAX_TIMEOUT = 60*1000; //60,000 Miliseconds, or 1 minute
+const MAX_TIMEOUT = 60*1000; //Miliseconds
 let timedOut = false;
 let allRequests = [];
 const TIMEOUT_TIMER = window.setTimeout(()=>{
@@ -60,7 +55,7 @@ const TIMEOUT_TIMER = window.setTimeout(()=>{
        * method, which needs to know why the request failed. */
       request.abortedDueToTimeout = true;
       request.abort();
-      console.log("Aborting request at index " + r + " of allRequests");
+      console.warn("Aborting request at index " + r + " of allRequests");
     }
   },
   MAX_TIMEOUT
@@ -87,19 +82,90 @@ let unusualScheme = {};
 let ipAddresses = {};
 let unknownContentType = {};
 
-/* Collecting them for reference */
-let loggingObjects = {visited, allLinks, externalLinks, nullLinks, anchorLinks, absoluteInternalLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, unusualScheme, ipAddresses, unknownContentType};
+let linkLoggingObjects = {visited, allLinks, externalLinks, nullLinks, anchorLinks, absoluteInternalLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, unusualScheme, ipAddresses, unknownContentType};
+
+let allImages = {};
+
+let nullImages = {};
+let externalImages = {};
+let unloadedImages = {};
+let bannedStringImages = {};
+let absoluteInternalImages = {};
+
+let imageLoggingObjects = {allImages, externalImages, unloadedImages, bannedStringImages, absoluteInternalImages};
+
+/* Takes the loggingObjects and exchanges the HTMLElements in them w/ some
+ * property of those elements (href by default). reducerFn is passed each
+ * element and returns what that element is substituted w/ in the object. */
+function logObjToString (logObj, reducerFn) {
+  const replaceElements = (key, val) => {
+    if (val instanceof HTMLElement) {
+      return reducerFn(val);
+    }
+    return val;
+  };
+  let logObjJSON = JSON.stringify(logObj, replaceElements, 2);
+
+  /* Put objects which only have one key:value pair on a single line, rather
+   * than putting the opening bracket and closing bracket on separate lines: */
+  logObjJSON = logObjJSON.replace(
+      /(^[^\S\r\n]*\{)[^\S\r\n]*$[\r\n]*^\s*([^\r\n}]+$)[\r\n]*^\s*(\})/gm,
+      "$1$2$3"
+  );
+
+  return logObjJSON;
+}
+
+/* Reformats a logging object to change the mapping. The returned object maps
+ * from the url of a page (containing links classified by the given object) to
+ * an array of corresponding link elements on that page. */
+function loggingObjectReformat(logObj) {
+  let pageToArrayOfBrokenLinks = {};
+  for (let url in logObj) {
+    let caseList = logObj[url];
+    for (let i = 0, len = caseList.length; i < len; ++i) {
+      let caseObj = caseList[i];
+      let keys = Object.keys(caseObj);
+      if (keys.length !== 1) console.error(`I messed up at url ${url} and caseObj ${JSON.stringify(caseObj)}`);
+      let pageContainingBrokenLink = keys[0];
+      if (pageToArrayOfBrokenLinks[pageContainingBrokenLink] === undefined) {
+        pageToArrayOfBrokenLinks[pageContainingBrokenLink] = [caseObj[pageContainingBrokenLink]];
+      } else {
+        pageToArrayOfBrokenLinks[pageContainingBrokenLink].push(caseObj[pageContainingBrokenLink]);
+      }
+    }
+  }
+  return pageToArrayOfBrokenLinks;
+}
+
+/* Collects different sets of loggingObjects and information on how to output
+ * them: */
+let logObjMetaData = [
+  {
+    logObjects: linkLoggingObjects,
+    toString (obj) {
+      return logObjToString( obj, (ele => ele.getAttribute("href")) );
+    }
+  },
+  {
+    logObjects: imageLoggingObjects,
+    toString (obj) {
+      return logObjToString( obj, (ele => ele.getAttribute("src")) );
+    }
+  },
+];
 
 /* Function definitions: */
 
 /* Makes a box appear on the user interface with a counter showing
  * the number of live (unresolved) http requests currently waiting: */
-const requestCounter = function() {
+const requestCounter = (function() {
   /* Create display: */
   const disp = document.createElement("p");
   let text = document.createTextNode("0");
   disp.appendChild(text);
   disp.id="instancesDisplay";
+
   disp.style.padding = "2px";
   disp.style.border = "5px solid green";
   disp.style.backgroundColor = "white";
@@ -129,12 +195,13 @@ const requestCounter = function() {
       disp.innerHTML = this.count;
     }
   }
-}();
+})();
 
 function urlRemoveAnchor(locationObj) {
   if (typeof locationObj === "string") {
     return urlRemoveAnchor(makeElement("a", undefined, {href: locationObj}));
   }
+
   return locationObj.origin + locationObj.pathname + locationObj.search;
 }
 
@@ -144,10 +211,10 @@ function visitLinks(curPage, linkObj) {
   for (let url in linkObj) {
     /* Note: this version is slightly different to the one found in classifyLinks,
      * as it uses linkObj which is already filled out by classifyLinks. */
-    function recordLinkTo(...loggingObjects) {
+    function recordLinkTo(...objectsToLogTo) {
       let linkData = linkObj[url]; //@note This is an array
-      for (let i = 0, len = loggingObjects.length; i < len; ++i) {
-        let obj = loggingObjects[i];
+      for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
+        let obj = objectsToLogTo[i];
 
         /* If the given logging object already has an array of entries for the
          * given URL: */
@@ -165,16 +232,12 @@ function visitLinks(curPage, linkObj) {
     }
     if (url !== urlRemoveAnchor(url)) throw new Error(`This url has an anchor and shouldn't ${url}...`);
 
-
     /* Don't re-check a link which is a known redirect: */
     if (redirects[url] !== undefined) {
       recordLinkTo(redirects);
       continue;
     }
 
-    /* Mark this page as having been "visited" or checked for links. This is done
-    * as soon as possible to mitigate the chances of a race condition where a page
-    * is checked twice, which is possible due to this code being asynchronous. */
     /* Do not re-analyze a page we have already visited: */
     if (visited[url] !== undefined) {
       recordLinkTo(visited);
@@ -199,7 +262,6 @@ function visitLinks(curPage, linkObj) {
      * decisions on how to proceed w/o having to let the entire file be loaded. */
     function checkRequestHeaders(request) {
       /* Checks if the request resolved to a file rather than an HTML document: */
-      //if (request.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
       function findURLExtension(url) {
         for (let i = url.length - 1; i >= 0; --i) {
           if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
@@ -215,13 +277,10 @@ function visitLinks(curPage, linkObj) {
       let contentType = request.getResponseHeader("Content-Type");
       let validContentType = "text/html";
       if (contentType.substr(0, validContentType.length) !== validContentType) {
-        /* If something isn't already recognized as a file, separately record
-         * it as having an unknown content-type */
         if (!isRecognizedFile) recordLinkTo(unknownContentType);
         request.resolvedToFile = true;
         request.abort();
       }
-    //  }
     }
 
     function normalResponseHandler(page, details) {
@@ -231,13 +290,8 @@ function visitLinks(curPage, linkObj) {
         return;
       }
 
-      /* A canonical link is an element placed in an HTML document which tells
-       * crawlers that the current document is practically a duplicate of another
-       * document. This allows, for example, a page with a query string to tell
-       * search engines not to index it separately from the default page. We're
-       * going to use it similarly: */
-      // let canonicalEle = page.querySelector("link[rel=canonical]");//@incomplete
-
+      /* Check images on the given page: */
+      classifyImages(page, url);
       /* Recursively check the links found on the given page: */
       let newLinks = classifyLinks(page, url,  true);
       visitLinks(url, newLinks);
@@ -248,8 +302,6 @@ function visitLinks(curPage, linkObj) {
        * resource is a file, we shouldn't log another error, as everything
        * should've already been handled by checkRequestHeaders. */
       if (details.resolvedToFile) return;
-      /* And if we aborted the request at the timeout, also don't log further
-       * errors */
       if (details.abortedDueToTimeout) return;
 
       /* Otherwise, something went wrong with the request: */
@@ -257,6 +309,7 @@ function visitLinks(curPage, linkObj) {
         console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", details);
         throw new Error ("AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(details));
       }
+
       let msg = "";
       switch (details.status) {
         case 0:
@@ -276,7 +329,7 @@ function visitLinks(curPage, linkObj) {
           recordLinkTo(notFound);
           msg = "A 404 Error occurred when requesting " + url + ". That means the server could not find the given page.";
           break;
-        detault:
+        default:
           console.error("AN UNIDENTIFIED ERROR OCURRED!", details);
       }
       if (msg !== "") console.error(msg + "\n\tLinked-to from: " + curPage);
@@ -301,7 +354,6 @@ function visitLinks(curPage, linkObj) {
     }
 
     /* Start filing request: */
-
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
         checkRequestHeaders(httpRequest);
@@ -322,11 +374,7 @@ function visitLinks(curPage, linkObj) {
 
     requestCounter.increment();
   } //Close for loop iterating over links
-  /* If no links were ever found (e.g. single-page site), then the request
-   * counter will be set to 0 and never incremented or decremented. No HTTP
-   * requests will ever be sent, so the onComplete function above will never
-   * be called. The below condition ensures that the results modal is displayed
-   * even in this scenario: */
+  /* If no internal links were ever found (e.g. single-page site): */
   if (requestCounter.count === 0) presentResults();
 } //Close function visitLinks
 
@@ -335,7 +383,6 @@ function classifyLinks(doc, curPageURL, quiet) {
 
   const LINKS = doc.getElementsByTagName("a");
   const HOSTNAME = window.location.hostname.toLowerCase();
-
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
@@ -347,15 +394,17 @@ function classifyLinks(doc, curPageURL, quiet) {
     let hrefAttr = link.getAttribute("href");
 
     /* Function for adding data about a link to data-logging objects: */
-    function recordLinkTo(...loggingObjects) {
+    function recordLinkTo(...objectsToLogTo) {
       let linkData = {};
       linkData[curPageURL] = link;
       let hrefWithoutAnchor = urlRemoveAnchor(link);
-      for (let i = 0, len = loggingObjects.length; i < len; ++i) {
-        let obj = loggingObjects[i];
+      for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
+        let obj = objectsToLogTo[i];
         if (obj[hrefWithoutAnchor] !== undefined) {
           obj[hrefWithoutAnchor].push(linkData);
-        } else obj[hrefWithoutAnchor] = [linkData];
+        } else {
+          obj[hrefWithoutAnchor] = [linkData];
+        }
       }
     }
 
@@ -372,9 +421,6 @@ function classifyLinks(doc, curPageURL, quiet) {
     /* All non-null links are recorded to the allLinks object: */
     recordLinkTo(allLinks);
 
-    /* If the link contains a banned string, record it: */
-    /* containsBannedString returns false if there is no banned string in href,
-     * and returns the banned string in question if one is present: */
     let bannedStr = containsBannedString(link.href);
     if (bannedStr) {
       recordLinkTo(bannedStrings);
@@ -382,8 +428,8 @@ function classifyLinks(doc, curPageURL, quiet) {
       console.error("Found link " + hrefAttr + " containing a banned string: " + bannedStr + ".\n\tLinked-to from: " + curPageURL);
       link.style.border = "4px dashed red";
       link.title = (link.title) ? link.title + "\nBANNED WORD LINK" : "BANNED WORD LINK";
-      /* Don't parse the link if it is banned. This avoids the link
-       * being crawled. */
+
+      /* Don't parse the link further. Banned-string links will not be crawled. */
       continue;
     }
 
@@ -420,8 +466,11 @@ function classifyLinks(doc, curPageURL, quiet) {
         link.title = (link.title) ? link.title + "\nCrawling dissalowed by robots.txt" : "Crawling dissalowed by robots.txt";
       }
 
-
       if (linkIsAbsolute) {
+        if (link.matches(".field-name-field-related-links a")) {
+          console.warn("absint link in related links", link);
+          continue;//@debug
+        }
         recordLinkTo(absoluteInternalLinks);
         quietLog(link, i + ":Absolute Internal:\t" + hrefAttr);
       } else {
@@ -444,15 +493,13 @@ function classifyLinks(doc, curPageURL, quiet) {
         recordLinkTo(ipAddresses);
       }
       if (!linkIsToWebsite) {
-        recordLinkTo(unusualScheme);
-
-        /* Email link: */
+        if (RECOGNIZED_SCHEMES.indexOf(linkProtocol) === -1) {
+          recordLinkTo(unusualScheme);
+        }
         if (linkProtocol === "mailto:") {
           link.style.border = "2px solid yellow";
           link.title = (link.title) ? link.title + "\nEmail link" : "Email link";
         }
-
-        /* File link: */
         else if (linkProtocol === "file:") {
           recordLinkTo(localFiles);
 
@@ -463,136 +510,107 @@ function classifyLinks(doc, curPageURL, quiet) {
     } //Close else block classifying external links
   } //Close for loop iterating over link elements
   return internalLinksFromThisPage;
-}
+} //Close function classifyLinks
+
+function classifyImages (doc, curPageURL, quiet) {
+  const IMAGES = doc.getElementsByTagName("img");
+  const HOSTNAME = window.location.hostname.toLowerCase();
+
+  /* Contains the URLs of all of the local (same-domain) pages linked to from
+   * this page: */
+  let internalLinksFromThisPage = {};
+
+  /* Loop over links: */
+  for (let i = 0, len = IMAGES.length; i < len; ++i) {
+    let image = IMAGES[i];
+    let srcProp = image.src;
+    let srcAttr = image.getAttribute("src");
+
+    /* Function for adding data about a image to data-logging objects: */
+    function recordImageTo(...objectsToLogTo) {
+      let imageData = {};
+      imageData[curPageURL] = image;
+      for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
+        let obj = objectsToLogTo[i];
+        if (obj[srcProp] !== undefined) {
+          obj[srcProp].push(imageData);
+        } else {
+          obj[srcProp] = [imageData];
+        }
+      }
+    }
+    recordImageTo(allImages);
+
+    if (srcAttr === null) {
+      recordImageTo(nullImages);
+    }
+    if (!image.complete) {
+      recordImageTo(unloadedImages);
+    }
+
+    /* HTMLImageElements don't have location properties, sadly, so we need to
+     * create an A(nchor) element with the image's src as its href. This
+     * temporary element has location properties automatically populated, so we
+     * can access them: */
+    let imgSrcHostname = makeElement("a", undefined, {href: srcProp}).hostname;
+    if (imgSrcHostname !== HOSTNAME) {
+      recordImageTo(externalImages);
+    }
+    if (containsBannedString(srcProp)) {
+      recordImageTo(bannedStringImages);
+    }
+    if (srcProp === image.getAttribute("src")) {
+      recordImageTo(absoluteInternalImages);
+    }
+  }//Close for loop iterating over images
+}//Close function classifyImages
+
 
 /**
  * Code for presenting results to the user when crawling is done:
  */
 
-/**
- * Makes an HTML element with content. This is similar to the
- * document.createElement() method, but allows text or other elements to be
- * added as children in-place. The optional attrObj parameter allows for
- * attributes such as id, class, src, and href to also be specified in-place.
- *
- * For example:
- * > makeElement("p", "Hello world!");
- * <p>Hello world!</p>
- *
- * > makeElement("span", 3.14);
- * <span>3.14</span>
- *
- * > makeElement("a", "FAQ", {href:"/faq.html"})
- * <a href="/faq.html">FAQ</a>
- *
- * The equivalent using default tools is much longer, and takes at least 2 lines:
- * > let ele = document.createElement("p");
- * > ele.appendChild(document.createTextNode("Hello world!"));
- *
- * makeElement be used without specifying the content parameter, in which case
- * it becomes equivalent to document.createElement.
- *
- * More importantly, the content attribute can be another HTMLElement, in which
- * case the element is appended directly to the newly created element.
- *
- * For example,
- * > let item = makeElement("li", "Get eggs");
- * > makeElement("ul", item)
- * <ul><li>Get eggs</li></p>
- *
- * You can even chain the methods together directly, without intermediate
- * variables:
- * > makeElement("ul", makeElement("li", "Get milk"));
- * <ul><li>Get milk</li></p>
- *
- * If content is an array, then each item will be individually appended using
- * the same logic as for a single piece of content:
- *
- * > let ingredients = ["Milk", "Eggs", "Flour"];
- * > let eles = ingredients.map((ingredient)=>makeElement("li", ingredient));
- * > makeElement("ul", eles);
- * <ul><li>Milk</li><li>Eggs</li><li>Flour</li></ul>
- */
-function makeElement(type, content, attrObj) {
-  /* The new element being populated: */
-  let newEle = document.createElement(type);
-
-  /* Inner function for appending children to newEle: */
+/* A function for appending an array of children to a parent HTMLElement: */
+function appendChildren (parent, children) {
   function appendItem(item) {
     if (item instanceof HTMLElement) {
-     newEle.appendChild(item);
+      parent.appendChild(item);
     }
     /* Otherwise, coerce item into a string and make a text node out of it.
-    * Then, append that text node to newEle: */
+    * Then, append that text node to parent: */
     else {
-     let text = document.createTextNode(String(item));
-     newEle.appendChild(text);
+      let text = document.createTextNode(String(item));
+      parent.appendChild(text);
     }
   }
 
-  /* If no content parameter was passed, leave the element childless:
-  *
-  * NOTE: This function is basically equivalent to document.createElement()
-  * if you use this feature. It's only here for code consistency should you
-  * need to create both childed and childless elements */
-  if (content === undefined) {
-    /* Make no changes */
-  }
-  /* If the content parameter was an array, iterate through and add each item
-   * as a child to newEle: */
-  else if (Array.isArray(content)) {
-    for (let i = 0, len = content.length; i < len; ++i) {
-      appendItem(content[i]);
+  if (Array.isArray(children)) {
+    for (let i = 0, len = children.length; i < len; ++i) {
+      appendItem(children[i]);
     }
+  } else {
+    appendItem(children);
   }
-  /* If content is just a single item, simply append it on its own to newEle */
-  else appendItem(content);
-
-  /* Apply information from the attributes object: */
-  if (attrObj !== undefined) {
-   for (let attribute in attrObj) {
-     newEle.setAttribute(attribute, attrObj[attribute]);
-   }
-  }
-
-  return newEle;
 }
 
-function logObjToString (logObj) {
-  let substitutedLogObj = {};
-
-  /* Each logging Object is an object mapping page urls (with anchor
-   * removed) to arrays of objects. Each object in the array maps
-   * the url of the page which contained a link to the key url to the
-   * actual link element object (HTMLAnchorElement) which is referred
-   * to. So, we parse in the form of: object -> array -> object. */
-  for (let link in logObj) { // <--------------------------- Outer Object
-    // console.warn(`link: ${link}`); //@debug
-    let srcArr = logObj[link];
-    // console.warn(`srcArr`, srcArr); //@debug
-    let transformedArr = [];
-    for (let i = 0, len = srcArr.length; i < len; ++i) { // <- Array
-      let srcObj = srcArr[i];
-      // console.warn(`srcObj:`, srcObj);
-      let transformedObj = {};
-      for (let key in srcObj) { // <-------------------------- Inner Object
-        // console.warn(`key: ${key}`); //@debug
-        transformedObj[key] = srcObj[key].getAttribute("href");
-      }
-      transformedArr.push(transformedObj);
-    }
-    substitutedLogObj[link] = transformedArr;
+/**
+ * Makes an HTML element with content. This is similar to the
+ * document.createElement() method, but allows text or other elements to
+ * be added as a child in-place. Multiple children may be specified by
+ * using an array. The optional attrObj parameter allows for attributes
+ * such as id, class, src, and href to also be specified in-place.
+ */
+function makeElement(type, content, attrObj) {
+  let newEle = document.createElement(type);
+  if (content !== undefined) {
+    appendChildren(newEle, content)
   }
-  let logObjJSON = JSON.stringify(substitutedLogObj, null, 2);
-
-  /* Put objects which only have one key:value pair on a single line, rather
-   * than putting the opening bracket and closing bracket on separate lines: */
-  logObjJSON = logObjJSON.replace(
-      /(^[^\S\r\n]*\{)[^\S\r\n]*$[\r\n]*^\s*([^\r\n}]+$)[\r\n]*^\s*(\})/gm,
-      "$1$2$3"
-  );
-
-  return logObjJSON;
+  if (attrObj !== undefined) {
+    for (let attribute in attrObj) {
+     newEle.setAttribute(attribute, attrObj[attribute]);
+    }
+  }
+  return newEle;
 }
 
 /* Cuts the parameter string off at the given number of characters. If the
@@ -605,12 +623,15 @@ function logObjToString (logObj) {
  * returned. */
 function cutOff(str, maxLen, breakStr) {
   let cutOffPoint = maxLen;
+
   /* If the string is already shorter than maxLen: */
   if (cutOffPoint > str.length) return str;
-  /* If not break-string is given, cutOffPoint right on the character: */
+
+  /* If no break-string is given, cutOffPoint right on the character: */
   if (breakStr === undefined) return str.substring(0, cutOffPoint);
 
   cutOffPoint = str.lastIndexOf(breakStr, cutOffPoint);
+
   /* If the breakStr character can't be found, return an empty string: */
   if (cutOffPoint === -1) return "";
   return str.substring(0, cutOffPoint);
@@ -684,18 +705,19 @@ function presentResults() {
     text-decoration: underline;
   }
   /* visited link */
-  a:visited { /* Visited */
+  #crlr-modal a:visited { /* Visited */
     color: #551a8b
   }
-
   /* mouse over link */
-  a:hover {
+  #crlr-modal a:hover {
     color: darkred;
   }
-
   /* selected link */
-  a:active {
+  #crlr-modal a:active {
     color: red;
+  }
+  #crlr-modal a:focus {
+    outline: 2px dotted #a6c7ff; /* Light blue */
   }
 
   /* Base-Styling for modal: */
@@ -711,17 +733,12 @@ function presentResults() {
     right: 2em;
     margin: 0;
     overflow: hidden;
-    opacity: 0.2;
-    transition: opacity .2s;
 
     color: #222;
     box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.4);
 
     display: flex;
     flex-direction: column;
-  }
-  #crlr-modal:hover {
-    opacity: 1;
   }
 
   #crlr-modal #crlr-min {
@@ -733,6 +750,10 @@ function presentResults() {
   #crlr-modal #crlr-min:hover {
     border-color: blue;
     background-color: rgba(0,0,20,0.2);
+  }
+  #crlr-modal #crlr-min:focus {
+    box-shadow: 0 0 0 1px #a6c7ff;
+    border-color: #a6c7ff;
   }
 
   /* Header stuff */
@@ -759,7 +780,6 @@ function presentResults() {
   #crlr-modal #crlr-header #crlr-header-msg {
     align-items: baseline;
   }
-
 
   #crlr-modal #crlr-content {
     flex: 1;
@@ -792,22 +812,90 @@ function presentResults() {
   #crlr-modal.minimized {
     display: table;
     background-color: #e1e1ea;
+    opacity: 0.2;
+    transition: opacity .2s;
   }
+  #crlr-modal.minimized:hover, #crlr-modal.minimized:focus-within {
+    opacity: 1;
+  }
+
   #crlr-modal.minimized #crlr-min {
     margin: 0;
   }
 
   /* Output styling: */
-  #crlr-modal #crlr-data-select-input {
+  #crlr-modal #crlr-inputs * {
     font-size: 1.25em;
+  }
+  #crlr-modal #crlr-input-clear {
+    background-color: #ededf2;
+    margin-right: 0.25em;
+    padding: 0px 0.25em;
+    border: none;
+    font-size: 1em;
+  }
+  #crlr-modal #crlr-input-clear:active {
+    box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
+  }
+  #crlr-modal #crlr-input-clear:focus {
+    outline: 2px solid #a6c7ff; /* Light blue */
+  }
+
+  #crlr-modal #crlr-input {
     border: 2px solid transparent;
     border-bottom: 2px solid #b0b0b0;
     background-color: #ededf2;
     transition: border 0.2s;
   }
-  #crlr-modal #crlr-data-select-input:focus {
+  #crlr-modal #crlr-input.focus-within, #crlr-modal #crlr-input:focus-within {
     border: 2px solid #a6c7ff; /* Light blue */
   }
+  #crlr-input-textbox {
+    background-color: transparent;
+    border: none;
+  }
+  #crlr-modal #crlr-autocomplete-list {
+    display: none;
+  }
+
+  /* For checkboxes: */
+  #crlr-modal input[type="checkbox" i] {
+    opacity: 0;
+    margin: 0;
+  }
+  #crlr-modal input[type="checkbox" i] + label{
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    padding-left: 1.75em;
+    position: relative;
+    align-self: center;
+  }
+  #crlr-modal input[type="checkbox" i] + label::before {
+    position: absolute;
+    left: .125em;
+    height: 100%;
+    top: 0;
+    border: 1px solid gray;
+    padding: 0 .2em;
+    line-height: 1.4em;
+    background-color: #e1e1ea;
+    content: "✔";
+    color: transparent;
+    display: block;
+  }
+  #crlr-modal input[type="checkbox" i]:checked + label::before {
+    color: #222;
+  }
+  /* When the checkbox is selected: */
+  #crlr-modal input[type="checkbox" i]:focus + label::before {
+    box-shadow: 0 0 0 1px #a6c7ff;
+    border-color: #a6c7ff;
+  }
+  /* When the checkbox is pressed: */
+  #crlr-modal input[type="checkbox" i]:active + label::before {
+    box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
+  }
+
   #crlr-modal .crlr-output > pre {
     max-height: 200px;
     padding: 0.5em;
@@ -825,7 +913,6 @@ function presentResults() {
   window.crlrCSS = styleEle.sheet;
   if (crlrCSS.title !== "crlr.js.css") console.error("Someone stole our stylesheet!");
 
-  /* Create modal for showing results: */
   const modal = makeElement("div", undefined, {id: "crlr-modal"});
 
   /* Prevent click events on the modal affecting events on the rest of the page: */
@@ -840,10 +927,10 @@ function presentResults() {
   const minimizeButton = makeElement("button", "🗕", {id: "crlr-min"});
 
   minimizeButton.type = "button";
+
   /* Make the button toggle other content in the modal to/from display: none: */
   minimizeButton.onclick = () => modal.classList.toggle("minimized");
   modal.appendChild(minimizeButton);
-
 
   let headerStr = "Results";
   headerStr += (timedOut) ? " (incomplete):" : ":";
@@ -856,7 +943,7 @@ function presentResults() {
   );
   const modalHeader = makeElement("header", [minimizeButton, modalHeaderMsg],
     {
-      id:"crlr-header",
+      id: "crlr-header",
       class: "flex-row"
     }
   );
@@ -865,74 +952,231 @@ function presentResults() {
   const modalContent = makeElement("div", undefined, {id:"crlr-content"});
   modal.appendChild(modalContent);
 
-  /* Stuff for showing actual data: */
-  let logObjInputEle = makeElement("input", undefined,
+  /* Create textbox for specifying desired output: */
+  let autoCompleteItems = [];
+  let requiredLength = 0;
+  for (let i = 0, len = logObjMetaData.length; i < len; ++i) {
+    let logObjGroup = logObjMetaData[i].logObjects;
+    for (let logObjName in logObjGroup) {
+      requiredLength = Math.max(requiredLength, logObjName.length);
+      let logObjsInGroup = Object.getOwnPropertyNames(logObjGroup[logObjName]);
+      let logObjIsEmpty = (logObjsInGroup.length === 0);
+      let autoCompEntryEle = makeElement(
+        "option",
+        undefined,
+        {
+          value: logObjName,
+          label: (logObjIsEmpty) ? "Empty" : ""
+        }
+      );
+      autoCompleteItems.push(autoCompEntryEle);
+    }
+  }
+
+  /* Make the textbox for inputting the name of the object you want to view: */
+  let clearInputButton = makeElement(
+    "button",
+    "✖",
     {
-      id: "crlr-data-select-input",
-      type: "text",
-      value:"allLinks"
+      id: "crlr-input-clear",
+      "data-for": "crlr-input"
     }
   );
-  let pre = makeElement("pre"/*, reducedAllLinks*/);
+  let autoCompleteList = makeElement(
+    "datalist",
+    autoCompleteItems,
+    {
+      id: "crlr-autocomplete-list"
+    }
+  );
+  let inputTextBox = makeElement(
+    "input",
+    undefined,
+    {
+      id: "crlr-input-textbox",
+      type: "text",
+      value:"allLinks",
+      list: "crlr-autocomplete-list",
+      size: requiredLength
+    }
+  )
+  let logObjInputContainer = makeElement(
+    "div",
+    [clearInputButton, autoCompleteList, inputTextBox],
+    {
+      id: "crlr-input",
+      list: "crlr-autocomplete-list"
+    }
+  );
+  clearInputButton.addEventListener(
+    "click",
+    function clearInput () {
+      inputTextBox.value = "";
+      inputTextBox.focus();
+    }
+  );
+
+  /* For browsers without support for :focus-within: */
+  logObjInputContainer.addEventListener(
+    "focusin",
+    function addFocus () {
+      logObjInputContainer.classList.add("focus-within");
+    }
+
+  );
+  logObjInputContainer.addEventListener(
+    "focusout",
+    function addFocus () {
+      logObjInputContainer.classList.remove("focus-within");
+    }
+  );
+
+  let altFormatCheckBox = makeElement(
+    "input",
+    undefined,
+    {
+      id: "crlr-data-alt-format-checkbox",
+      type: "checkbox",
+    }
+  );
+  let checkBoxLabel = makeElement(
+    "label",
+    "Show internal data format?",
+    {
+      for: "crlr-data-alt-format-checkbox"
+    }
+  );
+  let inputRow = makeElement(
+    "div",
+    [logObjInputContainer, altFormatCheckBox, checkBoxLabel],
+    {
+      id: "crlr-inputs",
+      class: "flex-row"
+    }
+  );
+
+  /* Use as a mouse-down event on any element to prevent higlighting via
+   * double- or triple-clicking. */
+  function preventClickToHighlight(event) {
+    if (event.detail > 1) {
+      event.preventDefault();
+    }
+  }
+  altFormatCheckBox.onmousedown = preventClickToHighlight;
+  checkBoxLabel    .onmousedown = preventClickToHighlight;
+
+  /* Create containers for output: */
+  let pre = makeElement("pre");
   let preCont = makeElement("div", pre, {class:"crlr-output"});
   let dlLinkPara = makeElement("p");
-  modalContent.appendChild(logObjInputEle);
-  modalContent.appendChild(preCont);
-  modalContent.appendChild(dlLinkPara);
 
-  function outputLogObjToModal (obj, dlName) {
+  appendChildren(
+    modalContent,
+    [inputRow, preCont, dlLinkPara]
+  );
+
+  function outputLogObjToModal (obj, dlName, objToString) {
     const MAX_OUTPUT_LENGTH = 5000;
 
-    let objJSON = logObjToString(obj);
+    /* Main JSON Preview output: */
+    let objJSON = objToString(obj);
     let objJSONPreview = objJSON;
-    if (objJSONPreview.length > MAX_OUTPUT_LENGTH) {
+    let previewTooLong = (objJSONPreview.length > MAX_OUTPUT_LENGTH);
+    if (previewTooLong) {
       objJSONPreview = cutOff(objJSON, MAX_OUTPUT_LENGTH, "\n");
       objJSONPreview += "\n...";
     }
     pre.innerHTML = objJSONPreview;
 
+    /* Prepare data for the download link and the text around it: */
+    let beforeLinkText = "";
+    let linkText = "";
+    let afterLinkText = "";
+    if (previewTooLong) {
+      beforeLinkText = "Note that the data shown above is only a preview, as the full data was too long. ";
+      linkText = "Click here";
+      afterLinkText = " to download the full JSON file.";
+    }
+    else {
+      linkText = "Download JSON";
+    }
 
     let blob = new Blob([objJSON], {type: 'application/json'});
     let url = URL.createObjectURL(blob);
-
 
     let downloadName = window.location.hostname.replace(/^www\./i, "");
     downloadName += "_" + dlName;
     if (timedOut) downloadName += "_(INCOMPLETE)";
     downloadName +=".json";
-    let dlLink = makeElement("a", "Download full JSON",
+
+    let dlLink = makeElement("a", linkText,
       {
         href: url,
         download: downloadName,
         class: "crlr-download"
       }
     );
+
+    /* Remove any existing children of dlLinkPara so that we don't end up
+     * repeatedly adding download messages to eachother: */
     while (dlLinkPara.firstChild !== null) {
       dlLinkPara.removeChild(dlLinkPara.firstChild);
     }
-    dlLinkPara.appendChild(dlLink);
+    appendChildren(dlLinkPara, [beforeLinkText, dlLink, afterLinkText]);
   }
 
-  let logObjName = logObjInputEle.value;
-  let objToOutput = loggingObjects[logObjName];
-  outputLogObjToModal(objToOutput, logObjName);
-  function updateOutput () {
-    logObjName = logObjInputEle.value;
-    if (!loggingObjects.hasOwnProperty(logObjName)) {
-      return;
-    }
-    let newObjToOutput = loggingObjects[logObjName];
-    if (newObjToOutput === undefined || newObjToOutput === objToOutput) {
-      return;
-    }
-    objToOutput = newObjToOutput;
-    outputLogObjToModal(objToOutput, logObjName);
-  }
-  logObjInputEle.addEventListener("input", updateOutput);
-  logObjInputEle.addEventListener("propertychange", updateOutput);
+  const outputEventFns = (function() {
+    let currentObj;
+    let currentObjName;
+    let currentObjToString;
 
+    /* Make functions: */
+    function updateOutput() {
+      let logObjName = inputTextBox.value;
+      let newObjToOutput;
+      let objToString;
+      for (let i = 0, len = logObjMetaData.length; /*@noConditional*/; ++i) {
+        /* If there is no logging object with a matching name in ANY group, just
+         * return to avoid changing the interface: */
+        if (i >= len) {
+          return;
+        }
+        let logObjGroupData = logObjMetaData[i];
+        let group = logObjGroupData.logObjects;
+        if (group.hasOwnProperty(logObjName)) {
+          currentObj         = newObjToOutput = group[logObjName];
+          currentObjToString = objToString    = logObjGroupData.toString;
+          break;
+        }
+      }
+      currentObjName = logObjName;
+      if (!altFormatCheckBox.checked) {
+        newObjToOutput = loggingObjectReformat(newObjToOutput);
+      }
+      outputLogObjToModal(newObjToOutput, logObjName, objToString);
+    }
+    function changeFormat() {
+      if (!currentObj) {
+        return;
+      }
+      let newObjToOutput = currentObj;
+      if (!altFormatCheckBox.checked) {
+        newObjToOutput = loggingObjectReformat(newObjToOutput);
+      }
+      outputLogObjToModal(newObjToOutput, currentObjName, currentObjToString);
+    }
+    /* Return object containing functions: */
+    return {
+      updateOutput,
+      changeFormat
+    }
+  })();//Close closure
 
-  document.body.insertBefore(modal, document.body.childNodes[0]);
+  /* Call the function immediately so that the default object (e.g. allLinks)
+   * is displayed immediately: */
+  outputEventFns.updateOutput();
+  inputTextBox.addEventListener("input", outputEventFns.updateOutput);
+  altFormatCheckBox.addEventListener("change", outputEventFns.changeFormat);
 
   const endTime = performance.now();
   let runningTime = Math.round((endTime - startTime)/10)/100;
@@ -941,14 +1185,12 @@ function presentResults() {
   );
   modalHeaderMsg.appendChild(timeInfoEle);
 
-  /* Log non-empty objects: */
-  console.log(Object.keys(loggingObjects).filter((obj)=>Object.getOwnPropertyNames(loggingObjects[obj]).length > 0));
+  document.body.insertBefore(modal, document.body.childNodes[0]);
 }
 
 /**
- * Robots Txt-related functions:
+ * Robots.txt-related functions:
  */
-//@refactor To parse no spaces after colon
 function parseRobotsTxt(robotsTxt) {
   let disallowed = [];
   let allowed = [];
@@ -956,7 +1198,7 @@ function parseRobotsTxt(robotsTxt) {
 
   let lines = robotsTxt.split(/[\n\r]/);
 
-  /* Do allow/disallow statements in this block apply to us? I.e. are they
+  /* Do allow and disallow statements in this block apply to us? I.e. are they
    * preceded by a user-agent statement which matches us? */
   let validUserAgentSection = true;
   for (let i = 0, len = lines.length; i < len; ++i) {
@@ -965,40 +1207,52 @@ function parseRobotsTxt(robotsTxt) {
     /* Skip empty and comment lines: */
     if (line.length === 0 || line.charAt(0) === "#") continue;
 
+    /* Split the line by the first colon ":": */
+    let parsedLine = (function() {
+      let splitPoint = line.indexOf(":");
+      if (splitPoint === -1) {
+        return undefined;
+      }
+      let vals = [line.substring(0, splitPoint), undefined];
+      vals[1] = line.substring(splitPoint + 1);
+      return vals;
+    })();
+    if (parsedLine === undefined) {
+      console.warn(`Don't understand: "${line}"`);
+    }
+    let clauseType = parsedLine[0].trim().toLowerCase();
+    let clauseValue = parsedLine[1].trim();
+
     /* Check for sitemaps before checking the user agent so that they are always
      * visible to us: */
-    else if (/^sitemap: /i.test(line)) {
-      const SITEMAP_LEN = 9;
-      sitemap.push(line.substr(SITEMAP_LEN));
+    if (clauseType === "sitemap") {
+      sitemap.push(clauseValue);
     }
-
     /* Make sure the user agent matches this crawler: */
-    else if (/^user-agent: /i.test(line)) {
-      const USER_AGENT_LENGTH = 12;
-      validUserAgentSection = (line.substr(USER_AGENT_LENGTH) === "*");
+    else if (clauseType === "user-agent") {
+      validUserAgentSection = (clauseValue === "*");
     }
     /* Skip the remaining section until a matching user-agent directive is found: */
-    else if (!validUserAgentSection) continue;
-
+    else if (!validUserAgentSection) {
+      continue;
+    }
     /* If the line is a disallow clause, add the pattern to the array of
      * disallowed patterns: */
-    else if (/^disallow: /i.test(line)) {
-      const DISALLOW_LEN = 10;
-      disallowed.push(line.substr(DISALLOW_LEN));
+    else if (clauseType === "disallow") {
+      /* An empty disallow string is considered equal to a global allow. */
+      if (clauseValue === "") {
+        allowed.push("/");
+      } else {
+        disallowed.push(clauseValue);
+      }
     }
-
     /* If the line is an allow clause, add the pattern to the array of
      * allowed patterns: */
-    else if (/^allow: /i.test(line)) {
-      const ALLOW_LEN = 7;
-      allowed.push(line.substr(ALLOW_LEN));
+    else if (clauseType === "allow") {
+      allowed.push(clauseValue);
+    } else {
+      console.warn(`Unknown clause: "${line}"`);
     }
-
-    /* An empty disallow string is considered equal to a global allow. */
-    else if (/^disallow:$/i.test(line)) {
-      allowed.push("/");
-    }
-    else console.error('Don\'t understand: "' + line + '" ' + line.length);
   }
   let pendRet = {
     Allow: allowed,
@@ -1010,15 +1264,16 @@ function parseRobotsTxt(robotsTxt) {
 
 function matchesPattern(str, basePattern) {
   let parsedPattern = basePattern;
-  /* If a pattern ends in "$", the string must with the pattern to pass:
+  /* If a pattern ends in "$", the string must end with the pattern to match:
    *
-   * E.G. "/*.php" will match "/files/documents/letter.php" but
+   * E.G. "/*.php$" will match "/files/documents/letter.php" but
    * won't match "/files/my.php.data/settings.txt". */
   const REQUIRE_END_WITH_PATTERN = (parsedPattern.charAt(parsedPattern.length-1) === "$");
-  if (REQUIRE_END_WITH_PATTERN){
+  if (REQUIRE_END_WITH_PATTERN) {
     /* Remove the $ character from the pattern: */
     parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
   }
+
   /* Removing trailing asterisks, which are extraneous: */
   for (let i = parsedPattern.length-1; /*@noConditional*/; --i) {
     /* If the entire pattern is asterisks, then anything will match: */
@@ -1034,6 +1289,7 @@ function matchesPattern(str, basePattern) {
   let patternIndex = 0;
   for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
     let subPat = patternSections[patternIndex];
+
     /*Skip empty patterns: */
     if (subPat === "") {
       ++patternIndex;
@@ -1106,12 +1362,23 @@ function isPageCrawlable(fullUrl) {
          * allowed to be crawled: */
         window.isPageCrawlable = function () {return true};
       }
-      /* Regardless of whether the robots.txt file exists, start the crawl: */
-      let initialPageLinks = classifyLinks(document, urlRemoveAnchor(window.location));
-      visited[urlRemoveAnchor(window.location)] = [true];
 
-      visitLinks(window.location.href, initialPageLinks);
-      // console.log(robotsTxtData);
+      let anchorlessURL = urlRemoveAnchor(window.location);
+
+      /* Start the crawl: */
+      classifyImages(document, anchorlessURL);
+      let initialPageLinks = classifyLinks(document, anchorlessURL);
+
+      /* Here we create a spoof (not actually in the page/site) link to avoid
+       * making the visited data structure irregular: */
+      let startPageSpoofLink = makeElement(
+        "a",
+        "(Initial page for crawler script)",
+        {href: "(Initial page for crawler script)"}
+      )
+      visited[anchorlessURL] = [{[anchorlessURL]: startPageSpoofLink}];
+
+      visitLinks(anchorlessURL, initialPageLinks);
     }
   }
   httpRequest.open("GET", "/robots.txt");
