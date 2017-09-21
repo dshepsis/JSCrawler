@@ -97,7 +97,7 @@ let imageLoggingObjects = {allImages, externalImages, unloadedImages, bannedStri
 /* Takes the loggingObjects and exchanges the HTMLElements in them w/ some
  * property of those elements (href by default). reducerFn is passed each
  * element and returns what that element is substituted w/ in the object. */
-function logObjToString (logObj, reducerFn) {
+function logObjToString(logObj, reducerFn) {
   const replaceElements = (key, val) => {
     if (val instanceof HTMLElement) {
       return reducerFn(val);
@@ -512,7 +512,7 @@ function classifyLinks(doc, curPageURL, quiet) {
   return internalLinksFromThisPage;
 } //Close function classifyLinks
 
-function classifyImages (doc, curPageURL, quiet) {
+function classifyImages(doc, curPageURL, quiet) {
   const IMAGES = doc.getElementsByTagName("img");
   const HOSTNAME = window.location.hostname.toLowerCase();
 
@@ -525,6 +525,14 @@ function classifyImages (doc, curPageURL, quiet) {
     let image = IMAGES[i];
     let srcProp = image.src;
     let srcAttr = image.getAttribute("src");
+
+    /* HTMLImageElements don't have location properties, sadly, so we need to
+     * create an A(nchor) element with the image's src as its href. This
+     * temporary element has location properties automatically populated, so we
+     * can access them: */
+    let imgSrcHostname = makeElement("a", undefined, {href: srcProp}).hostname
+        .toLowerCase();
+    let isInternal = (imgSrcHostname === HOSTNAME);
 
     /* Function for adding data about a image to data-logging objects: */
     function recordImageTo(...objectsToLogTo) {
@@ -540,26 +548,19 @@ function classifyImages (doc, curPageURL, quiet) {
       }
     }
     recordImageTo(allImages);
-
     if (srcAttr === null) {
       recordImageTo(nullImages);
     }
     if (!image.complete) {
       recordImageTo(unloadedImages);
     }
-
-    /* HTMLImageElements don't have location properties, sadly, so we need to
-     * create an A(nchor) element with the image's src as its href. This
-     * temporary element has location properties automatically populated, so we
-     * can access them: */
-    let imgSrcHostname = makeElement("a", undefined, {href: srcProp}).hostname;
-    if (imgSrcHostname !== HOSTNAME) {
-      recordImageTo(externalImages);
-    }
     if (containsBannedString(srcProp)) {
       recordImageTo(bannedStringImages);
     }
-    if (srcProp === image.getAttribute("src")) {
+    if (!isInternal) {
+      recordImageTo(externalImages);
+    }
+    if (isInternal && (srcProp === srcAttr)) {
       recordImageTo(absoluteInternalImages);
     }
   }//Close for loop iterating over images
@@ -571,7 +572,7 @@ function classifyImages (doc, curPageURL, quiet) {
  */
 
 /* A function for appending an array of children to a parent HTMLElement: */
-function appendChildren (parent, children) {
+function appendChildren(parent, children) {
   function appendItem(item) {
     if (item instanceof HTMLElement) {
       parent.appendChild(item);
@@ -841,13 +842,13 @@ function presentResults() {
     outline: 2px solid #a6c7ff; /* Light blue */
   }
 
-  #crlr-modal #crlr-input {
+  #crlr-modal #crlr-textbox-controls {
     border: 2px solid transparent;
     border-bottom: 2px solid #b0b0b0;
     background-color: #ededf2;
     transition: border 0.2s;
   }
-  #crlr-modal #crlr-input.focus-within, #crlr-modal #crlr-input:focus-within {
+  #crlr-modal #crlr-textbox-controls.focus-within, #crlr-modal #crlr-textbox-controls:focus-within {
     border: 2px solid #a6c7ff; /* Light blue */
   }
   #crlr-input-textbox {
@@ -859,21 +860,21 @@ function presentResults() {
   }
 
   /* For checkboxes: */
-  #crlr-modal input[type="checkbox" i] {
+  #crlr-modal input[type="checkbox"] {
     opacity: 0;
     margin: 0;
   }
-  #crlr-modal input[type="checkbox" i] + label{
+  #crlr-modal input[type="checkbox"] + label{
     padding-top: 0.1em;
     padding-bottom: 0.1em;
     padding-left: 1.75em;
     position: relative;
     align-self: center;
   }
-  #crlr-modal input[type="checkbox" i] + label::before {
+  #crlr-modal input[type="checkbox"] + label::before {
     position: absolute;
     left: .125em;
-    height: 100%;
+    height: 1.4em;
     top: 0;
     border: 1px solid gray;
     padding: 0 .2em;
@@ -883,19 +884,23 @@ function presentResults() {
     color: transparent;
     display: block;
   }
-  #crlr-modal input[type="checkbox" i]:checked + label::before {
+  #crlr-modal input[type="checkbox"]:checked + label::before {
     color: #222;
   }
   /* When the checkbox is selected: */
-  #crlr-modal input[type="checkbox" i]:focus + label::before {
+  #crlr-modal input[type="checkbox"]:focus + label::before {
     box-shadow: 0 0 0 1px #a6c7ff;
     border-color: #a6c7ff;
   }
   /* When the checkbox is pressed: */
-  #crlr-modal input[type="checkbox" i]:active + label::before {
+  #crlr-modal input[type="checkbox"]:active + label::before {
     box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
   }
 
+  #crlr-modal .crlr-output {
+    display: inline-block;
+    max-width: 100%;
+  }
   #crlr-modal .crlr-output > pre {
     max-height: 200px;
     padding: 0.5em;
@@ -903,9 +908,8 @@ function presentResults() {
     border: 1px dashed gray;
     background-color: #e1e1ea;
   }
-  #crlr-modal .crlr-output {
-    display: flex;
-    max-width: 100%;
+  #crlr-modal.browser-gecko .crlr-output > pre {
+    overflow-y: scroll;
   }`;
 
   let styleEle = makeElement("style", myCSS, {title:"crlr.js.css"});
@@ -914,6 +918,9 @@ function presentResults() {
   if (crlrCSS.title !== "crlr.js.css") console.error("Someone stole our stylesheet!");
 
   const modal = makeElement("div", undefined, {id: "crlr-modal"});
+  /* For Firefox, Edge, IE, and other Gecko Browsers: */
+  let isBrowserWebkit = /webkit/i.test(navigator.userAgent);
+  modal.classList.add(isBrowserWebkit ? "browser-webkit" : "browser-gecko");
 
   /* Prevent click events on the modal affecting events on the rest of the page: */
   modal.addEventListener("click", function(e){
@@ -961,12 +968,25 @@ function presentResults() {
       requiredLength = Math.max(requiredLength, logObjName.length);
       let logObjsInGroup = Object.getOwnPropertyNames(logObjGroup[logObjName]);
       let logObjIsEmpty = (logObjsInGroup.length === 0);
+
+      /* Gecko browsers (Firefox, Edge, etc.) will display the label rather than
+       * the value in the drop-down list if both are present, whereas webkit
+       * browsers (Chrome and Safari) will display both, with the label to the
+       * right and slightly faded. To ensure all users see the same info, We use
+       * different labels for the different browser engines: */
+      let optionLabel;
+      if (logObjIsEmpty) {
+        optionLabel = (isBrowserWebkit) ? "Empty" : `${logObjName} (Empty)`;
+      } else {
+        optionLabel = "";
+      }
+
       let autoCompEntryEle = makeElement(
         "option",
         undefined,
         {
           value: logObjName,
-          label: (logObjIsEmpty) ? "Empty" : ""
+          label: optionLabel
         }
       );
       autoCompleteItems.push(autoCompEntryEle);
@@ -979,7 +999,7 @@ function presentResults() {
     "✖",
     {
       id: "crlr-input-clear",
-      "data-for": "crlr-input"
+      "data-for": "crlr-input-textbox"
     }
   );
   let autoCompleteList = makeElement(
@@ -1004,13 +1024,12 @@ function presentResults() {
     "div",
     [clearInputButton, autoCompleteList, inputTextBox],
     {
-      id: "crlr-input",
-      list: "crlr-autocomplete-list"
+      id: "crlr-textbox-controls",
     }
   );
   clearInputButton.addEventListener(
     "click",
-    function clearInput () {
+    function clearInput() {
       inputTextBox.value = "";
       inputTextBox.focus();
     }
@@ -1019,14 +1038,14 @@ function presentResults() {
   /* For browsers without support for :focus-within: */
   logObjInputContainer.addEventListener(
     "focusin",
-    function addFocus () {
+    function addFocus() {
       logObjInputContainer.classList.add("focus-within");
     }
 
   );
   logObjInputContainer.addEventListener(
     "focusout",
-    function addFocus () {
+    function remFocus() {
       logObjInputContainer.classList.remove("focus-within");
     }
   );
@@ -1075,7 +1094,7 @@ function presentResults() {
     [inputRow, preCont, dlLinkPara]
   );
 
-  function outputLogObjToModal (obj, dlName, objToString) {
+  function outputLogObjToModal(obj, dlName, objToString) {
     const MAX_OUTPUT_LENGTH = 5000;
 
     /* Main JSON Preview output: */
