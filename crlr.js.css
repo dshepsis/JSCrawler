@@ -1,0 +1,268 @@
+/* This is an unminified version of the CSS in checkLinks.js */
+
+/* Reset style on modal elements: */
+#crlr-modal, #crlr-modal * {
+  all: initial;
+  box-sizing: border-box;
+}
+/* all: initial sets everything to display: inline, so reset block elements to
+ * display: block (yes this has to be this verbose, sadly): */
+#crlr-modal p, #crlr-modal h1, #crlr-modal h2, #crlr-modal h3, #crlr-modal h4, #crlr-modal h5, #crlr-modal h6, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
+  display: block;
+}
+
+/* Gives headers proper size: */
+#crlr-modal h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+}
+#crlr-modal h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 0.83em;
+  margin-bottom: 0.83em;
+}
+#crlr-modal h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+#crlr-modal h4 {
+  font-weight: bold;
+  margin-top: 1.33em;
+  margin-bottom: 1.33em;
+}
+#crlr-modal h5 {
+  font-size: .83em;
+  font-weight: bold;
+  margin-top: 1.67em;
+  margin-bottom: 1.67em;
+}
+#crlr-modal h6 {
+  font-size: .67em;
+  font-weight: bold;
+  margin-top: 2.33em;
+  margin-bottom: 2.33em;
+}
+
+#crlr-modal * {
+  font-family: sans-serif;
+}
+#crlr-modal pre, #crlr-modal pre * {
+  font-family: monospace;
+  white-space: pre;
+}
+/* Reset link styling: */
+#crlr-modal a:link { /* Unvisited */
+  color: #00e;
+  text-decoration: underline;
+}
+/* visited link */
+#crlr-modal a:visited { /* Visited */
+  color: #551a8b
+}
+/* mouse over link */
+#crlr-modal a:hover {
+  color: darkred;
+}
+/* selected link */
+#crlr-modal a:active {
+  color: red;
+}
+#crlr-modal a:focus {
+  outline: 2px dotted #a6c7ff; /* Light blue */
+}
+
+/* Base-Styling for modal: */
+#crlr-modal {
+  border: 5px solid #0000a3; /* Darkish blue */
+  border-radius: 1em;
+  background-color: #fcfcfe; /* Very-slightly blueish white */
+  position: fixed;
+  z-index: 99999999999999;
+  top: 2em;
+  bottom: 2em;
+  left: 2em;
+  right: 2em;
+  margin: 0;
+  overflow: hidden;
+
+  color: #222;
+  box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.4);
+
+  display: flex;
+  flex-direction: column;
+}
+
+#crlr-modal #crlr-min {
+  border: 1px solid gray;
+  padding: 0.5em;
+  border-radius: 5px;
+  background-color: rgba(0,0,20,0.1);
+}
+#crlr-modal #crlr-min:hover {
+  border-color: blue;
+  background-color: rgba(0,0,20,0.2);
+}
+#crlr-modal #crlr-min:focus {
+  box-shadow: 0 0 0 1px #a6c7ff;
+  border-color: #a6c7ff;
+}
+
+/* Header stuff */
+#crlr-modal .flex-row {
+  display: flex;
+}
+#crlr-modal .flex-row > * {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-right: 16px;
+}
+#crlr-modal .flex-row > *:last-child {
+  margin-right: 0;
+}
+
+#crlr-modal #crlr-header {
+  align-items: flex-end;
+
+  padding: 0.5em;
+  border-bottom: 1px dotted #808080;
+  width: 100%;
+  background-color: #e1e1ea;
+}
+#crlr-modal #crlr-header #crlr-header-msg {
+  align-items: baseline;
+}
+
+#crlr-modal #crlr-content {
+  flex: 1;
+  padding: 1em;
+  overflow-y: auto;
+  /* For some zoom levels, a horizontal scrollbar appears (this is probably a
+   * floating-point bug or something) which is undesirable. Content isn't
+   * supposed to actually escape the content-div horizontally, so it's save
+   * to hide it: */
+  overflow-x: hidden;
+}
+#crlr-modal #crlr-content > * {
+  margin-bottom: 10px;
+}
+#crlr-modal #crlr-content > :last-child {
+  margin-bottom: 0;
+}
+
+/* Hide all elements but the minimize button... */
+#crlr-modal.minimized *:not(#crlr-min) {
+  display:none;
+}
+/* ...Then re-appear the header element, which contains the button, so that
+ * the button doesn't get hidden: */
+#crlr-modal.minimized #crlr-header {
+  display: flex;
+  margin: 0;
+  border: none;
+}
+#crlr-modal.minimized {
+  display: table;
+  background-color: #e1e1ea;
+  opacity: 0.2;
+  transition: opacity .2s;
+}
+#crlr-modal.minimized:hover, #crlr-modal.minimized:focus-within {
+  opacity: 1;
+}
+
+#crlr-modal.minimized #crlr-min {
+  margin: 0;
+}
+
+/* Output styling: */
+#crlr-modal #crlr-inputs * {
+  font-size: 1.25em;
+}
+#crlr-modal #crlr-input-clear {
+  background-color: #ededf2;
+  margin-right: 0.25em;
+  padding: 0px 0.25em;
+  border: none;
+  font-size: 1em;
+}
+#crlr-modal #crlr-input-clear:active {
+  box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
+}
+#crlr-modal #crlr-input-clear:focus {
+  outline: 2px solid #a6c7ff; /* Light blue */
+}
+
+#crlr-modal #crlr-textbox-controls {
+  border: 2px solid transparent;
+  border-bottom: 2px solid #b0b0b0;
+  background-color: #ededf2;
+  transition: border 0.2s;
+}
+#crlr-modal #crlr-textbox-controls.focus-within, #crlr-modal #crlr-textbox-controls:focus-within {
+  border: 2px solid #a6c7ff; /* Light blue */
+}
+#crlr-input-textbox {
+  background-color: transparent;
+  border: none;
+}
+#crlr-modal #crlr-autocomplete-list {
+  display: none;
+}
+
+/* For checkboxes: */
+#crlr-modal input[type="checkbox"] {
+  opacity: 0;
+  margin: 0;
+}
+#crlr-modal input[type="checkbox"] + label{
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  padding-left: 1.75em;
+  position: relative;
+  align-self: center;
+}
+#crlr-modal input[type="checkbox"] + label::before {
+  position: absolute;
+  left: .125em;
+  height: 1.4em;
+  top: 0;
+  border: 1px solid gray;
+  padding: 0 .2em;
+  line-height: 1.4em;
+  background-color: #e1e1ea;
+  content: "✔";
+  color: transparent;
+  display: block;
+}
+#crlr-modal input[type="checkbox"]:checked + label::before {
+  color: #222;
+}
+/* When the checkbox is selected: */
+#crlr-modal input[type="checkbox"]:focus + label::before {
+  box-shadow: 0 0 0 1px #a6c7ff;
+  border-color: #a6c7ff;
+}
+/* When the checkbox is pressed: */
+#crlr-modal input[type="checkbox"]:active + label::before {
+  box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
+}
+
+#crlr-modal .crlr-output {
+  display: inline-block;
+  max-width: 100%;
+}
+#crlr-modal .crlr-output > pre {
+  max-height: 200px;
+  padding: 0.5em;
+  overflow: auto;
+  border: 1px dashed gray;
+  background-color: #e1e1ea;
+}
+#crlr-modal.browser-gecko .crlr-output > pre {
+  overflow-y: scroll;
+}

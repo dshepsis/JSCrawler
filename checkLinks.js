@@ -12,7 +12,30 @@
  * there is also some extra prompt saying that it's old crawl-data, and asking
  * them if they'd like to close it or run a new crawl. */
 
-/* @TODO Fix the object selection textbox in the modal for Firefox */
+/* @issue Right now, links which are classified within visitLinks (rather than
+ * classifyLinks are not re-checked if their url is already in the visited object
+ * this creates an issue where such links (e.g. those found in notFound, redirects
+ * accessDenied, etc) are only listed as for the first page on which they were
+ * found in their respective objects. This is because each object contains a
+ * a separate list, and visitLinks skips already-visited links to avoid getting
+ * stuck in a loop or wasting time.
+ *
+ * One way to fix this would be to update EVERY object which contains
+ * that URL for each time it's found. Another would to use allLinks
+ * (which records everything except null links, which would be treated
+ * soeciall) as the reference for where each link can be found.
+ * Yet another method (and, I think, the proper one) would be to change the way
+ * these lists are structured, so that links are stored in one big list and
+ * simply have classifications added to them. The links would also have their
+ * list of pages where they appear. This would reduce data duplication and
+ * prevent the need for explicitly updating each object every time the URL is
+ * found on a page. */
+
+/* @issue @TODO Right now, no distinction is made between http and https links,
+ * so if the starter page is https, then we will get mixed content errors when
+ * requesting http pages. Currently these end up in redirects, cuz it's a
+ * network error, but it's easily possible to just read the protocol and
+ * classify them ahead of time. We should probably do that */
 
 'use strict';
 const startTime = performance.now();
@@ -26,18 +49,33 @@ window.addEventListener("beforeunload", function (e) {
   return confirmationMessage;              // Gecko, WebKit, Chrome <34
 });
 
+const DOMAIN = window.location.origin;
+const HOSTNAME = window.location.hostname.toLowerCase();
+
+
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf",
     "png", "ppt", "pptx", "xls", "xlsm", "xlsx"];
 const RECOGNIZED_SCHEMES = ["mailto:", "tel:"];
 
-const BANNED_STRINGS = ["drupaldev"];
-function containsBannedString(href) {
-  for (let i = 0, len = BANNED_STRINGS.length; i < len; ++i) {
-    let badStr = BANNED_STRINGS[i];
-    if (href.indexOf(badStr) !== -1) return badStr;
+const BANNED_STRINGS = {
+  list: ["drupaldev"],
+  forceBanned: null,
+  isStringBanned(str) {
+    if (this.forceBanned !== null) {
+      if (typeof this.forceBanned !== "boolean") {
+        throw new TypeError("Forced Value for Banned String check must by boolean");
+      }
+      return this.forceBanned;
+    }
+    for (let i = 0, len = this.list.length; i < len; ++i) {
+      let bannedStr = this.list[i];
+      if (str.toLowerCase().indexOf(bannedStr.toLowerCase()) !== -1) {
+        return bannedStr;
+      }
+    }
+    return false;
   }
-  return false;
 }
 
 const MAX_TIMEOUT = 60*1000; //Miliseconds
@@ -49,10 +87,6 @@ const TIMEOUT_TIMER = window.setTimeout(()=>{
       let request = allRequests[r];
       /* If the request has already completed, don't abort it */
       if (request.readyState === 4) continue;
-
-      /* We have to assign this property before calling the abort method,
-       * because the abort method will call the requests onreadystatechange
-       * method, which needs to know why the request failed. */
       request.abortedDueToTimeout = true;
       request.abort();
       console.warn("Aborting request at index " + r + " of allRequests");
@@ -69,7 +103,6 @@ let nullLinks = {};
 let anchorLinks = {};
 let externalLinks = {};
 let absoluteInternalLinks = {};
-
 let robotsDisallowed = {};
 let redirects = {};
 let notFound = {};
@@ -114,28 +147,6 @@ function logObjToString(logObj, reducerFn) {
   );
 
   return logObjJSON;
-}
-
-/* Reformats a logging object to change the mapping. The returned object maps
- * from the url of a page (containing links classified by the given object) to
- * an array of corresponding link elements on that page. */
-function loggingObjectReformat(logObj) {
-  let pageToArrayOfBrokenLinks = {};
-  for (let url in logObj) {
-    let caseList = logObj[url];
-    for (let i = 0, len = caseList.length; i < len; ++i) {
-      let caseObj = caseList[i];
-      let keys = Object.keys(caseObj);
-      if (keys.length !== 1) console.error(`I messed up at url ${url} and caseObj ${JSON.stringify(caseObj)}`);
-      let pageContainingBrokenLink = keys[0];
-      if (pageToArrayOfBrokenLinks[pageContainingBrokenLink] === undefined) {
-        pageToArrayOfBrokenLinks[pageContainingBrokenLink] = [caseObj[pageContainingBrokenLink]];
-      } else {
-        pageToArrayOfBrokenLinks[pageContainingBrokenLink].push(caseObj[pageContainingBrokenLink]);
-      }
-    }
-  }
-  return pageToArrayOfBrokenLinks;
 }
 
 /* Collects different sets of loggingObjects and information on how to output
@@ -205,9 +216,16 @@ function urlRemoveAnchor(locationObj) {
   return locationObj.origin + locationObj.pathname + locationObj.search;
 }
 
-function visitLinks(curPage, linkObj) {
+function visitLinks(curPage, linkObj, robotsTxt) {
   console.log("Checking links found on: " + curPage)
 
+  /* If no robots.txt handler is passed, just create one which will assume all
+   * crawling is allowed: */
+  if (robotsTxt === undefined) {
+    console.warn("debug robotsTxt undefined in visitlinks")
+    robotsTxt = new RobotsTxt();
+    robotsTxt.ignoreFile = true;
+  }
   for (let url in linkObj) {
     /* Note: this version is slightly different to the one found in classifyLinks,
      * as it uses linkObj which is already filled out by classifyLinks. */
@@ -215,29 +233,26 @@ function visitLinks(curPage, linkObj) {
       let linkData = linkObj[url]; //@note This is an array
       for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
         let obj = objectsToLogTo[i];
-
         /* If the given logging object already has an array of entries for the
          * given URL: */
         if (obj[url] !== undefined) {
           /* Add the contents of the array from linkObj for the current url
            * to the given loggingObject's existing array. */
-          for (let dataIndex = 0, len = linkData.length; dataIndex < len; ++dataIndex) {
-            obj[url].push(linkData[dataIndex]);
-          }
+          obj[url].push(...linkData);
         }
         /* Otherwise, linkObj's array of entries will serve as the initial array
          * for the given logging object: */
-        else obj[url] = linkData;
+        else obj[url] = linkData.slice();
       }
     }
     if (url !== urlRemoveAnchor(url)) throw new Error(`This url has an anchor and shouldn't ${url}...`);
 
-    /* Don't re-check a link which is a known redirect: */
-    if (redirects[url] !== undefined) {
-      recordLinkTo(redirects);
+    /* Check if visiting this link is allowed by the robots.txt handler: */
+    if (!robotsTxt.isUrlAllowed(url)) {
+      console.warn("debug robotstxt disallowed this");
+      recordLinkTo(robotsDisallowed);
       continue;
     }
-
     /* Do not re-analyze a page we have already visited: */
     if (visited[url] !== undefined) {
       recordLinkTo(visited);
@@ -294,7 +309,7 @@ function visitLinks(curPage, linkObj) {
       classifyImages(page, url);
       /* Recursively check the links found on the given page: */
       let newLinks = classifyLinks(page, url,  true);
-      visitLinks(url, newLinks);
+      visitLinks(url, newLinks, robotsTxt);
     }
 
     function errorHandler(details) {
@@ -380,9 +395,7 @@ function visitLinks(curPage, linkObj) {
 
 function classifyLinks(doc, curPageURL, quiet) {
   const quietLog = (quiet) ? ()=>{} : console.log;
-
   const LINKS = doc.getElementsByTagName("a");
-  const HOSTNAME = window.location.hostname.toLowerCase();
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
@@ -397,6 +410,7 @@ function classifyLinks(doc, curPageURL, quiet) {
     function recordLinkTo(...objectsToLogTo) {
       let linkData = {};
       linkData[curPageURL] = link;
+      Object.freeze(linkData);
       let hrefWithoutAnchor = urlRemoveAnchor(link);
       for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
         let obj = objectsToLogTo[i];
@@ -421,7 +435,7 @@ function classifyLinks(doc, curPageURL, quiet) {
     /* All non-null links are recorded to the allLinks object: */
     recordLinkTo(allLinks);
 
-    let bannedStr = containsBannedString(link.href);
+    let bannedStr = BANNED_STRINGS.isStringBanned(link.href);
     if (bannedStr) {
       recordLinkTo(bannedStrings);
 
@@ -458,14 +472,7 @@ function classifyLinks(doc, curPageURL, quiet) {
 
     /* Classify link based on the variables set above */
     if (linkIsInternal) {
-      if (isPageCrawlable(link.href)) {
-        recordLinkTo(internalLinksFromThisPage);
-      } else {
-        recordLinkTo(robotsDisallowed);
-        link.style.color = "orange"
-        link.title = (link.title) ? link.title + "\nCrawling dissalowed by robots.txt" : "Crawling dissalowed by robots.txt";
-      }
-
+      recordLinkTo(internalLinksFromThisPage);
       if (linkIsAbsolute) {
         if (link.matches(".field-name-field-related-links a")) {
           console.warn("absint link in related links", link);
@@ -514,7 +521,6 @@ function classifyLinks(doc, curPageURL, quiet) {
 
 function classifyImages(doc, curPageURL, quiet) {
   const IMAGES = doc.getElementsByTagName("img");
-  const HOSTNAME = window.location.hostname.toLowerCase();
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
@@ -554,7 +560,7 @@ function classifyImages(doc, curPageURL, quiet) {
     if (!image.complete) {
       recordImageTo(unloadedImages);
     }
-    if (containsBannedString(srcProp)) {
+    if (BANNED_STRINGS.isStringBanned(srcProp)) {
       recordImageTo(bannedStringImages);
     }
     if (!isInternal) {
@@ -591,6 +597,13 @@ function appendChildren(parent, children) {
     }
   } else {
     appendItem(children);
+  }
+}
+
+/* Removes all of an element's immediate children: */
+function clearChildren(parent) {
+  while (parent.firstChild !== null) {
+    parent.removeChild(parent.firstChild);
   }
 }
 
@@ -638,291 +651,55 @@ function cutOff(str, maxLen, breakStr) {
   return str.substring(0, cutOffPoint);
 }
 
+/* Reformats a logging object to change the mapping. The returned object maps
+ * from the url of a page (containing links classified by the given object) to
+ * an array of corresponding link elements on that page. */
+function loggingObjectReformat(logObj) {
+  let pageToArrayOfElements = {};
+  for (let url in logObj) {
+    let pageList = logObj[url];
+    for (let i = 0, len = pageList.length; i < len; ++i) {
+      let caseObj = pageList[i];
+      let keys = Object.keys(caseObj);
+      if (keys.length !== 1) {
+        console.error(`I messed up at url ${url} and caseObj ${JSON.stringify(caseObj)}`);
+      }
+      let pageContainingElement = keys[0];
+      if (pageToArrayOfElements[pageContainingElement] === undefined) {
+        pageToArrayOfElements[pageContainingElement] = [caseObj[pageContainingElement]];
+      } else {
+        pageToArrayOfElements[pageContainingElement].push(caseObj[pageContainingElement]);
+      }
+    }
+  }
+  return pageToArrayOfElements;
+}
+
 /* This is called when the crawling is fully complete. it is the last
  * part of the script ot be executed: */
 function presentResults() {
   /* Remove the counter now that requests are finished */
   requestCounter.displayElement.remove();
 
-  /* Make new style sheet for modal: */
-  let myCSS = `/* Reset style on modal elements: */
-  #crlr-modal, #crlr-modal * {
-    all: initial;
-    box-sizing: border-box;
-  }
-  /* all: initial sets everything to display: inline, so reset block elements to
-   * display: block (yes this has to be this verbose, sadly): */
-  #crlr-modal p, #crlr-modal h1, #crlr-modal h2, #crlr-modal h3, #crlr-modal h4, #crlr-modal h5, #crlr-modal h6, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
-    display: block;
-  }
-
-  /* Gives headers proper size: */
-  #crlr-modal h1 {
-    font-size: 2em;
-    font-weight: bold;
-    margin-top: 0.67em;
-    margin-bottom: 0.67em;
-  }
-  #crlr-modal h2 {
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 0.83em;
-    margin-bottom: 0.83em;
-  }
-  #crlr-modal h3 {
-    font-size: 1.17em;
-    font-weight: bold;
-    margin-top: 1em;
-    margin-bottom: 1em;
-  }
-  #crlr-modal h4 {
-    font-weight: bold;
-    margin-top: 1.33em;
-    margin-bottom: 1.33em;
-  }
-  #crlr-modal h5 {
-    font-size: .83em;
-    font-weight: bold;
-    margin-top: 1.67em;
-    margin-bottom: 1.67em;
-  }
-  #crlr-modal h6 {
-    font-size: .67em;
-    font-weight: bold;
-    margin-top: 2.33em;
-    margin-bottom: 2.33em;
-  }
-
-  #crlr-modal * {
-    font-family: sans-serif;
-  }
-  #crlr-modal pre, #crlr-modal pre * {
-    font-family: monospace;
-    white-space: pre;
-  }
-  /* Reset link styling: */
-  #crlr-modal a:link { /* Unvisited */
-    color: #00e;
-    text-decoration: underline;
-  }
-  /* visited link */
-  #crlr-modal a:visited { /* Visited */
-    color: #551a8b
-  }
-  /* mouse over link */
-  #crlr-modal a:hover {
-    color: darkred;
-  }
-  /* selected link */
-  #crlr-modal a:active {
-    color: red;
-  }
-  #crlr-modal a:focus {
-    outline: 2px dotted #a6c7ff; /* Light blue */
-  }
-
-  /* Base-Styling for modal: */
-  #crlr-modal {
-    border: 5px solid #0000a3; /* Darkish blue */
-    border-radius: 1em;
-    background-color: #fcfcfe; /* Very-slightly blueish white */
-    position: fixed;
-    z-index: 99999999999999;
-    top: 2em;
-    bottom: 2em;
-    left: 2em;
-    right: 2em;
-    margin: 0;
-    overflow: hidden;
-
-    color: #222;
-    box-shadow: 2px 2px 6px 1px rgba(0, 0, 0, 0.4);
-
-    display: flex;
-    flex-direction: column;
-  }
-
-  #crlr-modal #crlr-min {
-    border: 1px solid gray;
-    padding: 0.5em;
-    border-radius: 5px;
-    background-color: rgba(0,0,20,0.1);
-  }
-  #crlr-modal #crlr-min:hover {
-    border-color: blue;
-    background-color: rgba(0,0,20,0.2);
-  }
-  #crlr-modal #crlr-min:focus {
-    box-shadow: 0 0 0 1px #a6c7ff;
-    border-color: #a6c7ff;
-  }
-
-  /* Header stuff */
-  #crlr-modal .flex-row {
-    display: flex;
-  }
-  #crlr-modal .flex-row > * {
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-right: 16px;
-  }
-  #crlr-modal .flex-row > *:last-child {
-    margin-right: 0;
-  }
-
-  #crlr-modal #crlr-header {
-    align-items: flex-end;
-
-    padding: 0.5em;
-    border-bottom: 1px dotted #808080;
-    width: 100%;
-    background-color: #e1e1ea;
-  }
-  #crlr-modal #crlr-header #crlr-header-msg {
-    align-items: baseline;
-  }
-
-  #crlr-modal #crlr-content {
-    flex: 1;
-    padding: 1em;
-    overflow-y: auto;
-    /* For some zoom levels, a horizontal scrollbar appears (this is probably a
-     * floating-point bug or something) which is undesirable. Content isn't
-     * supposed to actually escape the content-div horizontally, so it's save
-     * to hide it: */
-    overflow-x: hidden;
-  }
-  #crlr-modal #crlr-content > * {
-    margin-bottom: 10px;
-  }
-  #crlr-modal #crlr-content > :last-child {
-    margin-bottom: 0;
-  }
-
-  /* Hide all elements but the minimize button... */
-  #crlr-modal.minimized *:not(#crlr-min) {
-    display:none;
-  }
-  /* ...Then re-appear the header element, which contains the button, so that
-   * the button doesn't get hidden: */
-  #crlr-modal.minimized #crlr-header {
-    display: flex;
-    margin: 0;
-    border: none;
-  }
-  #crlr-modal.minimized {
-    display: table;
-    background-color: #e1e1ea;
-    opacity: 0.2;
-    transition: opacity .2s;
-  }
-  #crlr-modal.minimized:hover, #crlr-modal.minimized:focus-within {
-    opacity: 1;
-  }
-
-  #crlr-modal.minimized #crlr-min {
-    margin: 0;
-  }
-
-  /* Output styling: */
-  #crlr-modal #crlr-inputs * {
-    font-size: 1.25em;
-  }
-  #crlr-modal #crlr-input-clear {
-    background-color: #ededf2;
-    margin-right: 0.25em;
-    padding: 0px 0.25em;
-    border: none;
-    font-size: 1em;
-  }
-  #crlr-modal #crlr-input-clear:active {
-    box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
-  }
-  #crlr-modal #crlr-input-clear:focus {
-    outline: 2px solid #a6c7ff; /* Light blue */
-  }
-
-  #crlr-modal #crlr-textbox-controls {
-    border: 2px solid transparent;
-    border-bottom: 2px solid #b0b0b0;
-    background-color: #ededf2;
-    transition: border 0.2s;
-  }
-  #crlr-modal #crlr-textbox-controls.focus-within, #crlr-modal #crlr-textbox-controls:focus-within {
-    border: 2px solid #a6c7ff; /* Light blue */
-  }
-  #crlr-input-textbox {
-    background-color: transparent;
-    border: none;
-  }
-  #crlr-modal #crlr-autocomplete-list {
-    display: none;
-  }
-
-  /* For checkboxes: */
-  #crlr-modal input[type="checkbox"] {
-    opacity: 0;
-    margin: 0;
-  }
-  #crlr-modal input[type="checkbox"] + label{
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
-    padding-left: 1.75em;
-    position: relative;
-    align-self: center;
-  }
-  #crlr-modal input[type="checkbox"] + label::before {
-    position: absolute;
-    left: .125em;
-    height: 1.4em;
-    top: 0;
-    border: 1px solid gray;
-    padding: 0 .2em;
-    line-height: 1.4em;
-    background-color: #e1e1ea;
-    content: "✔";
-    color: transparent;
-    display: block;
-  }
-  #crlr-modal input[type="checkbox"]:checked + label::before {
-    color: #222;
-  }
-  /* When the checkbox is selected: */
-  #crlr-modal input[type="checkbox"]:focus + label::before {
-    box-shadow: 0 0 0 1px #a6c7ff;
-    border-color: #a6c7ff;
-  }
-  /* When the checkbox is pressed: */
-  #crlr-modal input[type="checkbox"]:active + label::before {
-    box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
-  }
-
-  #crlr-modal .crlr-output {
-    display: inline-block;
-    max-width: 100%;
-  }
-  #crlr-modal .crlr-output > pre {
-    max-height: 200px;
-    padding: 0.5em;
-    overflow: auto;
-    border: 1px dashed gray;
-    background-color: #e1e1ea;
-  }
-  #crlr-modal.browser-gecko .crlr-output > pre {
-    overflow-y: scroll;
-  }`;
-
+  /* Make new style sheet for modal:
+   *
+   * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
+   *   you want to make changes to it, edit that file and minify it before
+   *   pasting it here. */
+  let myCSS = `#crlr-modal,#crlr-modal *{all:initial;box-sizing:border-box}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal,#crlr-modal .flex-row{display:flex}#crlr-modal h1{font-size:2em;font-weight:700;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;font-weight:700;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;font-weight:700;margin-top:1em;margin-bottom:1em}#crlr-modal h4{font-weight:700;margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;font-weight:700;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;font-weight:700;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);flex-direction:column}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1)}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized:focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:1.25em}#crlr-modal #crlr-input-clear{background-color:#ededf2;margin-right:.25em;padding:0 .25em;border:none;font-size:1em}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{border:2px solid transparent;border-bottom:2px solid #b0b0b0;background-color:#ededf2;transition:border .2s}#crlr-modal #crlr-textbox-controls.focus-within,#crlr-modal #crlr-textbox-controls:focus-within{border:2px solid #a6c7ff}#crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-autocomplete-list{display:none}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✔";color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:200px;padding:.5em;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}#crlr-modal.browser-gecko .crlr-output>pre{overflow-y:scroll};`
   let styleEle = makeElement("style", myCSS, {title:"crlr.js.css"});
   document.head.appendChild(styleEle);
   window.crlrCSS = styleEle.sheet;
   if (crlrCSS.title !== "crlr.js.css") console.error("Someone stole our stylesheet!");
 
+  /* Make modal element: */
   const modal = makeElement("div", undefined, {id: "crlr-modal"});
-  /* For Firefox, Edge, IE, and other Gecko Browsers: */
+
+  /* For browser-specific CSS and formatting: */
   let isBrowserWebkit = /webkit/i.test(navigator.userAgent);
   modal.classList.add(isBrowserWebkit ? "browser-webkit" : "browser-gecko");
 
-  /* Prevent click events on the modal affecting events on the rest of the page: */
+  /* Prevent click events on the modal triggering events on the rest of the page: */
   modal.addEventListener("click", function(e){
       if (!e) e = window.event;
       e.cancelBubble = true;
@@ -932,13 +709,11 @@ function presentResults() {
 
   /* Create button for minimizing modal so that the site can be used normally: */
   const minimizeButton = makeElement("button", "🗕", {id: "crlr-min"});
-
   minimizeButton.type = "button";
-
-  /* Make the button toggle other content in the modal to/from display: none: */
   minimizeButton.onclick = () => modal.classList.toggle("minimized");
   modal.appendChild(minimizeButton);
 
+  /* Make the modal header, containing the minimize button, the title, etc.: */
   let headerStr = "Results";
   headerStr += (timedOut) ? " (incomplete):" : ":";
   const modalTitle = makeElement("h1", headerStr, {id:"crlr-title"});
@@ -956,6 +731,8 @@ function presentResults() {
   );
   modal.appendChild(modalHeader);
 
+  /* Make the modal content, for presenting crawl data and controls for viewing
+   * that data: */
   const modalContent = makeElement("div", undefined, {id:"crlr-content"});
   modal.appendChild(modalContent);
 
@@ -980,7 +757,6 @@ function presentResults() {
       } else {
         optionLabel = "";
       }
-
       let autoCompEntryEle = makeElement(
         "option",
         undefined,
@@ -991,12 +767,11 @@ function presentResults() {
       );
       autoCompleteItems.push(autoCompEntryEle);
     }
-  }
-
+  } //Close loop over logging objects for making textbox autocomplete options
   /* Make the textbox for inputting the name of the object you want to view: */
   let clearInputButton = makeElement(
     "button",
-    "✖",
+    "✖", //"x" cross symbol
     {
       id: "crlr-input-clear",
       "data-for": "crlr-input-textbox"
@@ -1088,68 +863,65 @@ function presentResults() {
   let pre = makeElement("pre");
   let preCont = makeElement("div", pre, {class:"crlr-output"});
   let dlLinkPara = makeElement("p");
-
   appendChildren(
     modalContent,
     [inputRow, preCont, dlLinkPara]
   );
 
-  function outputLogObjToModal(obj, dlName, objToString) {
-    const MAX_OUTPUT_LENGTH = 5000;
-
-    /* Main JSON Preview output: */
-    let objJSON = objToString(obj);
-    let objJSONPreview = objJSON;
-    let previewTooLong = (objJSONPreview.length > MAX_OUTPUT_LENGTH);
-    if (previewTooLong) {
-      objJSONPreview = cutOff(objJSON, MAX_OUTPUT_LENGTH, "\n");
-      objJSONPreview += "\n...";
-    }
-    pre.innerHTML = objJSONPreview;
-
-    /* Prepare data for the download link and the text around it: */
-    let beforeLinkText = "";
-    let linkText = "";
-    let afterLinkText = "";
-    if (previewTooLong) {
-      beforeLinkText = "Note that the data shown above is only a preview, as the full data was too long. ";
-      linkText = "Click here";
-      afterLinkText = " to download the full JSON file.";
-    }
-    else {
-      linkText = "Download JSON";
-    }
-
-    let blob = new Blob([objJSON], {type: 'application/json'});
-    let url = URL.createObjectURL(blob);
-
-    let downloadName = window.location.hostname.replace(/^www\./i, "");
-    downloadName += "_" + dlName;
-    if (timedOut) downloadName += "_(INCOMPLETE)";
-    downloadName +=".json";
-
-    let dlLink = makeElement("a", linkText,
-      {
-        href: url,
-        download: downloadName,
-        class: "crlr-download"
-      }
-    );
-
-    /* Remove any existing children of dlLinkPara so that we don't end up
-     * repeatedly adding download messages to eachother: */
-    while (dlLinkPara.firstChild !== null) {
-      dlLinkPara.removeChild(dlLinkPara.firstChild);
-    }
-    appendChildren(dlLinkPara, [beforeLinkText, dlLink, afterLinkText]);
-  }
-
+  /* For handling the output of logging objects to the user: */
   const outputEventFns = (function() {
     let currentObj;
     let currentObjName;
     let currentObjToString;
 
-    /* Make functions: */
+    function outputLogObjToModal(obj, dlName, objToString) {
+      const MAX_OUTPUT_LENGTH = 5000;
+
+      /* Main JSON Preview output: */
+      let objJSON = objToString(obj);
+      let objJSONPreview = objJSON;
+      let previewTooLong = (objJSONPreview.length > MAX_OUTPUT_LENGTH);
+      if (previewTooLong) {
+        objJSONPreview = cutOff(objJSON, MAX_OUTPUT_LENGTH, "\n");
+        objJSONPreview += "\n...";
+      }
+      pre.innerHTML = objJSONPreview;
+
+      /* Prepare data for the download link and the text around it: */
+      let beforeLinkText = "";
+      let linkText = "";
+      let afterLinkText = "";
+      if (previewTooLong) {
+        beforeLinkText = "Note that the data shown above is only a preview, as the full data was too long. ";
+        linkText = "Click here";
+        afterLinkText = " to download the full JSON file.";
+      }
+      else {
+        linkText = "Download JSON";
+      }
+
+      let blob = new Blob([objJSON], {type: 'application/json'});
+      let url = URL.createObjectURL(blob);
+
+      let downloadName = window.location.hostname.replace(/^www\./i, "");
+      downloadName += "_" + dlName;
+      if (timedOut) downloadName += "_(INCOMPLETE)";
+      downloadName +=".json";
+
+      let dlLink = makeElement(
+        "a",
+        linkText,
+        {
+          href: url,
+          download: downloadName,
+          class: "crlr-download"
+        }
+      );
+      clearChildren(dlLinkPara);
+      appendChildren(dlLinkPara, [beforeLinkText, dlLink, afterLinkText]);
+    }
+    /* Reads which log object to output, what format to use, and calls
+     * outputLogObjToModal to actually change what is shown to the user: */
     function updateOutput() {
       let logObjName = inputTextBox.value;
       let newObjToOutput;
@@ -1210,196 +982,230 @@ function presentResults() {
 /**
  * Robots.txt-related functions:
  */
-function parseRobotsTxt(robotsTxt) {
-  let disallowed = [];
-  let allowed = [];
-  let sitemap = [];
-
-  let lines = robotsTxt.split(/[\n\r]/);
-
-  /* Do allow and disallow statements in this block apply to us? I.e. are they
-   * preceded by a user-agent statement which matches us? */
-  let validUserAgentSection = true;
-  for (let i = 0, len = lines.length; i < len; ++i) {
-    let line = lines[i].trim();
-
-    /* Skip empty and comment lines: */
-    if (line.length === 0 || line.charAt(0) === "#") continue;
-
-    /* Split the line by the first colon ":": */
-    let parsedLine = (function() {
-      let splitPoint = line.indexOf(":");
-      if (splitPoint === -1) {
-        return undefined;
-      }
-      let vals = [line.substring(0, splitPoint), undefined];
-      vals[1] = line.substring(splitPoint + 1);
-      return vals;
-    })();
-    if (parsedLine === undefined) {
-      console.warn(`Don't understand: "${line}"`);
-    }
-    let clauseType = parsedLine[0].trim().toLowerCase();
-    let clauseValue = parsedLine[1].trim();
-
-    /* Check for sitemaps before checking the user agent so that they are always
-     * visible to us: */
-    if (clauseType === "sitemap") {
-      sitemap.push(clauseValue);
-    }
-    /* Make sure the user agent matches this crawler: */
-    else if (clauseType === "user-agent") {
-      validUserAgentSection = (clauseValue === "*");
-    }
-    /* Skip the remaining section until a matching user-agent directive is found: */
-    else if (!validUserAgentSection) {
-      continue;
-    }
-    /* If the line is a disallow clause, add the pattern to the array of
-     * disallowed patterns: */
-    else if (clauseType === "disallow") {
-      /* An empty disallow string is considered equal to a global allow. */
-      if (clauseValue === "") {
-        allowed.push("/");
-      } else {
-        disallowed.push(clauseValue);
-      }
-    }
-    /* If the line is an allow clause, add the pattern to the array of
-     * allowed patterns: */
-    else if (clauseType === "allow") {
-      allowed.push(clauseValue);
-    } else {
-      console.warn(`Unknown clause: "${line}"`);
-    }
-  }
-  let pendRet = {
-    Allow: allowed,
-    Disallow: disallowed,
-    Sitemap: sitemap
-  }
-  return pendRet;
-}
-
-function matchesPattern(str, basePattern) {
-  let parsedPattern = basePattern;
-  /* If a pattern ends in "$", the string must end with the pattern to match:
-   *
-   * E.G. "/*.php$" will match "/files/documents/letter.php" but
-   * won't match "/files/my.php.data/settings.txt". */
-  const REQUIRE_END_WITH_PATTERN = (parsedPattern.charAt(parsedPattern.length-1) === "$");
-  if (REQUIRE_END_WITH_PATTERN) {
-    /* Remove the $ character from the pattern: */
-    parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
+function RobotsTxt() {
+  this.rawText = undefined;
+  this.fileRead = false;
+  this.ignoreFile = false;
+  this.patterns = {
+    allow: [],
+    disallow: [],
+    sitemap: []
   }
 
-  /* Removing trailing asterisks, which are extraneous: */
-  for (let i = parsedPattern.length-1; /*@noConditional*/; --i) {
-    /* If the entire pattern is asterisks, then anything will match: */
-    if (i <= 0) return true;
+  /* Methods: */
+  /* @Static */
+  this.parseText = function (rawText) {
+    let disallowed = [];
+    let allowed = [];
+    let sitemap = [];
 
-    if (parsedPattern.charAt(i) !== "*") {
-      parsedPattern = parsedPattern.substr(0, i+1);
-      break;
-    }
-  }
+    let lines = rawText.split(/[\n\r]/);
 
-  let patternSections = parsedPattern.split("*");
-  let patternIndex = 0;
-  for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
-    let subPat = patternSections[patternIndex];
+    /* Do allow and disallow statements in this block apply to us? I.e. are they
+     * preceded by a user-agent statement which matches us? */
+    let validUserAgentSection = true;
+    for (let i = 0, len = lines.length; i < len; ++i) {
+      let line = lines[i].trim();
 
-    /*Skip empty patterns: */
-    if (subPat === "") {
-      ++patternIndex;
-      continue;
-    }
-    if (subPat === str.substr(strIndex, subPat.length)) {
-      ++patternIndex;
-      strIndex += subPat.length;
+      /* Skip empty and comment lines: */
+      if (line.length === 0 || line.charAt(0) === "#") continue;
 
-      /* If we've reached the end of the pattern: */
-      if (patternIndex === patternSections.length) {
-        if (REQUIRE_END_WITH_PATTERN) {
-          return (strIndex === len);
+      /* Split the line by the first colon ":": */
+      let parsedLine = (function() {
+        let splitPoint = line.indexOf(":");
+        if (splitPoint === -1) {
+          return undefined;
         }
-        /* Otherwise, the pattern is definitely a match: */
-        return true;
+        let firstHalf = line.substring(0, splitPoint);
+        let secondHalf = line.substring(splitPoint + 1);
+        return [firstHalf, secondHalf];
+      })();
+      if (parsedLine === undefined) {
+        console.warn(`Don't understand: "${line}"`);
       }
-    }
-    /* If this sub-pattern didn't match at this point, move 1 character over: */
-    else {
-      ++strIndex;
-    }
-  }
-  /* If we reached the end of the string without finishing the pattern, it's not
-   * a match: */
-  return false;
-}
+      let clauseType = parsedLine[0].trim().toLowerCase();
+      let clauseValue = parsedLine[1].trim();
 
-function isPageCrawlable(fullUrl) {
-  const DOMAIN = window.location.origin;
-  if (DOMAIN !== fullUrl.substr(0, DOMAIN.length)) {
-    throw new Error("URL " + fullUrl + " is not within the same domain!");
-  }
-  /* The path portion of the fullURL. That is, the part
-   * following the ".com" or ".net" or ".edu" or whatever.
-   *
-   * For example, on a site's homepage, the path is "/", and
-   * on an faq page, it might be "/faq.html" */
-  let pagePath = fullUrl.substr(DOMAIN.length);
-
-  /* Allow statements supersede disallow statements, so we can
-   * check the allowed list first and shortcut to true if we
-   * find a match: */
-  for (let i = 0, len = robotsTxtData.Allow.length; i < len; ++i) {
-    let pattern = robotsTxtData.Allow[i]
-    if (matchesPattern(pagePath, pattern)) return true;
-  }
-  for (let i = 0, len = robotsTxtData.Disallow.length; i < len; ++i) {
-    let pattern = robotsTxtData.Disallow[i]
-    if (matchesPattern(pagePath, pattern)) return false;
-  }
-  /* If this page is on neither the allowed nor disallowed
-   * list, then we can assume it's allowed: */
-  return true;
-}
-
-/**
- * CRAWLING STARTS HERE:
- */
-(function loadRobotsTxtAndBeginCrawl() {
-  let httpRequest = new XMLHttpRequest();
-  httpRequest.onreadystatechange = function() {
-    if (httpRequest.readyState === XMLHttpRequest.DONE) {
-      if (httpRequest.status === 200) { //Code for "Good"
-        /* If the site has a robots.txt file, parse it so the data can be
-         * used to determine if a page should be crawled: */
-        window.robotsTxtData = parseRobotsTxt(httpRequest.responseText);
+      /* Check for sitemaps before checking the user agent so that they are always
+       * visible to us: */
+      if (clauseType === "sitemap") {
+        sitemap.push(clauseValue);
+      }
+      /* Make sure the user agent matches this crawler: */
+      else if (clauseType === "user-agent") {
+        validUserAgentSection = (clauseValue === "*");
+      }
+      /* Skip the remaining section until a matching user-agent directive is found: */
+      else if (!validUserAgentSection) {
+        continue;
+      }
+      /* If the line is a disallow clause, add the pattern to the array of
+       * disallowed patterns: */
+      else if (clauseType === "disallow") {
+        /* An empty disallow string is considered equal to a global allow. */
+        if (clauseValue === "") {
+          allowed.push("/");
+        } else {
+          disallowed.push(clauseValue);
+        }
+      }
+      /* If the line is an allow clause, add the pattern to the array of
+       * allowed patterns: */
+      else if (clauseType === "allow") {
+        allowed.push(clauseValue);
       } else {
-        /* If the site does NOT have a robots.txt file, assume all pages are
-         * allowed to be crawled: */
-        window.isPageCrawlable = function () {return true};
+        console.warn(`Unknown clause: "${line}"`);
       }
-
-      let anchorlessURL = urlRemoveAnchor(window.location);
-
-      /* Start the crawl: */
-      classifyImages(document, anchorlessURL);
-      let initialPageLinks = classifyLinks(document, anchorlessURL);
-
-      /* Here we create a spoof (not actually in the page/site) link to avoid
-       * making the visited data structure irregular: */
-      let startPageSpoofLink = makeElement(
-        "a",
-        "(Initial page for crawler script)",
-        {href: "(Initial page for crawler script)"}
-      )
-      visited[anchorlessURL] = [{[anchorlessURL]: startPageSpoofLink}];
-
-      visitLinks(anchorlessURL, initialPageLinks);
     }
+    return {
+      allow: allowed,
+      disallow: disallowed,
+      sitemap: sitemap
+    };
   }
-  httpRequest.open("GET", "/robots.txt");
-  httpRequest.send();
-})();
+
+  /* @Static */
+  this.matchesPattern = function (str, basePattern) {
+    let parsedPattern = basePattern;
+    /* If a pattern ends in "$", the string must end with the pattern to match:
+     *
+     * E.G. "/*.php$" will match "/files/documents/letter.php" but
+     * won't match "/files/my.php.data/settings.txt". */
+    const REQUIRE_END_WITH_PATTERN = (parsedPattern.charAt(parsedPattern.length-1) === "$");
+    if (REQUIRE_END_WITH_PATTERN) {
+      /* Remove the $ character from the pattern: */
+      parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
+    }
+
+    /* Removing trailing asterisks, which are extraneous: */
+    for (let i = parsedPattern.length-1; /*@noConditional*/; --i) {
+      /* If the entire pattern is asterisks, then anything will match: */
+      if (i <= 0) return true;
+
+      if (parsedPattern.charAt(i) !== "*") {
+        parsedPattern = parsedPattern.substr(0, i+1);
+        break;
+      }
+    }
+
+    let patternSections = parsedPattern.split("*");
+    let patternIndex = 0;
+    for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
+      let subPat = patternSections[patternIndex];
+
+      /*Skip empty patterns: */
+      if (subPat === "") {
+        ++patternIndex;
+        continue;
+      }
+      if (subPat === str.substr(strIndex, subPat.length)) {
+        ++patternIndex;
+        strIndex += subPat.length;
+
+        /* If we've reached the end of the pattern: */
+        if (patternIndex === patternSections.length) {
+          if (REQUIRE_END_WITH_PATTERN) {
+            return (strIndex === len);
+          }
+          /* Otherwise, the pattern is definitely a match: */
+          return true;
+        }
+      }
+      /* If this sub-pattern didn't match at this point, move 1 character over: */
+      else {
+        ++strIndex;
+      }
+    }
+    /* If we reached the end of the string without finishing the pattern, it's not
+     * a match: */
+    return false;
+  }
+  this.isUrlAllowed = function (fullUrl) {
+    if (HOSTNAME !== (new URL(fullUrl)).hostname.toLowerCase()) {
+      throw new Error("URL " + fullUrl + " is not within the same domain!");
+    }
+    if (this.ignoreFile) return true;
+
+    /* The path portion of the fullURL. That is, the part
+     * following the ".com" or ".net" or ".edu" or whatever.
+     *
+     * For example, on a site's homepage, the path is "/", and
+     * on an faq page, it might be "/faq.html" */
+    let pagePath = fullUrl.substr(DOMAIN.length); //@Refactor use location api?
+
+    /* Allow statements supersede disallow statements, so we can
+     * check the allowed list first and shortcut to true if we
+     * find a match: */
+    for (let i = 0, len = this.patterns.allow.length; i < len; ++i) {
+      let pattern = this.patterns.allow[i]
+      if (this.matchesPattern(pagePath, pattern)) return true;
+    }
+    for (let i = 0, len = this.patterns.disallow.length; i < len; ++i) {
+      let pattern = this.patterns.disallow[i]
+      if (this.matchesPattern(pagePath, pattern)) return false;
+    }
+    /* If this page is on neither the allowed nor disallowed
+     * list, then we can assume it's allowed: */
+    return true;
+  }
+
+  this.requestAndParse = function (onComplete) {
+    if (this.ignoreFile) {
+      onComplete();
+      return;
+    }
+
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = () => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) { //Code for "Good"
+          this.rawText = httpRequest.responseText;
+          this.patterns = this.parseText(this.rawText);
+        } else {
+          this.rawText = null;
+        }
+        this.fileRead = true;
+        onComplete(this);
+      }
+    }
+    httpRequest.open("GET", "/robots.txt");
+    httpRequest.send();
+  }
+}
+
+const robotsTxtHandler = new RobotsTxt();
+
+function startCrawl(robotsTxt, flagStr) {
+  /* Handle flags: */
+  if (/-ignoreRobots\.?Txt\b/i.test(flagStr)) {
+    console.warn("debug robotstxt ignored");
+    robotsTxt.ignoreFile = true;
+  }
+  if (/-ignoreBannedStr(?:ing)?s?\b/i.test(flagStr)) {
+    console.log("1407 ignoring banned strings");
+    BANNED_STRINGS.forceBanned = false;
+  }
+  if (/-ignore(?:Timeout|Timer)\b/i.test(flagStr)) {
+    window.clearTimeout(TIMEOUT_TIMER);
+  }
+  /* Setup robotsTxt handler and start the crawl: */
+  robotsTxt.requestAndParse(function afterRobotsTxtParse() {
+    Object.freeze(robotsTxt);
+
+    let anchorlessURL = urlRemoveAnchor(window.location);
+    classifyImages(document, anchorlessURL);
+    let initialPageLinks = classifyLinks(document, anchorlessURL);
+
+    /* Here we create a spoof (not actually in the page/site) link to avoid
+     * making the visited data structure irregular: */
+    let startPageSpoofLink = makeElement(
+      "a",
+      "(Initial page for crawler script)",
+      {href: "(Initial page for crawler script)"}
+    )
+    visited[anchorlessURL] = [{[anchorlessURL]: startPageSpoofLink}];
+    visitLinks(anchorlessURL, initialPageLinks, robotsTxt);
+  });
+}
+
+startCrawl(robotsTxtHandler, "");
