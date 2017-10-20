@@ -37,6 +37,16 @@
  * network error, but it's easily possible to just read the protocol and
  * classify them ahead of time. We should probably do that */
 
+/* @idea Make it so that selecting a classification in the modal also highlights
+ * elements in that class on the page */
+
+ /* @issue Rarely, the CSS will totally fail to apply to the crlr modal. I don't
+  * know exactly why this happens, but creating a new, identical style element
+  * and appending it seems to fix the issue. It might be a timing thing.
+  * Specifically this happens on kh.com */
+
+/* @issue Handle 400 error */
+
 'use strict';
 const startTime = performance.now();
 
@@ -104,76 +114,251 @@ const EXIT = QUIT; const Exit = QUIT; const exit = QUIT;
 /* Set a timer to end all live requests when the timer is reached. */
 const TIMEOUT_TIMER = window.setTimeout(()=>QUIT(true), MAX_TIMEOUT);
 
-/* Script relevant: */
-let visited = {};
-let allLinks = {};
 
-let nullLinks = {};
-let anchorLinks = {};
-let externalLinks = {};
-let absoluteInternalLinks = {};
-let robotsDisallowed = {};
-let redirects = {};
-let notFound = {};
-let forbidden = {};
-let accessDenied = {};
-let bannedStrings = {};
-let files = {};
-let localFiles = {};
-let unusualScheme = {};
-let ipAddresses = {};
-let unknownContentType = {};
+/* Because Sets do not store their values directly as own-properties,
+ * Object.freeze is not enough to make the Set immutable. We instead have to
+ * manually override the mutator functions to throw errors: */
+function freezeSet(mySet) {
+  mySet.add = function() {
+    throw new Error("Cannot add to read only Set.");
+  }
+  mySet.clear = function () {
+    throw new Error("Cannot clear read only Set.");
+  }
+  mySet.delete = function () {
+    throw new Error("Cannot delete from read only Set.");
+  }
+  Object.freeze(mySet);
+  return mySet;
+}
 
-let linkLoggingObjects = {visited, allLinks, externalLinks, nullLinks, anchorLinks, absoluteInternalLinks, robotsDisallowed, redirects, notFound, forbidden, accessDenied, bannedStrings, files, localFiles, unusualScheme, ipAddresses, unknownContentType};
+/* Validation for labels for the classes below. These are used solely to prevent
+ * bugs caused by mis-spelling a label name when setting or checking labels: */
+const VALID_LABELS = freezeSet(new Set([
+  "startPage",
+  "null",
+  "bannedStrings",
+  "anchor",
+  "internal",
+  "absoluteInternal",
+  "external",
+  "IPAddress",
+  "unusualScheme",
+  "Email",
+  "localFiles",
+  "unloaded",
+  "robotsDisallowed",
+  "visited",
+  "file",
+  "unknownContentType",
+  "redirects",
+  "accessDenied",
+  "forbidden",
+  "notFound"
+]));
+/* Const function to prevent hoisting, since VALID_LABELS is also a const and,
+ * so, not hoisted. If you made this a normal function and used it above the
+ * declaration of VALID_LABELS, you would get not-defined error. */
+const validateLabel = function (label) {
+  if (VALID_LABELS.has(label)) {
+    return label;
+  }
+  throw new Error(`"${label}" is not a valid label.`);
+}
 
-let allImages = {};
+/* Defines an unwritable, unconfigurable property on classConstructor, but only
+ * if that property doesn't already exist. Returns true on success (the property
+ * was created) and false on failure (the property already existed): */
+function staticConst(classConstructor, varName, value) {
+  if (classConstructor[varName]) {
+    return false;
+  }
+  Object.defineProperty(classConstructor, varName, {
+    value: value,
+    writable : false,
+    enumerable : true,
+    configurable : false
+  });
+  return true;
+}
 
-let nullImages = {};
-let externalImages = {};
-let unloadedImages = {};
-let bannedStringImages = {};
-let absoluteInternalImages = {};
+class ElementInstance {
+  constructor(documentID, elementInDocument) {
+    this.document = documentID;
 
-let imageLoggingObjects = {allImages, externalImages, unloadedImages, bannedStringImages, absoluteInternalImages};
+    /* Clone the element so that we don't have ot hold a reference to the
+     * entire document in memory, thus allowing documents to be garbage-
+     * collected when they're done being processed: */
+    this.element = elementInDocument.cloneNode("Deep");
+    this.labels = new Set();
+  }
+  addLabels(...newLabels) {
+    for (let label of newLabels) this.labels.add(validateLabel(label));
+  }
+  isLabelled(label) {
+    return this.labels.has(validateLabel(label));
+  }
+}
+
+class ElementData /* @abstract */ {
+  constructor(id, element, pageURL, ...labels) {
+    if (new.target === ElementData) {
+      throw new TypeError("ElementData is abstract and cannot be constructed directly. Use a sub-class instead.");
+    }
+    this.id = id;
+    let firstInstance = new ElementInstance(pageURL, element);
+    this.instances = new Set();
+    this.instances.add(firstInstance);
+    this.lastNewInstance = firstInstance;
+    this.labels = new Set();
+    staticConst(this.constructor, "allUsedLabels", new Set());
+    this.labelGroup(...labels);
+  }
+  addInstance(element, pageURL) {
+    let instanceDatum = new ElementInstance(pageURL, element);
+    this.instances.add(instanceDatum);
+    this.lastNewInstance = instanceDatum;
+    return instanceDatum;
+  }
+  labelGroup(...newLabels) {
+    for (let label of newLabels) {
+      this.labels.add(validateLabel(label));
+      this.constructor.allUsedLabels.add(label);
+    }
+  }
+  labelLastNewInstance(...newLabels) {
+    this.lastNewInstance.addLabels(...newLabels);
+    for (let label of newLabels) this.constructor.allUsedLabels.add(label);
+  }
+  isLabelled(label) {
+    return this.labels.has(label);
+  }
+  getInstancesLabelled(label) {
+    /* If this whole group has a matching label, return a duplicate set of all
+     * the instances in the group */
+    if (this.isLabelled(label)) {
+      return new Set(this.instances);
+    }
+    /* Otherwise, go through each instance and check it: */
+    let matchingInstances = new Set();
+    for (let instance of this.instances) {
+      if (instance.isLabelled(label)) matchingInstances.add(instance);
+    }
+    return matchingInstances;
+  }
+}
+
+class LinkData extends ElementData {
+  constructor(linkElement, pageURL, ...labels) {
+    let canonical = urlRemoveAnchor(linkElement.href);
+    super(canonical, linkElement, pageURL, ...labels);
+    this.URL = this.id; /* @alias */
+    this.location = linkElement;
+  }
+  addInstance(element, pageURL) {
+    /* Validation to ensure that non-matching instances don't get added: */
+    if (pageURL !== this.URL) {
+      throw new Error (`New instance HREF <${pageURL}> did not match this \
+LinkData's URL <${this.URL}>.`);
+    }
+    return super.addInstance(element, pageURL);
+  }
+  static instanceToString(instance) {
+    return instance.element.getAttribute("href");
+  }
+}
+
+class ImageData extends ElementData {
+  constructor(imageElement, pageURL, ...labels) {
+    super(imageElement.src, imageElement, pageURL, ...labels);
+    this.URL = this.id; /* @alias */
+    this.location = new URL(imageElement.src);
+  }
+  addInstance(element, pageURL) {
+    /* Validation to ensure that non-matching instances don't get added: */
+    let newInstanceURL = element.src;
+    if (newInstanceURL !== this.URL) {
+      throw new Error (`New instance SRC <${newInstanceURL}> did not match \
+this ImageData's URL <${this.URL}>.`);
+    }
+    return super.addInstance(element, pageURL);
+  }
+  static instanceToString(instance) {
+    return instance.element.getAttribute("src");
+  }
+}
+
+class ElementDataMap {
+  constructor(ElementDataConstructor) {
+    if (!(ElementDataConstructor.prototype instanceof ElementData)) {
+      throw new TypeError(`Type parameter ${ElementDataConstructor.name} is \
+not a subtype of ElementData.`);
+    }
+    /* Create an object with no default keys/prototype, for use as the map: */
+    this.map = Object.create(null);
+
+    /* Remember the type of ElementData object that this Map stores:
+     * (defineProperty is used to ensure immutability) */
+    Object.defineProperty(this, "Type", {value: ElementDataConstructor});
+  }
+  /* Adds the element to the ElementData object corresponding
+   * to the given ID, or makes a new ElementData object for
+   * the element if no existing one corresponded to the given
+   * ID. Either way, the ElementData object is returned. */
+  addInstance(element, id) {
+    let dataForId = this.map[id];
+    if (dataForId === undefined) {
+      dataForId = new this.Type(element, id);
+      this.map[id] = dataForId;
+    } else {
+      dataForId.addInstance(element, id);
+    }
+    return dataForId;
+  }
+  has(id) {
+    return (this.map[id] !== undefined);
+  }
+  get(id) {
+    return this.map[id];
+  }
+  instanceToString(instance) {
+    return this.Type.instanceToString(instance);
+  }
+  getInstancesLabelled(label) {
+    let instances = [];
+    for (let id in this.map) {
+      let eleData = this.map[id];
+      for (let instance of eleData.getInstancesLabelled(label)) {
+        instances.push(instance);
+      }
+    }
+    return instances;
+  }
+}
+const allLinks  = new ElementDataMap(LinkData);
+const allImages = new ElementDataMap(ImageData);
 
 /* Takes the loggingObjects and exchanges the HTMLElements in them w/ some
  * property of those elements (href by default). reducerFn is passed each
  * element and returns what that element is substituted w/ in the object. */
-function logObjToString(logObj, reducerFn) {
-  const replaceElements = (key, val) => {
-    if (val instanceof HTMLElement) {
-      return reducerFn(val);
-    }
-    return val;
-  };
-  let logObjJSON = JSON.stringify(logObj, replaceElements, 2);
-
-  /* Put objects which only have one key:value pair on a single line, rather
-   * than putting the opening bracket and closing bracket on separate lines: */
-  logObjJSON = logObjJSON.replace(
-      /(^[^\S\r\n]*\{)[^\S\r\n]*$[\r\n]*^\s*([^\r\n}]+$)[\r\n]*^\s*(\})/gm,
-      "$1$2$3"
-  );
-
-  return logObjJSON;
-}
-
-/* Collects different sets of loggingObjects and information on how to output
- * them: */
-let logObjMetaData = [
-  {
-    logObjects: linkLoggingObjects,
-    toString (obj) {
-      return logObjToString( obj, (ele => ele.getAttribute("href")) );
-    }
-  },
-  {
-    logObjects: imageLoggingObjects,
-    toString (obj) {
-      return logObjToString( obj, (ele => ele.getAttribute("src")) );
-    }
-  },
-];
+// function logObjToString(logObj, reducerFn) {
+//   const replaceElements = (key, val) => {
+//     if (val instanceof HTMLElement) {
+//       return reducerFn(val);
+//     }
+//     return val;
+//   };
+//   let logObjJSON = JSON.stringify(logObj, replaceElements, 2);
+//
+//   /* Put objects which only have one key:value pair on a single line, rather
+//    * than putting the opening bracket and closing bracket on separate lines: */
+//   logObjJSON = logObjJSON.replace(
+//       /(^[^\S\r\n]*\{)[^\S\r\n]*$[\r\n]*^\s*([^\r\n}]+$)[\r\n]*^\s*(\})/gm,
+//       "$1$2$3"
+//   );
+//
+//   return logObjJSON;
+// }
 
 /* Function definitions: */
 
@@ -184,13 +369,15 @@ const requestCounter = (function() {
   const disp = document.createElement("p");
   let text = document.createTextNode("0");
   disp.appendChild(text);
-  disp.id="instancesDisplay";
+  disp.id="requestCounter";
+  disp.title="Number of page requests currently loading.";
 
   disp.style.padding = "2px";
   disp.style.border = "5px solid green";
   disp.style.backgroundColor = "white";
+  disp.style.color = "black";
   disp.style.position = "fixed";
-  disp.style.zIndex = "999999";
+  disp.style.zIndex = "99999999999";
   disp.style.top = "2em";
   disp.style.left = "2em";
   disp.style.margin = "0";
@@ -219,66 +406,45 @@ const requestCounter = (function() {
 
 function urlRemoveAnchor(locationObj) {
   if (typeof locationObj === "string") {
+    /* For some reason, creating a link with an empty string for an href makes
+     * that link think it refers to the current page. In other words, an empty
+     * href behaves like "/". So we have to manually avoid this behavior to
+     * avoid associating a null link with a refresh link. */
+    if (locationObj === "") return "";
     return urlRemoveAnchor(makeElement("a", undefined, {href: locationObj}));
   }
-
   return locationObj.origin + locationObj.pathname + locationObj.search;
 }
 
-function visitLinks(curPage, linkObj, robotsTxt, recursive) {
-  console.log("Checking links found on: " + curPage)
-
-  /* If no robots.txt handler is passed, just create one which will assume all
+function visitLinks(curPage, linkDataCollection, robotsTxt, recursive) {
+  /* Parameter defaults:
+   * If no robots.txt handler is passed, just create one which will assume all
    * crawling is allowed: */
   if (robotsTxt === undefined) {
-    console.warn("debug robotsTxt undefined in visitlinks")
     robotsTxt = new RobotsTxt();
     robotsTxt.ignoreFile = true;
   }
   if (recursive === undefined) {
     recursive = true;
   }
-
-  for (let url in linkObj) {
-    /* Note: this version is slightly different to the one found in classifyLinks,
-     * as it uses linkObj which is already filled out by classifyLinks. */
-    function recordLinkTo(...objectsToLogTo) {
-      let linkData = linkObj[url]; //@note This is an array
-      for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
-        let obj = objectsToLogTo[i];
-        /* If the given logging object already has an array of entries for the
-         * given URL: */
-        if (obj[url] !== undefined) {
-          /* Add the contents of the array from linkObj for the current url
-           * to the given loggingObject's existing array. */
-          obj[url].push(...linkData);
-        }
-        /* Otherwise, linkObj's array of entries will serve as the initial array
-         * for the given logging object: */
-        else obj[url] = linkData.slice();
-      }
-    }
-    if (url !== urlRemoveAnchor(url)) throw new Error(`This url has an anchor and shouldn't ${url}...`);
+  console.log("Checking links found on: " + curPage)
+  for (let linkDataForURL of linkDataCollection) {
+    let URLOfPageToVisit = urlRemoveAnchor(linkDataForURL.location);
 
     /* Check if visiting this link is allowed by the robots.txt handler: */
-    if (!robotsTxt.isUrlAllowed(url)) {
-      console.warn("debug robotstxt disallowed " + url);
-      recordLinkTo(robotsDisallowed);
+    if (!robotsTxt.isUrlAllowed(URLOfPageToVisit)) {
+      linkDataForURL.labelGroup("robotsDisallowed");
       continue;
     }
     /* Do not re-analyze a page we have already visited: */
-    if (visited[url] !== undefined) {
-      recordLinkTo(visited);
+    if (linkDataForURL.isLabelled("visited")) {
       continue;
     }
-    /* I sorta have to repeat myself here to make sure we properly skip over
-     * only links we've already recorded. */
-    recordLinkTo(visited);
+    linkDataForURL.labelGroup("visited");
 
     /**
      * Making the HTTP Request:
      */
-
     let httpRequest = new XMLHttpRequest();
     allRequests.push(httpRequest);
 
@@ -296,71 +462,87 @@ function visitLinks(curPage, linkObj, robotsTxt, recursive) {
         }
         return undefined;
       }
+      /* First, check the request's file extension: */
       let extension = findURLExtension(request.responseURL)
       let isRecognizedFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
       if (isRecognizedFile) {
-        recordLinkTo(files);
+        linkDataForURL.labelGroup("file")
       }
-
+      /* Then, check the request's content-type: */
       let contentType = request.getResponseHeader("Content-Type");
       let validContentType = "text/html";
       if (contentType.substr(0, validContentType.length) !== validContentType) {
-        if (!isRecognizedFile) recordLinkTo(unknownContentType);
+        if (!isRecognizedFile) {
+          linkDataForURL.labelGroup("unknownContentType");
+        }
         request.resolvedToFile = true;
         request.abort();
       }
     }
 
-    function normalResponseHandler(page, details) {
+    function normalResponseHandler(page, request) {
       if (!page) {
-        console.error("Null response from " + url + ". It may be an unrecognizes file type.\n\tIt was linked-to from " + curPage);
-        console.error(details);
+        console.error("Null response from " + URLOfPageToVisit +
+". It may be an unrecognized file type.\n\tIt was linked-to from " + curPage);
+        console.error(request);
         return;
       }
 
       if (recursive) {
         /* Check images on the given page: */
-        classifyImages(page, url);
+        classifyImages(page, URLOfPageToVisit);
         /* Recursively check the links found on the given page: */
-        let newLinks = classifyLinks(page, url,  true);
-        visitLinks(url, newLinks, robotsTxt);
+        let newLinks = classifyLinks(page, URLOfPageToVisit,  true);
+        visitLinks(URLOfPageToVisit, newLinks, robotsTxt);
       }
     }
 
-    function errorHandler(details) {
+    function errorHandler(request) {
       /* If we aborted the request early due to the header telling us the
        * resource is a file, we shouldn't log another error, as everything
        * should've already been handled by checkRequestHeaders. */
-      if (details.resolvedToFile) return;
-      if (details.abortedDueToTimeout) return;
+      if (request.resolvedToFile) return;
+      if (request.abortedDueToTimeout) return;
 
       /* Otherwise, something went wrong with the request: */
-      if (details.readyState !== 4) {
-        console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", details);
-        throw new Error ("AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(details));
+      if (request.readyState !== 4) {
+        console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", request);
+        throw new Error (
+          "AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(request)
+        );
       }
 
       let msg = "";
-      switch (details.status) {
+      switch (request.status) {
         case 0:
-          recordLinkTo(redirects);
-          msg = "The request to " + url + " caused an undefined error. The url robably either redirects to an external site. or is invalid. There may also be a networking issue, or another problem entirely.";
+          linkDataForURL.labelGroup("redirects");
+          msg = "The request to " + URLOfPageToVisit + " caused an undefined \
+error. The url probably either redirects to an external site. or is invalid. \
+There may also be a networking issue, or another problem entirely.";
           msg += "\nUnfortunately, this script cannot distinguish between those possibilities.";
           break;
+        case 400:
+          linkDataForURL.labelGroup("badRequest");
+          msg = "A 400 Error occurred when requesting " + URLOfPageToVisit + ", That means \
+the request sent to the server was malformed or corrupted.";
+          break;
         case 401:
-          recordLinkTo(accessDenied);
-          msg = "A 401 Error occurred when requesting " + url + ". That means access was denied to the client by the server.";
+          linkDataForURL.labelGroup("accessDenied");
+          msg = "A 401 Error occurred when requesting " + URLOfPageToVisit + ". That means \
+access was denied to the client by the server.";
           break;
         case 403:
-          recordLinkTo(forbidden);
-          msg = "A 403 Error occurred when requesting " + url + ". That means the server considers access to the resource absolutely forbidden.";
+          linkDataForURL.labelGroup("forbidden");
+          msg = "A 403 Error occurred when requesting " + URLOfPageToVisit + ". That means \
+the server considers access to the resource absolutely forbidden.";
           break;
         case 404:
-          recordLinkTo(notFound);
-          msg = "A 404 Error occurred when requesting " + url + ". That means the server could not find the given page.";
+          linkDataForURL.labelGroup("notFound");
+          msg = "A 404 Error occurred when requesting " + URLOfPageToVisit + ". That means \
+the server could not find the given page.";
           break;
         default:
-          console.error("AN UNIDENTIFIED ERROR OCURRED!", details);
+          console.error("AN UNIDENTIFIED ERROR OCURRED!", request);
       }
       if (msg !== "") console.error(msg + "\n\tLinked-to from: " + curPage);
     }
@@ -373,8 +555,8 @@ function visitLinks(curPage, linkObj, robotsTxt, recursive) {
     * execute code exactly when crawling is fully complete, by checking when
     * the total number of unresolved requests reaches 0.
     */
-    function onComplete(xhr) {
-      xhr.callbackComplete = true;
+    function onComplete(request) {
+      request.callbackComplete = true;
       requestCounter.decrement();
       if (requestCounter.count === 0) {
         requestCounter.setText("All requests complete!");
@@ -396,7 +578,7 @@ function visitLinks(curPage, linkObj, robotsTxt, recursive) {
         onComplete(httpRequest);
       }
     }
-    httpRequest.open("GET", url);
+    httpRequest.open("GET", URLOfPageToVisit);
     httpRequest.responseType = "document";
 
     httpRequest.send();
@@ -408,55 +590,59 @@ function visitLinks(curPage, linkObj, robotsTxt, recursive) {
   if (requestCounter.count === 0) presentResults();
 } //Close function visitLinks
 
+/* Finds all of the links in the document and classifies them
+ * based on the contents of their hrefs: */
 function classifyLinks(doc, curPageURL, quiet) {
   const quietLog = (quiet) ? ()=>{} : console.log;
   const LINKS = doc.getElementsByTagName("a");
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
-  let internalLinksFromThisPage = {};
+  const internalLinksFromThisPage = new Set();
 
+  /* A quick function for visibly labelling certain types of elements: */
+  function labelElement(ele, color, text) {
+    ele.style.outline = `2px solid ${color}`;
+    if (ele.title) ele.title += "\n";
+    ele.title += text;
+  }
   /* Loop over links: */
   for (let i = 0, len = LINKS.length; i < len; ++i) {
     let link = LINKS[i];
     let hrefAttr = link.getAttribute("href");
+    let anchorlessHref = urlRemoveAnchor(link);
 
-    /* Function for adding data about a link to data-logging objects: */
-    function recordLinkTo(...objectsToLogTo) {
-      let linkData = {};
-      linkData[curPageURL] = link;
-      Object.freeze(linkData);
-      let hrefWithoutAnchor = urlRemoveAnchor(link);
-      for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
-        let obj = objectsToLogTo[i];
-        if (obj[hrefWithoutAnchor] !== undefined) {
-          obj[hrefWithoutAnchor].push(linkData);
-        } else {
-          obj[hrefWithoutAnchor] = [linkData];
-        }
-      }
-    }
+    /* Record information about this link to allLinks */
+    // let entry = allLinks[anchorlessHref];
+    // let recordExisted = true;
+    // if (entry === undefined) {
+    //   /* If no entry for this url has been defined, make a new linkData object: */
+    //   recordExisted = false;
+    //   entry = new LinkData(link, curPageURL);
+    //   allLinks[anchorlessHref] = entry;
+    // } else {
+    //   entry.addInstance(link, curPageURL);
+    // }
+    let recordExisted = allLinks.has(anchorlessHref);
+    let URLData = allLinks.addInstance(link, anchorlessHref);
 
     /* Handle links with no HREF attribute, such as anchors or those used as
-     * buttons: */
+    * buttons: */
     if (hrefAttr === null) {
-      recordLinkTo(nullLinks);
-      link.style.border = "2px solid orange";
-      link.title = (link.title) ? link.title + "\nNull link" : "Null link";
+      URLData.labelLastNewInstance("null");
+      hrefAttr = "[null]";
+      labelElement(link, "orange", "Null link");
       continue;
     }
-    hrefAttr = hrefAttr.toLowerCase();
-
-    /* All non-null links are recorded to the allLinks object: */
-    recordLinkTo(allLinks);
 
     let bannedStr = BANNED_STRINGS.isStringBanned(link.href);
     if (bannedStr) {
-      recordLinkTo(bannedStrings);
-
-      console.error("Found link " + hrefAttr + " containing a banned string: " + bannedStr + ".\n\tLinked-to from: " + curPageURL);
-      link.style.border = "4px dashed red";
-      link.title = (link.title) ? link.title + "\nBANNED WORD LINK" : "BANNED WORD LINK";
+      URLData.labelLastNewInstance("bannedString");
+      console.error(
+        "Found link " + hrefAttr + " containing a banned string: " + bannedStr
+        + ".\n\tLinked-to from: " + curPageURL
+      );
+      labelElement(link, "red", "BANNED STRING LINK");
 
       /* Don't parse the link further. Banned-string links will not be crawled. */
       continue;
@@ -469,31 +655,24 @@ function classifyLinks(doc, curPageURL, quiet) {
         (linkIsToWebsite && (link.hostname.toLowerCase() === HOSTNAME));
 
     /* Anchor link: */
-    if (link.hash !== "") {
-      /* Record link to anchor link. We don't use recordLinkTo here, because
-      * that would remove the anchor/fragment/hash portion of the url.
-      * Normally that's desired, since it prevents a link with a hash from
-      * being recorded as different leading to a different page than a link
-      * without an anchor. Just here, though, we want the difference: */
-      let linkData = {};
-      linkData[curPageURL] = link;
-      if (anchorLinks[link.href] !== undefined) {
-        anchorLinks[link.href].push(linkData);
-      } else anchorLinks[link.href] = [linkData];
-
-      link.style.border = "2px solid pink";
-      link.title = (link.title) ? link.title + "\nAnchor link" : "Anchor link";
+    if (link.hash !== "") { //@How to handle this with new model?
+      URLData.labelLastNewInstance("anchor");
+      labelElement(link, "pink", "Anchor link");
     }
 
     /* Classify link based on the variables set above */
     if (linkIsInternal) {
-      recordLinkTo(internalLinksFromThisPage);
+      if (recordExisted && !URLData.isLabelled("internal")) console.warn("Group label for existing record! Internal: "+ URLData.id); //@debug
+      URLData.labelGroup("internal");
+      internalLinksFromThisPage.add(URLData);
       if (linkIsAbsolute) {
         if (link.matches(".field-name-field-related-links a")) {
           console.warn("absint link in related links", link);
-          continue;//@debug
+          continue; //@debug
         }
-        recordLinkTo(absoluteInternalLinks);
+        /* @idea consider making just an absolute label and just checking for
+         * internal and absolute when necessary: */
+        URLData.labelLastNewInstance("absoluteInternal");
         quietLog(link, i + ":Absolute Internal:\t" + hrefAttr);
       } else {
         /* Site-Root-Relative Link: */
@@ -508,38 +687,36 @@ function classifyLinks(doc, curPageURL, quiet) {
     }
     /* External Links: */
     else {
-      recordLinkTo(externalLinks);
+      if (recordExisted && !URLData.isLabelled("external")) console.warn("Group label for existing record! External:" + URLData.id); //@debug
+      URLData.labelGroup("external");
 
       /* If the link contains a string which resembles an IP address: */
       if (/(?:\d{1,3}\.){3}\d{1,3}/.test(hrefAttr)) {
-        recordLinkTo(ipAddresses);
+        URLData.labelLastNewInstance("IPAddress");
       }
       if (!linkIsToWebsite) {
         if (RECOGNIZED_SCHEMES.indexOf(linkProtocol) === -1) {
-          recordLinkTo(unusualScheme);
+          if (recordExisted && !URLData.isLabelled("unusualScheme")) console.warn("Group label for existing record! Unusual Scheme: " + URLData.id); //@debug
+          URLData.labelGroup("unusualScheme");
         }
         if (linkProtocol === "mailto:") {
-          link.style.border = "2px solid yellow";
-          link.title = (link.title) ? link.title + "\nEmail link" : "Email link";
+          labelElement(link, "yellow", "Email link");
+          if (recordExisted && !URLData.isLabelled("Email")) console.warn("Group label for existing record! Email: " + URLData.id); //@debug
+          URLData.labelGroup("Email");
         }
         else if (linkProtocol === "file:") {
-          recordLinkTo(localFiles);
-
-          link.style.border = "2px dashed blue";
-          link.title = (link.title) ? link.title + "\nFile link" : "File link";
+          if (recordExisted && !URLData.isLabelled("localFiles")) console.warn("Group label for existing record! Local File: " + URLData.id); //@debug
+          URLData.labelGroup("localFiles");
+          labelElement(link, "blue", "File link");
         }
       }
     } //Close else block classifying external links
   } //Close for loop iterating over link elements
-  return internalLinksFromThisPage;
+  return freezeSet(internalLinksFromThisPage);
 } //Close function classifyLinks
 
 function classifyImages(doc, curPageURL, quiet) {
   const IMAGES = doc.getElementsByTagName("img");
-
-  /* Contains the URLs of all of the local (same-domain) pages linked to from
-   * this page: */
-  let internalLinksFromThisPage = {};
 
   /* Loop over links: */
   for (let i = 0, len = IMAGES.length; i < len; ++i) {
@@ -547,51 +724,43 @@ function classifyImages(doc, curPageURL, quiet) {
     let srcProp = image.src;
     let srcAttr = image.getAttribute("src");
 
-    /* HTMLImageElements don't have location properties, sadly, so we need to
-     * create an A(nchor) element with the image's src as its href. This
-     * temporary element has location properties automatically populated, so we
-     * can access them: */
-    let imgSrcHostname = makeElement("a", undefined, {href: srcProp}).hostname
-        .toLowerCase();
+    /* Images don't naturally have location properties, so use the URL api: */
+    let imgSrcHostname = new URL(srcProp).hostname.toLowerCase();
     let isInternal = (imgSrcHostname === HOSTNAME);
 
-    /* Function for adding data about a image to data-logging objects: */
-    function recordImageTo(...objectsToLogTo) {
-      let imageData = {};
-      imageData[curPageURL] = image;
-      for (let i = 0, len = objectsToLogTo.length; i < len; ++i) {
-        let obj = objectsToLogTo[i];
-        if (obj[srcProp] !== undefined) {
-          obj[srcProp].push(imageData);
-        } else {
-          obj[srcProp] = [imageData];
-        }
-      }
+    /* Record information about this image to allImages */
+    let entry = allImages[srcProp];
+    if (entry === undefined) {
+      entry = new ImageData(image, curPageURL);
+      allImages[srcProp] = entry;
+    } else {
+      entry.addInstance(image, curPageURL);
     }
-    recordImageTo(allImages);
     if (srcAttr === null) {
-      recordImageTo(nullImages);
+      entry.labelGroup("null");
     }
-    if (!image.complete) {
-      recordImageTo(unloadedImages);
+    if ((image.naturalWidth === 0) && (image.naturalHeight === 0)) {
+      entry.labelLastNewInstance("unloaded");
     }
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
-      recordImageTo(bannedStringImages);
+      entry.labelLastNewInstance("bannedString");
     }
-    if (!isInternal) {
-      recordImageTo(externalImages);
-    }
-    if (isInternal && (srcProp === srcAttr)) {
-      recordImageTo(absoluteInternalImages);
+    if (isInternal) {
+      entry.labelGroup("internal");
+      if (srcProp === srcAttr) {
+        entry.labelLastNewInstance("absoluteInternal");
+      }
+    } else {
+      entry.labelGroup("external");
     }
   }//Close for loop iterating over images
 }//Close function classifyImages
-
 
 /**
  * Code for presenting results to the user when crawling is done:
  */
 
+/* Helper functions: */
 /* A function for appending an array of children to a parent HTMLElement: */
 function appendChildren(parent, children) {
   function appendItem(item) {
@@ -605,7 +774,6 @@ function appendChildren(parent, children) {
       parent.appendChild(text);
     }
   }
-
   if (Array.isArray(children)) {
     for (let i = 0, len = children.length; i < len; ++i) {
       appendItem(children[i]);
@@ -701,11 +869,13 @@ function presentResults() {
    * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
    *   you want to make changes to it, edit that file and minify it before
    *   pasting it here. */
-  let myCSS = `#crlr-modal,#crlr-modal *{all:initial;box-sizing:border-box}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal,#crlr-modal .flex-row{display:flex}#crlr-modal h1{font-size:2em;font-weight:700;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;font-weight:700;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;font-weight:700;margin-top:1em;margin-bottom:1em}#crlr-modal h4{font-weight:700;margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;font-weight:700;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;font-weight:700;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);flex-direction:column}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1)}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized:focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:1.25em}#crlr-modal #crlr-input-clear{background-color:#ededf2;margin-right:.25em;padding:0 .25em;border:none;font-size:1em}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{border:2px solid transparent;border-bottom:2px solid #b0b0b0;background-color:#ededf2;transition:border .2s}#crlr-modal #crlr-textbox-controls.focus-within,#crlr-modal #crlr-textbox-controls:focus-within{border:2px solid #a6c7ff}#crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-autocomplete-list{display:none}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✔";color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:200px;padding:.5em;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}#crlr-modal.browser-gecko .crlr-output>pre{overflow-y:scroll};`
+  let myCSS = `#crlr-modal,#crlr-modal *{all:initial;box-sizing:border-box}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal,#crlr-modal .flex-row{display:flex}#crlr-modal h1{font-size:2em;font-weight:700;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;font-weight:700;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;font-weight:700;margin-top:1em;margin-bottom:1em}#crlr-modal h4{font-weight:700;margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;font-weight:700;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;font-weight:700;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);flex-direction:column}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1)}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized:focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:1.25em}#crlr-modal #crlr-input-clear{background-color:#ededf2;margin-right:.25em;padding:0 .25em;border:none;font-size:1em}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{border:2px solid transparent;border-bottom:2px solid #b0b0b0;background-color:#ededf2;transition:border .2s}#crlr-modal #crlr-textbox-controls.focus-within,#crlr-modal #crlr-textbox-controls:focus-within{border:2px solid #a6c7ff}#crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-autocomplete-list{display:none}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✔";color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:200px;padding:.5em;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}#crlr-modal.browser-gecko .crlr-output>pre{overflow-y:scroll};`;
   let styleEle = makeElement("style", myCSS, {title:"crlr.js.css"});
   document.head.appendChild(styleEle);
   window.crlrCSS = styleEle.sheet;
-  if (crlrCSS.title !== "crlr.js.css") console.error("Someone stole our stylesheet!");
+  if (crlrCSS.title !== "crlr.js.css") {
+    console.error("Someone stole our stylesheet!");
+  }
 
   /* Make modal element: */
   const modal = makeElement("div", undefined, {id: "crlr-modal"});
@@ -715,7 +885,7 @@ function presentResults() {
   modal.classList.add(isBrowserWebkit ? "browser-webkit" : "browser-gecko");
 
   /* Prevent click events on the modal triggering events on the rest of the page: */
-  modal.addEventListener("click", function(e){
+  modal.addEventListener("click", function(e) {
       if (!e) e = window.event;
       e.cancelBubble = true;
       if (e.stopPropagation) e.stopPropagation();
@@ -907,7 +1077,8 @@ function presentResults() {
       let linkText = "";
       let afterLinkText = "";
       if (previewTooLong) {
-        beforeLinkText = "Note that the data shown above is only a preview, as the full data was too long. ";
+        beforeLinkText = "Note that the data shown above is only a preview, as \
+the full data was too long. ";
         linkText = "Click here";
         afterLinkText = " to download the full JSON file.";
       }
@@ -1050,7 +1221,8 @@ function RobotsTxt() {
       else if (clauseType === "user-agent") {
         validUserAgentSection = (clauseValue === "*");
       }
-      /* Skip the remaining section until a matching user-agent directive is found: */
+      /* Skip the remaining section until a matching user-agent directive is
+       * found: */
       else if (!validUserAgentSection) {
         continue;
       }
@@ -1086,7 +1258,8 @@ function RobotsTxt() {
      *
      * E.G. "/*.php$" will match "/files/documents/letter.php" but
      * won't match "/files/my.php.data/settings.txt". */
-    const REQUIRE_END_WITH_PATTERN = (parsedPattern.charAt(parsedPattern.length-1) === "$");
+    const REQUIRE_END_WITH_PATTERN =
+        (parsedPattern.charAt(parsedPattern.length-1) === "$");
     if (REQUIRE_END_WITH_PATTERN) {
       /* Remove the $ character from the pattern: */
       parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
@@ -1131,8 +1304,8 @@ function RobotsTxt() {
         ++strIndex;
       }
     }
-    /* If we reached the end of the string without finishing the pattern, it's not
-     * a match: */
+    /* If we reached the end of the string without finishing the pattern, it's
+     * not a match: */
     return false;
   }
   this.isUrlAllowed = function (fullUrl) {
@@ -1218,7 +1391,7 @@ function startCrawl(robotsTxt, flagStr) {
    *
    * NOTE: This flag is handled in the requestAndParse callback, because
    * the requestAndParse function completely overwrites the patterns property. */
-  let disallowMatch = /-disallow(["'`])([^"]+)\1/i.exec(flagStr);
+  let disallowMatch = /-disallow(["'`])([^"\n]+)\1/i.exec(flagStr);
   let userDisallowed;
   if (disallowMatch === null) {
     userDisallowed = [];
@@ -1236,15 +1409,19 @@ function startCrawl(robotsTxt, flagStr) {
     let anchorlessURL = urlRemoveAnchor(window.location);
     classifyImages(document, anchorlessURL);
     let initialPageLinks = classifyLinks(document, anchorlessURL);
+    window.initialPageLinks = initialPageLinks;//@debug
 
-    /* Here we create a spoof (not actually in the page/site) link to avoid
-     * making the visited data structure irregular: */
+    /* A spoof link to mark the page where the crawl started as visited, so that
+     * it will not be crawled a second time: */
+    let initLabel = "(Initial page for crawler script)";
     let startPageSpoofLink = makeElement(
       "a",
-      "(Initial page for crawler script)",
-      {href: "(Initial page for crawler script)"}
+      initLabel,
+      {href: initLabel}
     )
-    visited[anchorlessURL] = [{[anchorlessURL]: startPageSpoofLink}];
+    let startPageData = allLinks.addInstance(startPageSpoofLink, anchorlessURL);
+    startPageData.labelGroup("visited");
+    startPageData.labelLastNewInstance("startPage");
     visitLinks(anchorlessURL, initialPageLinks, robotsTxt, recursiveCrawl);
   });
 }
