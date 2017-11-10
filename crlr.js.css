@@ -97,6 +97,14 @@
   flex-direction: column;
 }
 
+/* Shrink the modal for the request counter: */
+#crlr-modal.waiting-for-results {
+  bottom: auto;
+  right: auto;
+  display: table;
+  padding: 1em;
+}
+
 #crlr-modal #crlr-min {
   border: 1px solid gray;
   padding: 0.5em;

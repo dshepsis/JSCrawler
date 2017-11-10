@@ -45,8 +45,6 @@
   * and appending it seems to fix the issue. It might be a timing thing.
   * Specifically this happens on kh.com */
 
-/* @issue Handle 400 error */
-
 'use strict';
 const startTime = performance.now();
 
@@ -61,7 +59,7 @@ window.addEventListener("beforeunload", function (e) {
 
 const DOMAIN = window.location.origin;
 const HOSTNAME = window.location.hostname.toLowerCase();
-
+const PROTOCOL = window.location.protocol;
 
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf",
@@ -90,7 +88,7 @@ const BANNED_STRINGS = {
 
 const MAX_TIMEOUT = 60*1000; //Miliseconds
 let timedOut = false;
-let allRequests = [];
+const allRequests = [];
 
 /* A function which aborts any live requests at the time of execution: */
 const QUIT = (noisy)=>{
@@ -113,7 +111,6 @@ const EXIT = QUIT; const Exit = QUIT; const exit = QUIT;
 
 /* Set a timer to end all live requests when the timer is reached. */
 const TIMEOUT_TIMER = window.setTimeout(()=>QUIT(true), MAX_TIMEOUT);
-
 
 /* Because Sets do not store their values directly as own-properties,
  * Object.freeze is not enough to make the Set immutable. We instead have to
@@ -200,93 +197,97 @@ class ElementInstance {
   }
 }
 
-class ElementData /* @abstract */ {
-  constructor(id, element, pageURL, ...labels) {
-    if (new.target === ElementData) {
-      throw new TypeError("ElementData is abstract and cannot be constructed directly. Use a sub-class instead.");
-    }
-    this.id = id;
-    let firstInstance = new ElementInstance(pageURL, element);
-    this.instances = new Set();
-    this.instances.add(firstInstance);
-    this.lastNewInstance = firstInstance;
-    this.labels = new Set();
-    staticConst(this.constructor, "allUsedLabels", new Set());
-    this.labelGroup(...labels);
-  }
-  addInstance(element, pageURL) {
-    let instanceDatum = new ElementInstance(pageURL, element);
-    this.instances.add(instanceDatum);
-    this.lastNewInstance = instanceDatum;
-    return instanceDatum;
-  }
-  labelGroup(...newLabels) {
-    for (let label of newLabels) {
-      this.labels.add(validateLabel(label));
-      this.constructor.allUsedLabels.add(label);
-    }
-  }
-  labelLastNewInstance(...newLabels) {
-    this.lastNewInstance.addLabels(...newLabels);
-    for (let label of newLabels) this.constructor.allUsedLabels.add(label);
-  }
-  isLabelled(label) {
-    return this.labels.has(label);
-  }
-  getInstancesLabelled(label) {
-    /* If this whole group has a matching label, return a duplicate set of all
-     * the instances in the group */
-    if (this.isLabelled(label)) {
-      return new Set(this.instances);
-    }
-    /* Otherwise, go through each instance and check it: */
-    let matchingInstances = new Set();
-    for (let instance of this.instances) {
-      if (instance.isLabelled(label)) matchingInstances.add(instance);
-    }
-    return matchingInstances;
-  }
-}
-
-class LinkData extends ElementData {
-  constructor(linkElement, pageURL, ...labels) {
-    let canonical = urlRemoveAnchor(linkElement.href);
-    super(canonical, linkElement, pageURL, ...labels);
-    this.URL = this.id; /* @alias */
-    this.location = linkElement;
-  }
-  addInstance(element, pageURL) {
-    /* Validation to ensure that non-matching instances don't get added: */
-    if (pageURL !== this.URL) {
-      throw new Error (`New instance HREF <${pageURL}> did not match this \
-LinkData's URL <${this.URL}>.`);
-    }
-    return super.addInstance(element, pageURL);
-  }
-  static instanceToString(instance) {
-    return instance.element.getAttribute("href");
-  }
-}
-
-class ImageData extends ElementData {
-  constructor(imageElement, pageURL, ...labels) {
-    super(imageElement.src, imageElement, pageURL, ...labels);
-    this.URL = this.id; /* @alias */
-    this.location = new URL(imageElement.src);
-  }
-  addInstance(element, pageURL) {
-    /* Validation to ensure that non-matching instances don't get added: */
-    let newInstanceURL = element.src;
-    if (newInstanceURL !== this.URL) {
-      throw new Error (`New instance SRC <${newInstanceURL}> did not match \
-this ImageData's URL <${this.URL}>.`);
-    }
-    return super.addInstance(element, pageURL);
-  }
-  static instanceToString(instance) {
-    return instance.element.getAttribute("src");
-  }
-}
+// class ElementData /* @abstract */ {
+//   constructor(id, element, pageURL, ...labels) {
+//     if (new.target === ElementData) {
+//       throw new TypeError("ElementData is abstract and cannot be constructed directly. Use a sub-class instead.");
+//     }
+//     this.id = id;
+//     let firstInstance = new ElementInstance(pageURL, element);
+//     this.instances = new Set();
+//     this.instances.add(firstInstance);
+//     this.lastNewInstance = firstInstance;
+//     this.labels = new Set();
+//     staticConst(this.constructor, "allUsedLabels", new Set());
+//     this.labelGroup(...labels);
+//   }
+//   addInstance(element, pageURL) {
+//     let instanceDatum = new ElementInstance(pageURL, element);
+//     this.instances.add(instanceDatum);
+//     this.lastNewInstance = instanceDatum;
+//     return instanceDatum;
+//   }
+//   labelGroup(...newLabels) {
+//     for (let label of newLabels) {
+//       this.labels.add(validateLabel(label));
+//       this.constructor.allUsedLabels.add(label);
+//     }
+//   }
+//   labelLastNewInstance(...newLabels) {
+//     this.lastNewInstance.addLabels(...newLabels);
+//     for (let label of newLabels) this.constructor.allUsedLabels.add(label);
+//   }
+//   isLabelled(label) {
+//     return this.labels.has(label);
+//   }
+//   getInstancesLabelled(label, pushToSet) {
+//     /* Default: */
+//     let matchingInstances = pushToSet || new Set();
+//     aslkdfjas;djfkla;sjdf;lakjsdflkajsdfkhasdjklfhaksdjfha;sdf//@debug
+//     /* If this whole group has a matching label, return a duplicate set of all
+//      * the instances in the group */
+//     if (this.isLabelled(label)) {
+//       return new Set(this.instances);
+//     }
+//     /* Otherwise, go through each instance and check it: */
+//     let matchingInstances = new Set();
+//     for (let instance of this.instances) {
+//       if (instance.isLabelled(label)) matchingInstances.add(instance);
+//     }
+//     return matchingInstances;
+//   }
+// }
+//
+// class LinkData extends ElementData {
+//   constructor(linkElement, pageURL, ...labels) {
+//     let canonical = urlRemoveAnchor(linkElement.href);
+//     super(canonical, linkElement, pageURL, ...labels);
+//     this.URL = this.id; /* @alias */
+//     this.location = linkElement;
+//   }
+//   addInstance(element, pageURL) {
+//     /* Validation to ensure that non-matching instances don't get added: */
+//     let pagePointedTo = urlRemoveAnchor(element);
+//     if (pagePointedTo !== this.URL) {
+//       throw new Error (`The endpoint URL of the given link <${pagePointedTo}> did not match this \
+// LinkData's URL <${this.URL}>.`);
+//     }
+//     return super.addInstance(element, pageURL);
+//   }
+//   static instanceToString(instance) {
+//     return instance.element.getAttribute("href");
+//   }
+// }
+//
+// class ImageData extends ElementData {
+//   constructor(imageElement, pageURL, ...labels) {
+//     super(imageElement.src, imageElement, pageURL, ...labels);
+//     this.URL = this.id; /* @alias */
+//     this.location = new URL(imageElement.src);
+//   }
+//   addInstance(element, pageURL) {
+//     /* Validation to ensure that non-matching instances don't get added: */
+//     let newImageURL = element.src;
+//     if (newImageURL !== this.URL) {
+//       throw new Error (`New image URL <${newImageURL}> did not match \
+// this ImageData's URL <${this.URL}>.`);
+//     }
+//     return super.addInstance(element, pageURL);
+//   }
+//   static instanceToString(instance) {
+//     return instance.element.getAttribute("src");
+//   }
+// }
 
 class ElementDataMap {
   constructor(ElementDataConstructor) {
@@ -305,13 +306,13 @@ not a subtype of ElementData.`);
    * to the given ID, or makes a new ElementData object for
    * the element if no existing one corresponded to the given
    * ID. Either way, the ElementData object is returned. */
-  addInstance(element, id) {
+  addInstanceGetEntry(id, element, pageURL) {
     let dataForId = this.map[id];
     if (dataForId === undefined) {
-      dataForId = new this.Type(element, id);
+      dataForId = new this.Type(element, pageURL);
       this.map[id] = dataForId;
     } else {
-      dataForId.addInstance(element, id);
+      dataForId.addInstance(element, pageURL);
     }
     return dataForId;
   }
@@ -611,20 +612,8 @@ function classifyLinks(doc, curPageURL, quiet) {
     let link = LINKS[i];
     let hrefAttr = link.getAttribute("href");
     let anchorlessHref = urlRemoveAnchor(link);
-
-    /* Record information about this link to allLinks */
-    // let entry = allLinks[anchorlessHref];
-    // let recordExisted = true;
-    // if (entry === undefined) {
-    //   /* If no entry for this url has been defined, make a new linkData object: */
-    //   recordExisted = false;
-    //   entry = new LinkData(link, curPageURL);
-    //   allLinks[anchorlessHref] = entry;
-    // } else {
-    //   entry.addInstance(link, curPageURL);
-    // }
     let recordExisted = allLinks.has(anchorlessHref);
-    let URLData = allLinks.addInstance(link, anchorlessHref);
+    let URLData = allLinks.addInstanceGetEntry(anchorlessHref, link, curPageURL);
 
     /* Handle links with no HREF attribute, such as anchors or those used as
     * buttons: */
@@ -717,8 +706,6 @@ function classifyLinks(doc, curPageURL, quiet) {
 
 function classifyImages(doc, curPageURL, quiet) {
   const IMAGES = doc.getElementsByTagName("img");
-
-  /* Loop over links: */
   for (let i = 0, len = IMAGES.length; i < len; ++i) {
     let image = IMAGES[i];
     let srcProp = image.src;
@@ -729,29 +716,24 @@ function classifyImages(doc, curPageURL, quiet) {
     let isInternal = (imgSrcHostname === HOSTNAME);
 
     /* Record information about this image to allImages */
-    let entry = allImages[srcProp];
-    if (entry === undefined) {
-      entry = new ImageData(image, curPageURL);
-      allImages[srcProp] = entry;
-    } else {
-      entry.addInstance(image, curPageURL);
-    }
+    let dataForImageURL = allImages
+        .addInstanceGetEntry(srcProp, image, curPageURL);
     if (srcAttr === null) {
-      entry.labelGroup("null");
+      dataForImageURL.labelGroup("null");
     }
     if ((image.naturalWidth === 0) && (image.naturalHeight === 0)) {
-      entry.labelLastNewInstance("unloaded");
+      dataForImageURL.labelLastNewInstance("unloaded");
     }
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
-      entry.labelLastNewInstance("bannedString");
+      dataForImageURL.labelGroup("bannedString");
     }
     if (isInternal) {
-      entry.labelGroup("internal");
+      dataForImageURL.labelGroup("internal");
       if (srcProp === srcAttr) {
-        entry.labelLastNewInstance("absoluteInternal");
+        dataForImageURL.labelLastNewInstance("absoluteInternal");
       }
     } else {
-      entry.labelGroup("external");
+      dataForImageURL.labelGroup("external");
     }
   }//Close for loop iterating over images
 }//Close function classifyImages
@@ -1419,7 +1401,8 @@ function startCrawl(robotsTxt, flagStr) {
       initLabel,
       {href: initLabel}
     )
-    let startPageData = allLinks.addInstance(startPageSpoofLink, anchorlessURL);
+    let startPageData = allLinks
+        .addInstanceGetEntry(initLabel, startPageSpoofLink, anchorlessURL);
     startPageData.labelGroup("visited");
     startPageData.labelLastNewInstance("startPage");
     visitLinks(anchorlessURL, initialPageLinks, robotsTxt, recursiveCrawl);

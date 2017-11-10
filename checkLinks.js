@@ -59,7 +59,7 @@ const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf",
 const RECOGNIZED_SCHEMES = ["mailto:", "tel:"];
 
 const BANNED_STRINGS = {
-  list: ["drupaldev"],
+  list: ["drupaldev", "ucmweb.rutgers.edu/mailform"],
   forceBanned: null,
   isStringBanned(str) {
     if (this.forceBanned !== null) {
