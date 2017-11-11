@@ -887,7 +887,7 @@ function presentResults() {
     if (labelHasMembers) {
       optionEleLabelProp = "";
     } else {
-      optionEleLabelProp = (isBrowserWebkit) ? "Empty" : `${logObjName} (Empty)`;
+      optionEleLabelProp = (isBrowserWebkit) ? "Empty" : `${label} (Empty)`;
     }
     const optionEle = makeElement(
       "option",
