@@ -1,7 +1,4 @@
-/* @issue Rarely, the CSS will totally fail to apply to the crlr modal. I don't
- * know exactly why this happens, but creating a new, identical style element
- * and appending it seems to fix the issue. It might be a timing thing.
- * Specifically this happens on kh.com */
+/* @fixme 300 multiple choices response */
 
 'use strict';
 const startTime = performance.now();
@@ -71,7 +68,7 @@ const PROTOCOL = window.location.protocol;
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf",
     "png", "ppt", "pptx", "xls", "xlsm", "xlsx"];
-const RECOGNIZED_SCHEMES = ["mailto:", "tel:"];
+const RECOGNIZED_SCHEMES = ["mailto:", "tel:", "javascript:"];
 
 const BANNED_STRINGS = {
   list: ["drupaldev"],
@@ -226,6 +223,7 @@ const GROUP_LABELS = freezeSet(new Set([
   "null",
   "Email",
   "localFile",
+  "javascriptLink",
   "http-httpsError",
   "unusualScheme",
   "visited",
@@ -235,6 +233,7 @@ const GROUP_LABELS = freezeSet(new Set([
   "forbidden",
   "notFound",
   "robotsDisallowed",
+  "unloaded",
   "file"
 ]));
 
@@ -258,9 +257,8 @@ class RecordGroup {
   }
   label(...newLabels) {
     for (const label of newLabels) {
-      if ( this.labels.has(this.constructor.validateLabel(label)) ) {
-        continue;
-      }
+      this.constructor.validateLabel(label);
+      if (this.labels.has(label)) continue;
       this.labels.add(label);
       maybeArrayPush(this.constructor.LabelTable, label, this);
     }
@@ -276,8 +274,8 @@ const ELEMENT_LABELS = freezeSet(new Set([
   "startPage",
   "bannedString",
   "absoluteInternal",
-  "unloaded",
-  "anchor"
+  "anchor",
+  "improperSize"
 ]));
 
 /* Associates a document, set of labels, and a group with a given HTML Element: */
@@ -414,7 +412,7 @@ function clearChildren(parent) {
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
 const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;box-sizing:border-box}#crlr-modal p,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal ol,#crlr-modal ul,#crlr-modal pre,#crlr-modal address,#crlr-modal blockquote,#crlr-modal dl,#crlr-modal div,#crlr-modal fieldset,#crlr-modal form,#crlr-modal hr,#crlr-modal noscript,#crlr-modal table{display:block}#crlr-modal h1{font-size:2em;font-weight:bold;margin-top:0.67em;margin-bottom:0.67em}#crlr-modal h2{font-size:1.5em;font-weight:bold;margin-top:0.83em;margin-bottom:0.83em}#crlr-modal h3{font-size:1.17em;font-weight:bold;margin-top:1em;margin-bottom:1em}#crlr-modal h4{font-weight:bold;margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;font-weight:bold;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;font-weight:bold;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:darkred}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:2px dotted #a6c7ff}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0, 0, 0, 0.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:0.5em;border-radius:5px;background-color:rgba(0,0,20,0.1)}#crlr-modal #crlr-min:hover{border-color:blue;background-color:rgba(0,0,20,0.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row > *{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row > *:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:0.5em;border-bottom:1px dotted #808080;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content > *{margin-bottom:10px}#crlr-modal #crlr-content > :last-child{margin-bottom:0}#crlr-modal.minimized *:not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:0.2;transition:opacity .2s}#crlr-modal.minimized:hover,#crlr-modal.minimized:focus-within{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:1.25em}#crlr-modal #crlr-input-clear{background-color:#ededf2;margin-right:0.25em;padding:0px 0.25em;border:none;font-size:1em}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,0.25)}#crlr-modal #crlr-input-clear:focus{outline:2px solid #a6c7ff}#crlr-modal #crlr-textbox-controls{border:2px solid transparent;border-bottom:2px solid #b0b0b0;background-color:#ededf2;transition:border 0.2s}#crlr-modal #crlr-textbox-controls.focus-within,#crlr-modal #crlr-textbox-controls:focus-within{border:2px solid #a6c7ff}#crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-autocomplete-list{display:none}#crlr-modal input[type="checkbox"]{opacity:0;margin:0}#crlr-modal input[type="checkbox"] + label{padding-top:0.1em;padding-bottom:0.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type="checkbox"] + label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✔";color:transparent;display:block}#crlr-modal input[type="checkbox"]:checked + label::before{color:#222}#crlr-modal input[type="checkbox"]:focus + label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type="checkbox"]:active + label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,0.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output > pre{max-height:200px;padding:0.5em;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}#crlr-modal.browser-gecko .crlr-output > pre{overflow-y:scroll}`;
-const styleEle = makeElement("style", CRAWLER_CSS, {title:"crlr.js.css"});
+const styleEle = makeElement("style", CRAWLER_CSS, {id:"crlr.js.css"});
 document.head.appendChild(styleEle);
 
 /* Make modal element: */
@@ -422,14 +420,15 @@ const MODAL = makeElement("div", undefined, {id: "crlr-modal"});
 document.body.insertBefore(MODAL, document.body.childNodes[0]);
 
 /* Prevent click events on the modal triggering events on the rest of the page: */
-MODAL.addEventListener(
-  "click",
-  function(e) {
-    if (!e) e = window.event;
-    e.cancelBubble = true;
-    if (e.stopPropagation) e.stopPropagation();
-  }
-);
+const cancelBubble = (e)=>{
+  if (!e) e = window.event;
+  e.cancelBubble = true;
+  if (e.stopPropagation) e.stopPropagation();
+}
+MODAL.addEventListener("click", cancelBubble);
+MODAL.addEventListener("keydown", cancelBubble);
+MODAL.addEventListener("keypress", cancelBubble);
+
 /* For browser-specific CSS and formatting: */
 const isBrowserWebkit = /webkit/i.test(navigator.userAgent);
 MODAL.classList.add(isBrowserWebkit ? "browser-webkit" : "browser-gecko");
@@ -445,12 +444,18 @@ const requestCounter = (function() {
     }
   );
   const waitingClassString = "waiting-for-results";
+  let initialized = false;
   /* Methods to allow other code to affect the counter: */
   const API = {
     displayElement: disp,
     count: 0,
     update() {
       disp.innerHTML = `Requests: ${this.count}`;
+      if (initialized && this.count === 0) {
+        this.setText("All requests complete!");
+        window.clearTimeout(TIMEOUT_TIMER);
+        presentResults();
+      }
     },
     increment() {
       ++this.count; this.update();
@@ -469,6 +474,7 @@ const requestCounter = (function() {
   API.update();
   MODAL.classList.add(waitingClassString);
   MODAL.appendChild(disp);
+  initialized = true;
   return API;
 })();
 
@@ -544,20 +550,23 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
         }
         linkRecord.label("absoluteInternal");
       }
+    } else if (linkIsToWebsite) {
+        linkRecord.group.label("external");
     } else {
-      linkRecord.group.label("external");
-      if (!linkIsToWebsite) {
-        if (RECOGNIZED_SCHEMES.indexOf(linkProtocol) === -1) {
-          linkRecord.group.label("unusualScheme");
-        }
-        if (linkProtocol === "mailto:") {
+      if (RECOGNIZED_SCHEMES.indexOf(linkProtocol) === -1) {
+        linkRecord.group.label("unusualScheme");
+      }
+      switch (linkProtocol) {
+        case "mailto:":
           linkRecord.group.label("Email");
           markElement(link, "yellow", "Email link");
-        }
-        else if (linkProtocol === "file:") {
+          break;
+        case "file:":
           linkRecord.group.label("localFile");
           markElement(link, "blue", "File link");
-        }
+          break;
+        case "javascript:":
+          linkRecord.group.label("javascriptLink");
       }
     }
   } //Close for loop iterating over link elements
@@ -567,23 +576,43 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
 function classifyImages(doc, curPageURL, quiet) {
   const IMAGES = doc.getElementsByTagName("img");
   for (const image of IMAGES) {
+    const imageRecord = new ElementRecord(curPageURL, image);
+    imageRecord.group.label("image");
     const srcProp = image.src;
     const srcAttr = image.getAttribute("src");
-
+    if (srcAttr === null) {
+      imageRecord.group.label("null");
+      continue;
+    }
     /* Images don't naturally have location properties, so use the URL api: */
     const imgSrcHostname = new URL(srcProp).hostname.toLowerCase();
     const isInternal = (imgSrcHostname === HOSTNAME);
 
-    const imageRecord = new ElementRecord(curPageURL, image);
-    imageRecord.group.label("image");
-    if (srcAttr === null) {
-      imageRecord.group.label("null");
-    }
-
     /* Unfortunately, whether an image is available must be determined
      * asynchronously: */
-    const newImage = makeElement("img", undefined, {src:image.src});
-    newImage.onerror = ()=>imageRecord.label("unloaded");
+    if (!imageRecord.group.isLabelled("visited")) {
+      const newImage = makeElement("img", undefined, {src:image.src});
+      requestCounter.increment();
+      newImage.onerror = ()=>{
+        imageRecord.group.label("unloaded", "visited");
+        requestCounter.decrement();
+      }
+      newImage.onload = ()=>{
+        imageRecord.group.label("visited");
+        if (
+          image.width !== newImage.naturalWidth ||
+          image.height !== newImage.naturalHeight
+        ) {
+          imageRecord.label("improperSize");
+        }
+        requestCounter.decrement();
+      }
+      newImage.abort = ()=>{
+        newImage.removeAttribute("src");
+        requestCounter.decrement();
+      }
+      allRequests.push(newImage);
+    }
 
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
       imageRecord.label("bannedString");
@@ -753,11 +782,6 @@ the server could not find the given page.";
     function onComplete(request) {
       request.callbackComplete = true;
       requestCounter.decrement();
-      if (requestCounter.count === 0) {
-        requestCounter.setText("All requests complete!");
-        window.clearTimeout(TIMEOUT_TIMER);
-        presentResults();
-      }
     }
 
     /* Start filing request: */
@@ -781,8 +805,9 @@ the server could not find the given page.";
 
     requestCounter.increment();
   } //Close for loop iterating over links
-  /* If no internal links were ever found (e.g. single-page site): */
-  if (requestCounter.count === 0) presentResults();
+  /* Even if no local links were every found and requested, still update the
+   * request counter, so that presentResults() will be called regardless: */
+  requestCounter.update();
 } //Close function visitLinks
 
 
@@ -1338,7 +1363,7 @@ function RobotsTxt() {
 
 const robotsTxtHandler = new RobotsTxt();
 
-function startCrawl(robotsTxt, flagStr) {
+function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
   /* Handle flags: */
   /* Ignore robots.txt directives */
   if (/-ignoreRobots\.?Txt\b/i.test(flagStr)) {
@@ -1401,4 +1426,4 @@ function startCrawl(robotsTxt, flagStr) {
   });
 }
 
-startCrawl(robotsTxtHandler, "");
+startCrawl("");
