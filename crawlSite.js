@@ -1,4 +1,5 @@
-/* @fixme 300 multiple choices response */
+/* @FIXME 300 multiple choices response */
+/* @TODO Label images without alt text */
 
 'use strict';
 const startTime = performance.now();
@@ -450,7 +451,10 @@ const requestCounter = (function() {
     displayElement: disp,
     count: 0,
     update() {
-      disp.innerHTML = `Requests: ${this.count}`;
+      /* To avoid repainting more often than necessary: */
+      window.requestAnimationFrame(()=>{
+        disp.innerHTML = `Requests: ${this.count}`;
+      });
       if (initialized && this.count === 0) {
         this.setText("All requests complete!");
         window.clearTimeout(TIMEOUT_TIMER);
@@ -573,6 +577,84 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
   return internalLinksFromThisPage;
 } //Close function classifyLinks
 
+class ImageLoader {
+  constructor(src) {
+    staticConst(this.constructor, "SrcTable", ()=>Object.create(null));
+
+    /* If another ImageLoader has been created for the given src, reuse it: */
+    const existingLoader = this.constructor.SrcTable[src];
+    if (existingLoader !== undefined) {
+      return existingLoader;
+    }
+    this.constructor.SrcTable[src] = this;
+    this.element = makeElement("img");
+    this.loaded = this.errored = false;
+
+    /* For the timeout and quit function, so that ImageLoaders can be
+     * treated identically to XMLHttpRequests: */
+    this.readyState = 0;
+    requestCounter.increment();
+    allRequests.push(this);
+    this.element.onload  = ()=>{
+      this.loaded  = true;
+      this.readyState = 4;
+      requestCounter.decrement();
+    }
+    this.element.onerror = ()=>{
+      this.errored = true;
+      this.readyState = 4;
+      requestCounter.decrement();
+    }
+    /* Set the src attribute last to guarantee loading doesn't begin until the
+     * onload/error event handlers have been set: */
+    this.element.setAttribute("src", src);
+  }
+  whenReady(normCallback, errCallback) {
+    /* If the image has already loaded or errored, we still want the callbacks
+     * to be executed asynchronously (for consistency). However, we don't want
+     * the resultsModal to show up while one of these callbacks is waiting to
+     * fire, so we treat each such callback as a tiny little request. This
+     * function automatically increments the requestCounter synchronously, to
+     * block the modal, and decrements it after the callback has fired: */
+    const wrapAsRequest = (func)=>{
+      requestCounter.increment();
+      const reqObj = {readyState: 0};
+      const timer = window.setTimeout(()=>{
+        func();
+        reqObj.readyState = 4;
+        requestCounter.decrement();
+      });
+      reqObj.abort = function() {
+        if (reqObj.readyState === 4) return;
+        reqObj.readyState = 4;
+        window.clearTimeout(timer);
+        requestCounter.decrement();
+      }
+      allRequests.push(reqObj)
+    };
+    if      (this.loaded)  wrapAsRequest(normCallback);
+    else if (this.errored) wrapAsRequest(errCallback);
+    else {
+      /* When multiple events are queued using addEventListener, they are
+       * executed **synchronously** in the order of attachment. Since control
+       * flow can't be yielded between event handlers, we don't have to worry
+       * about incrementing and decreenting the requestCounter for each one. */
+      this.element.addEventListener("load", normCallback);
+      if (errCallback !== undefined) {
+        this.element.addEventListener("error", errCallback);
+      }
+    }
+  }
+  abort() {
+    if (!(this.loaded || this.errored)) {
+      /* Removing the src attribute does not fire the onerror event, so we must
+       * manually decrement the requestCounter: */
+      this.element.removeAttribute("src");
+      requestCounter.decrement();
+    }
+  }
+}
+
 function classifyImages(doc, curPageURL, quiet) {
   const IMAGES = doc.getElementsByTagName("img");
   for (const image of IMAGES) {
@@ -588,31 +670,38 @@ function classifyImages(doc, curPageURL, quiet) {
     const imgSrcHostname = new URL(srcProp).hostname.toLowerCase();
     const isInternal = (imgSrcHostname === HOSTNAME);
 
-    /* Unfortunately, whether an image is available must be determined
+    /* Unfortunately, whether an image is available or broken must be determined
      * asynchronously: */
+    const imgLoader = new ImageLoader(image.src);
     if (!imageRecord.group.isLabelled("visited")) {
-      const newImage = makeElement("img", undefined, {src:image.src});
-      requestCounter.increment();
-      newImage.onerror = ()=>{
-        imageRecord.group.label("unloaded", "visited");
-        requestCounter.decrement();
-      }
-      newImage.onload = ()=>{
+      const onload = ()=>{
         imageRecord.group.label("visited");
-        if (
-          image.width !== newImage.naturalWidth ||
-          image.height !== newImage.naturalHeight
-        ) {
-          imageRecord.label("improperSize");
-        }
-        requestCounter.decrement();
       }
-      newImage.abort = ()=>{
-        newImage.removeAttribute("src");
-        requestCounter.decrement();
+      const onerror = ()=>{
+        imageRecord.group.label("unloaded", "visited");
       }
-      allRequests.push(newImage);
+      imgLoader.whenReady(onload, onerror);
     }
+    /* Check whether the displayed size of this particular img element matches
+    * the native size of this image: */
+    const widthAttr =  image.getAttribute("width");
+    const heightAttr = image.getAttribute("height");
+    const anyDimensionsSpecified = (widthAttr !== null || heightAttr !== null);
+    const compareImageSize = ()=>{
+      const loadEle = imgLoader.element;
+      const widthMatches = (
+        widthAttr === null ||
+        Number(widthAttr) === loadEle.naturalWidth
+      );
+      const heightMatches = (
+        heightAttr === null ||
+        Number(heightAttr) === loadEle.naturalHeight
+      );
+      if (!(widthMatches && heightMatches)) {
+        imageRecord.label("improperSize");
+      }
+    };
+    if (anyDimensionsSpecified) imgLoader.whenReady(compareImageSize);
 
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
       imageRecord.label("bannedString");
@@ -961,7 +1050,7 @@ function presentResults() {
     {
       id: "crlr-input-textbox",
       type: "text",
-      value:"link",
+      value: "link",
       list: "crlr-autocomplete-list",
       size: requiredLength
     }
