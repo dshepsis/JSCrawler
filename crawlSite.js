@@ -1,5 +1,4 @@
 /* @FIXME 300 multiple choices response */
-/* @TODO Label images without alt text */
 
 'use strict';
 const startTime = performance.now();
@@ -276,7 +275,8 @@ const ELEMENT_LABELS = freezeSet(new Set([
   "bannedString",
   "absoluteInternal",
   "anchor",
-  "improperSize"
+  "improperSize",
+  "noAltText"
 ]));
 
 /* Associates a document, set of labels, and a group with a given HTML Element: */
@@ -703,6 +703,10 @@ function classifyImages(doc, curPageURL, quiet) {
     };
     if (anyDimensionsSpecified) imgLoader.whenReady(compareImageSize);
 
+    if (!image.alt) {
+    //if (image.getAttribute("alt") === null) {
+      imageRecord.label("noAltText");
+    }
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
       imageRecord.label("bannedString");
     }
