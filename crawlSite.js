@@ -1,5 +1,3 @@
-/* @FIXME 300 multiple choices response */
-
 'use strict';
 const startTime = performance.now();
 
@@ -406,6 +404,7 @@ function makeElement(type, content, attrObj) {
     appendChildren(newEle, content);
   }
   if (attrObj !== undefined) {
+    validateType(attrObj, 'object', "Attribute Object");
     for (const attribute of Object.keys(attrObj)) {
       newEle.setAttribute(attribute, attrObj[attribute]);
     }
@@ -586,7 +585,7 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
           linkRecord.group.label("javascriptLink");
           break;
         case "tel:":
-          makeElement(link, "darkBlue", "Telephone Link");
+          markElement(link, "darkBlue", "Telephone Link");
           break;
         default:
           markElement(link, "darkGray", "Unusual Scheme");
