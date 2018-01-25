@@ -8,8 +8,9 @@ const startTime = performance.now();
 function validateType(ambiguousVar, desiredType, nameStr = "variable") {
   /* Validate the type of nameStr: */
   if (typeof nameStr !== 'string') {
-    throw new TypeError(`nameStr must be a string. Instead, its type was \
-'${typeof nameStr}'.`);
+    throw new TypeError(
+      `nameStr must be a string. Instead, its type was '${typeof nameStr}'.`
+    );
   }
 
   let isCorrectType = false;
@@ -22,40 +23,48 @@ function validateType(ambiguousVar, desiredType, nameStr = "variable") {
     isCorrectType = (typeof ambiguousVar === desiredType);
     desiredTypeStr = desiredType;
   } else if (
-    validationStyle === 'function'
-    && desiredType.prototype !== undefined
+    validationStyle === 'function' &&
+    desiredType.prototype !== undefined
   ) {
     desiredTypeStr = desiredType.name;
     isCorrectType = (ambiguousVar instanceof desiredType);
   } else {
     /* Throw a TypeError because desiredType has an invalid type: */
-    throw new TypeError(`desiredType must be a string (matching the typeof to \
-validate against) or a constructor function (matching the instanceof to \
-validate against). Instead, its type was: ${validationStyle}.`);
+    throw new TypeError(
+      `desiredType must be a string (matching the typeof to validate against) `+
+      `or a constructor function (matching the instanceof to `+
+      `validate against). Instead, its type was: ${validationStyle}.`
+    );
   }
-
+  /* Type is valid, so return the variable: */
   if (isCorrectType) {
     return ambiguousVar;
-  } else {
-    let wrongType = typeof ambiguousVar;
-
-    /* Special case for null, which has type 'object' for legacy reasons: */
-    if (ambiguousVar === null) wrongType = "null pointer";
-    else if (wrongType === 'object') wrongType = ambiguousVar.constructor.name;
-
-    /* Actually throw the meaningful error: */
-    throw new TypeError(`${nameStr} must be of type "${desiredTypeStr}"! \
-Instead, it was of type ${wrongType}.`);
   }
+  /* Type is invalid, so throw an error: */
+  let wrongType = typeof ambiguousVar;
+
+  /* Special case for null, which has type 'object' for legacy reasons: */
+  if (ambiguousVar === null) wrongType = "null pointer";
+
+  /* If ambiguousVar is an object, report its constructor name for better
+   * clarity in the error message: */
+  else if (wrongType === 'object') wrongType = ambiguousVar.constructor.name;
+
+  /* Actually throw the meaningful error: */
+  throw new TypeError(
+    `${nameStr} must be of type "${desiredTypeStr}"! `+
+    `Instead, it was of type "${wrongType}".`
+  );
 }
 
 /* Warn the user about navigating away during crawl: */
 window.addEventListener("beforeunload", function (e) {
   /* Note: In modern browsers, these messages are ignored as a security feature,
    * and a default message is displayed instead. */
-  const confirmationMessage = "Warning: Navigating away from the page during a \
-site-crawl will cancel the crawl, losing all progress. Are you sure you want \
-to continue?";
+  const confirmationMessage = (
+    "Warning: Navigating away from the page during a site-crawl will cancel "+
+    "the crawl, losing all progress. Are you sure you want to continue?"
+  );
   e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
   return confirmationMessage;              // Gecko, WebKit, Chrome <34
 });
@@ -66,9 +75,11 @@ const PROTOCOL = window.location.protocol;
 
 
 /* Settings variables: */
-const RECOGNIZED_FILE_TYPES = ["doc", "docx", "gif", "jpeg", "jpg", "pdf",
-    "png", "ppt", "pptx", "xls", "xlsm", "xlsx"];
-const RECOGNIZED_SCHEMES = ["mailto:", "tel:", "javascript:"];
+const RECOGNIZED_FILE_TYPES = [
+  "doc", "docx", "gif", "jpeg", "jpg", "pdf",
+  "png", "ppt", "pptx", "xls", "xlsm", "xlsx"
+];
+const RECOGNIZED_SCHEMES = ["mailto:", "file:", "tel:", "javascript:"];
 
 const BANNED_STRINGS = {
   list: ["drupaldev"],
@@ -86,15 +97,15 @@ const BANNED_STRINGS = {
     }
     return false;
   }
-}
+};
 
 const MAX_TIMEOUT = 60*1000; //Miliseconds
-let timedOut = false;
+let crawlTerminatedBeforeCompletion = false;
 const allRequests = [];
 
 /* A function which aborts any live requests at the time of execution: */
 const QUIT = (noisy)=>{
-  timedOut = true;
+  crawlTerminatedBeforeCompletion = true;
   for (let r = 0, len = allRequests.length; r < len; ++r) {
     const request = allRequests[r];
 
@@ -106,10 +117,10 @@ const QUIT = (noisy)=>{
       console.warn("Aborting request at index " + r + " of allRequests");
     }
   }
-}
+};
 /* Aliasing, so that a user can more easily stop a runaway crawl: */
-const Quit = QUIT; const quit = QUIT;
-const EXIT = QUIT; const Exit = QUIT; const exit = QUIT;
+// const Quit = QUIT; const quit = QUIT;
+// const EXIT = QUIT; const Exit = QUIT; const exit = QUIT;
 
 /* Set a timer to end all live requests when the timer is reached. */
 const TIMEOUT_TIMER = window.setTimeout(()=>QUIT(true), MAX_TIMEOUT);
@@ -132,13 +143,13 @@ function urlRemoveAnchor(locationObj) {
 function freezeSet(mySet) {
   mySet.add = function() {
     throw new Error("Cannot add to read only Set.");
-  }
+  };
   mySet.clear = function () {
     throw new Error("Cannot clear read only Set.");
-  }
+  };
   mySet.delete = function () {
     throw new Error("Cannot delete from read only Set.");
-  }
+  };
   Object.freeze(mySet);
   return mySet;
 }
@@ -152,9 +163,9 @@ function staticConst(classConstructor, varName, value) {
   }
   Object.defineProperty(classConstructor, varName, {
     value: (typeof value === "function") ? value() : value,
-    writable : false,
-    enumerable : true,
-    configurable : false
+    writable: false,
+    enumerable: true,
+    configurable: false
   });
   return true;
 }
@@ -169,26 +180,25 @@ const makeIfUndef = function (obj, prop, val, onExistence) {
   const existingVal = obj[prop];
   if (existingVal === undefined) {
     const newVal = (typeof val === "function") ? val() : val;
-    obj[prop] = newVal
+    obj[prop] = newVal;
     return newVal;
-  } else {
-    if (onExistence !== undefined) onExistence(existingVal);
-    return existingVal;
   }
-}
+  if (onExistence !== undefined) onExistence(existingVal);
+  return existingVal;
+};
 
 /* Add the value val to the array specified by obj[arrName]. If there is not a
  * array defined there already, an empty one is made and val is added to it: */
 const maybeArrayPush = function (obj, arrName, val) {
   makeIfUndef(obj, arrName, ()=>[]).push(val);
-}
+};
 
 /* Returns either an element's href property, or its src property, whichever is
  * isn't undefined. Throws an error if both or neither of them are defined.
  * Note hrefs are returned without an anchor (the part after the #, if present).*/
 function getHrefOrSrcProp(ele, retainAnchor) {
   validateType(ele, HTMLElement, "element");
-  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!") //@debug
+  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
   if (ele.href !== undefined) {
     return (retainAnchor ? ele.href : urlRemoveAnchor(ele));
   }
@@ -201,10 +211,10 @@ source.`);
 /* Similar to above, except returns the attribute instead of the property: */
 function getHrefOrSrcAttr(ele) {
   validateType(ele, HTMLElement, "element");
-  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!") //@debug
+  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
   for (const attrName of ["href", "src"]) {
     const attrVal = ele.getAttribute(attrName);
-    if (attrVal !== null) return attrVal
+    if (attrVal !== null) return attrVal;
   }
   /* Null links may very well have a null href, so there's no reason to throw an
    * error. */
@@ -217,9 +227,10 @@ function getHrefOrSrcAttr(ele) {
  * so if one of them 404s (notFound), all of the others will too. */
 const GROUP_LABELS = freezeSet(new Set([
   "link",
+  "image",
+  "iframe",
   "internal",
   "external",
-  "image",
   "null",
   "Email",
   "localFile",
@@ -264,7 +275,7 @@ class RecordGroup {
     }
   }
   isLabelled(label) {
-     return this.labels.has(this.constructor.validateLabel(label));
+    return this.labels.has(this.constructor.validateLabel(label));
   }
 }
 
@@ -276,7 +287,8 @@ const ELEMENT_LABELS = freezeSet(new Set([
   "absoluteInternal",
   "anchor",
   "improperSize",
-  "noAltText"
+  "noAltText",
+  "emptyTitle"
 ]));
 
 /* Associates a document, set of labels, and a group with a given HTML Element: */
@@ -355,7 +367,7 @@ const getAllRecordsLabelled = (label)=>{
     return null;
   }
   return recordList;
-}
+};
 
 /**
  * DOM Manipulation
@@ -391,11 +403,11 @@ function appendChildren(parent, children) {
 function makeElement(type, content, attrObj) {
   const newEle = document.createElement(type);
   if (content !== undefined) {
-    appendChildren(newEle, content)
+    appendChildren(newEle, content);
   }
   if (attrObj !== undefined) {
-    for (const attribute in attrObj) {
-     newEle.setAttribute(attribute, attrObj[attribute]);
+    for (const attribute of Object.keys(attrObj)) {
+      newEle.setAttribute(attribute, attrObj[attribute]);
     }
   }
   return newEle;
@@ -413,7 +425,7 @@ function clearChildren(parent) {
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
 const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;box-sizing:border-box}#crlr-modal p,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal ol,#crlr-modal ul,#crlr-modal pre,#crlr-modal address,#crlr-modal blockquote,#crlr-modal dl,#crlr-modal div,#crlr-modal fieldset,#crlr-modal form,#crlr-modal hr,#crlr-modal noscript,#crlr-modal table{display:block}#crlr-modal h1{font-size:2em;font-weight:bold;margin-top:0.67em;margin-bottom:0.67em}#crlr-modal h2{font-size:1.5em;font-weight:bold;margin-top:0.83em;margin-bottom:0.83em}#crlr-modal h3{font-size:1.17em;font-weight:bold;margin-top:1em;margin-bottom:1em}#crlr-modal h4{font-weight:bold;margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;font-weight:bold;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;font-weight:bold;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:darkred}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:2px dotted #a6c7ff}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0, 0, 0, 0.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:0.5em;border-radius:5px;background-color:rgba(0,0,20,0.1)}#crlr-modal #crlr-min:hover{border-color:blue;background-color:rgba(0,0,20,0.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row > *{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row > *:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:0.5em;border-bottom:1px dotted #808080;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content > *{margin-bottom:10px}#crlr-modal #crlr-content > :last-child{margin-bottom:0}#crlr-modal.minimized *:not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:0.2;transition:opacity .2s}#crlr-modal.minimized:hover,#crlr-modal.minimized:focus-within{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:1.25em}#crlr-modal #crlr-input-clear{background-color:#ededf2;margin-right:0.25em;padding:0px 0.25em;border:none;font-size:1em}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,0.25)}#crlr-modal #crlr-input-clear:focus{outline:2px solid #a6c7ff}#crlr-modal #crlr-textbox-controls{border:2px solid transparent;border-bottom:2px solid #b0b0b0;background-color:#ededf2;transition:border 0.2s}#crlr-modal #crlr-textbox-controls.focus-within,#crlr-modal #crlr-textbox-controls:focus-within{border:2px solid #a6c7ff}#crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-autocomplete-list{display:none}#crlr-modal input[type="checkbox"]{opacity:0;margin:0}#crlr-modal input[type="checkbox"] + label{padding-top:0.1em;padding-bottom:0.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type="checkbox"] + label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✔";color:transparent;display:block}#crlr-modal input[type="checkbox"]:checked + label::before{color:#222}#crlr-modal input[type="checkbox"]:focus + label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type="checkbox"]:active + label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,0.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output > pre{max-height:200px;padding:0.5em;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}#crlr-modal.browser-gecko .crlr-output > pre{overflow-y:scroll}`;
-const styleEle = makeElement("style", CRAWLER_CSS, {id:"crlr.js.css"});
+const styleEle = makeElement("style", CRAWLER_CSS, {id: "crlr.js.css"});
 document.head.appendChild(styleEle);
 
 /* Make modal element: */
@@ -425,7 +437,7 @@ const cancelBubble = (e)=>{
   if (!e) e = window.event;
   e.cancelBubble = true;
   if (e.stopPropagation) e.stopPropagation();
-}
+};
 MODAL.addEventListener("click", cancelBubble);
 MODAL.addEventListener("keydown", cancelBubble);
 MODAL.addEventListener("keypress", cancelBubble);
@@ -438,12 +450,10 @@ MODAL.classList.add(isBrowserWebkit ? "browser-webkit" : "browser-gecko");
  * requests currently waiting: */
 const requestCounter = (function() {
   /* Create display: */
-  const disp = makeElement("p", undefined,
-    {
-      id: "request-counter",
-      title: "Number of page requests currently loading"
-    }
-  );
+  const disp = makeElement("p", undefined, {
+    id: "request-counter",
+    title: "Number of page requests currently loading"
+  });
   const waitingClassString = "waiting-for-results";
   let initialized = false;
   /* Methods to allow other code to affect the counter: */
@@ -465,6 +475,9 @@ const requestCounter = (function() {
       ++this.count; this.update();
     },
     decrement() {
+      if (this.count <= 0) {
+        throw new Error("DECREMENTED COUNTER BELOW ZERO");
+      }
       --this.count; this.update();
     },
     setText(text) {
@@ -474,13 +487,13 @@ const requestCounter = (function() {
       MODAL.removeChild(disp);
       MODAL.classList.remove(waitingClassString);
     }
-  }
+  };
   API.update();
   MODAL.classList.add(waitingClassString);
   MODAL.appendChild(disp);
   initialized = true;
   return API;
-})();
+}());
 
 /**
  * Crawling functions:
@@ -505,7 +518,6 @@ function classifyLinks(doc, curPageURL) {
   /* Loop over links: */
   for (const link of LINKS) {
     const hrefAttr = link.getAttribute("href");
-    const anchorlessHref = urlRemoveAnchor(link);
     const linkRecord = new ElementRecord(curPageURL, link);
     linkRecord.group.label("link");
 
@@ -540,12 +552,12 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
     }
     if (linkIsInternal) {
       linkRecord.group.label("internal");
-      if (linkProtocol !== PROTOCOL) {
-        linkRecord.group.label("http-httpsError");
-      } else {
+      if (linkProtocol === PROTOCOL) {
         /* Store this record for return, because it is internal with a matching
          * protocol, so its page should be checked in visitLinks: */
         internalLinksFromThisPage.push(linkRecord);
+      } else {
+        linkRecord.group.label("http-httpsError");
       }
       if (linkIsAbsolute) {
         if (link.matches(".field-name-field-related-links a")) {
@@ -555,10 +567,11 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
         linkRecord.label("absoluteInternal");
       }
     } else if (linkIsToWebsite) {
-        linkRecord.group.label("external");
+      linkRecord.group.label("external");
     } else {
       if (RECOGNIZED_SCHEMES.indexOf(linkProtocol) === -1) {
         linkRecord.group.label("unusualScheme");
+        markElement(link, "gray", "Unusual Scheme");
       }
       switch (linkProtocol) {
         case "mailto:":
@@ -571,6 +584,12 @@ ${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
           break;
         case "javascript:":
           linkRecord.group.label("javascriptLink");
+          break;
+        case "tel:":
+          makeElement(link, "darkBlue", "Telephone Link");
+          break;
+        default:
+          markElement(link, "darkGray", "Unusual Scheme");
       }
     }
   } //Close for loop iterating over link elements
@@ -595,16 +614,16 @@ class ImageLoader {
     this.readyState = 0;
     requestCounter.increment();
     allRequests.push(this);
-    this.element.onload  = ()=>{
+    this.element.onload = ()=>{
       this.loaded  = true;
       this.readyState = 4;
       requestCounter.decrement();
-    }
+    };
     this.element.onerror = ()=>{
       this.errored = true;
       this.readyState = 4;
       requestCounter.decrement();
-    }
+    };
     /* Set the src attribute last to guarantee loading doesn't begin until the
      * onload/error event handlers have been set: */
     this.element.setAttribute("src", src);
@@ -629,8 +648,8 @@ class ImageLoader {
         reqObj.readyState = 4;
         window.clearTimeout(timer);
         requestCounter.decrement();
-      }
-      allRequests.push(reqObj)
+      };
+      allRequests.push(reqObj);
     };
     if      (this.loaded)  wrapAsRequest(normCallback);
     else if (this.errored) wrapAsRequest(errCallback);
@@ -638,7 +657,7 @@ class ImageLoader {
       /* When multiple events are queued using addEventListener, they are
        * executed **synchronously** in the order of attachment. Since control
        * flow can't be yielded between event handlers, we don't have to worry
-       * about incrementing and decreenting the requestCounter for each one. */
+       * about incrementing and decrementing the requestCounter for each one. */
       this.element.addEventListener("load", normCallback);
       if (errCallback !== undefined) {
         this.element.addEventListener("error", errCallback);
@@ -655,7 +674,7 @@ class ImageLoader {
   }
 }
 
-function classifyImages(doc, curPageURL, quiet) {
+function classifyImages(doc, curPageURL) {
   const IMAGES = doc.getElementsByTagName("img");
   for (const image of IMAGES) {
     const imageRecord = new ElementRecord(curPageURL, image);
@@ -676,10 +695,10 @@ function classifyImages(doc, curPageURL, quiet) {
     if (!imageRecord.group.isLabelled("visited")) {
       const onload = ()=>{
         imageRecord.group.label("visited");
-      }
+      };
       const onerror = ()=>{
         imageRecord.group.label("unloaded", "visited");
-      }
+      };
       imgLoader.whenReady(onload, onerror);
     }
     /* Check whether the displayed size of this particular img element matches
@@ -721,6 +740,38 @@ function classifyImages(doc, curPageURL, quiet) {
   }//Close for loop iterating over images
 }//Close function classifyImages
 
+function classifyOther(doc, curPageURL) {
+  const IFRAMES = doc.getElementsByTagName("iframe");
+  for (const iframe of IFRAMES) {
+    const eleRecord = new ElementRecord(curPageURL, iframe);
+    eleRecord.group.label("iframe");
+
+    const srcProp = iframe.src;
+    const srcAttr = iframe.getAttribute("src");
+    if (srcAttr === null) {
+      eleRecord.group.label("null");
+      continue;
+    }
+    const iframeSrcHostname = new URL(srcProp).hostname.toLowerCase();
+    const isInternal = (iframeSrcHostname === HOSTNAME);
+
+    if (!iframe.title) {
+      eleRecord.label("emptyTitle");
+    }
+    if (BANNED_STRINGS.isStringBanned(srcProp)) {
+      eleRecord.label("bannedString");
+    }
+    if (isInternal) {
+      eleRecord.group.label("internal");
+      if (srcProp === srcAttr) {
+        eleRecord.label("absoluteInternal");
+      }
+    } else {
+      eleRecord.group.label("external");
+    }
+  }//Close for loop iterating over iframes
+}//Close function classifyOther
+
 /* Makes requests to the HREFs of links in LinkElementList, and handles the
  * results of the request.
  *
@@ -739,6 +790,124 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   if (recursive === undefined) {
     recursive = true;
   }
+
+  /**
+   * Callbacks:
+   */
+
+  /* Before the full requested-resource is loaded, we can view the response
+   * header for information such as the data type of the resource
+   * (e.g. text/html vs application/pdf) and use that information to make
+   * decisions on how to proceed w/o having to let the entire file be loaded. */
+  const checkRequestHeaders = (pageRecordGroup, request)=>{
+    /* Checks if the request resolved to a file rather than an HTML document: */
+    function findURLExtension(url) {
+      for (let i = url.length - 1; i >= 0; --i) {
+        if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
+      }
+      return undefined;
+    }
+    /* First, check the request's file extension: */
+    const extension = findURLExtension(request.responseURL);
+    const isRecognizedFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
+    if (isRecognizedFile) {
+      pageRecordGroup.label("file");
+    }
+    /* Then, check the request's content-type: */
+    const contentType = request.getResponseHeader("Content-Type");
+    const validContentType = "text/html";
+    if (contentType.substr(0, validContentType.length) !== validContentType) {
+      if (!isRecognizedFile) {
+        pageRecordGroup.label("unknownContentType");
+      }
+      request.resolvedToFile = true;
+      request.abort();
+    }
+  };
+
+  /* Handle normal, valid page responses: */
+  const normalResponseHandler = (pageRecordGroup, pageURL, pageDOM, request)=>{
+    if (!pageDOM) {
+      console.error(
+        "Null response from " + pageURL +
+        ". It may be an unrecognized file type." +
+        "\n\tIt was linked-to from " + curPage
+      );
+      console.error(request);
+      return;
+    }
+
+    if (recursive) {
+      /* Check images on the given page: */
+      classifyImages(pageDOM, pageURL);
+      classifyOther(pageDOM, pageURL);
+      /* Recursively check the links found on the given page: */
+      const newLinks = classifyLinks(pageDOM, pageURL);
+      visitLinks(newLinks, pageURL, robotsTxt);
+    }
+  };
+
+  /* Handle responses that are errors (e.g. Not Found, Forbidden, etc.): */
+  const errorHandler = (pageRecordGroup, pageURL, request)=>{
+    /* If we aborted the request early due to the header telling us the
+     * resource is a file, we shouldn't log another error, as everything
+     * should've already been handled by checkRequestHeaders. */
+    if (request.resolvedToFile) return;
+    if (request.abortedDueToTimeout) return;
+
+    /* Otherwise, something went wrong with the request: */
+    if (request.readyState !== 4) {
+      console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", request);
+      throw new Error(
+        "AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(request)
+      );
+    }
+
+    const errType = request.status;
+    const msgHead =
+      `A ${errType} Error occurred when requesting ${pageURL}. `;
+    let msg = "";
+    switch (request.status) {
+      case 0:
+        pageRecordGroup.label("redirects");
+        msg =  `The request to ${pageURL} caused an undefined error. `;
+        msg += "The url probably either redirects to an external site, or is ";
+        msg += "invalid. There may also be a networking issue, or another ";
+        msg += "problem entirely.\nUnfortunately, this script cannot ";
+        msg += "distinguish between those possibilities.";
+        break;
+      case 400:
+        pageRecordGroup.label("badRequest");
+        msg =  `${msgHead}That means the request sent to the server was `;
+        msg += "malformed or corrupted.";
+        break;
+      case 401:
+        pageRecordGroup.label("accessDenied");
+        msg =  `${msgHead}That means access was denied to the client by the `;
+        msg += "server.";
+        break;
+      case 403:
+        pageRecordGroup.label("forbidden");
+        msg =  `${msgHead}That means the server considers access to the `;
+        msg += "resource to be absolutely forbidden.";
+        break;
+      case 404:
+        pageRecordGroup.label("notFound");
+        msg = `${msgHead}That means the server could not find the given page.`;
+        break;
+      default:
+        console.error("AN UNIDENTIFIED ERROR OCURRED!", request);
+        return;
+    }
+    console.error(msg + "\n\tLinked-to from: " + curPage);
+  };
+
+  /* When the request resolves, regardless of whether the response was an error,
+   * mark the request as complete and decrement the request counter: */
+  const onComplete = (request)=>{
+    request.callbackComplete = true;
+    requestCounter.decrement();
+  };
 
   console.log(`Checking links found on: ${curPage}`);
   for (const linkRecord of RecordList) {
@@ -762,134 +931,33 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
     /**
      * Making the HTTP Request:
      */
-    let httpRequest = new XMLHttpRequest();
+    const httpRequest = new XMLHttpRequest();
     allRequests.push(httpRequest);
-
-    /*  Callbacks: */
-
-    /* Before the full requested-resource is loaded, we can view the response
-     * header for information such as the data type of the resource
-     * (e.g. text/html vs application/pdf) and use that information to make
-     * decisions on how to proceed w/o having to let the entire file be loaded. */
-    function checkRequestHeaders(request) {
-      /* Checks if the request resolved to a file rather than an HTML document: */
-      function findURLExtension(url) {
-        for (let i = url.length - 1; i >= 0; --i) {
-          if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
-        }
-        return undefined;
-      }
-      /* First, check the request's file extension: */
-      let extension = findURLExtension(request.responseURL)
-      let isRecognizedFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
-      if (isRecognizedFile) {
-        pageData.label("file")
-      }
-      /* Then, check the request's content-type: */
-      let contentType = request.getResponseHeader("Content-Type");
-      let validContentType = "text/html";
-      if (contentType.substr(0, validContentType.length) !== validContentType) {
-        if (!isRecognizedFile) {
-          pageData.label("unknownContentType");
-        }
-        request.resolvedToFile = true;
-        request.abort();
-      }
-    }
-
-    function normalResponseHandler(page, request) {
-      if (!page) {
-        console.error("Null response from " + URLOfPageToVisit +
-". It may be an unrecognized file type.\n\tIt was linked-to from " + curPage);
-        console.error(request);
-        return;
-      }
-
-      if (recursive) {
-        /* Check images on the given page: */
-        classifyImages(page, URLOfPageToVisit);
-        /* Recursively check the links found on the given page: */
-        const newLinks = classifyLinks(page, URLOfPageToVisit);
-        visitLinks(newLinks, URLOfPageToVisit, robotsTxt);
-      }
-    }
-
-    function errorHandler(request) {
-      /* If we aborted the request early due to the header telling us the
-       * resource is a file, we shouldn't log another error, as everything
-       * should've already been handled by checkRequestHeaders. */
-      if (request.resolvedToFile) return;
-      if (request.abortedDueToTimeout) return;
-
-      /* Otherwise, something went wrong with the request: */
-      if (request.readyState !== 4) {
-        console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", request);
-        throw new Error (
-          "AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(request)
-        );
-      }
-
-      let msg = "";
-      switch (request.status) {
-        case 0:
-          pageData.label("redirects");
-          msg = "The request to " + URLOfPageToVisit + " caused an undefined \
-error. The url probably either redirects to an external site. or is invalid. \
-There may also be a networking issue, or another problem entirely.";
-          msg += "\nUnfortunately, this script cannot distinguish between those possibilities.";
-          break;
-        case 400:
-          pageData.label("badRequest");
-          msg = "A 400 Error occurred when requesting " + URLOfPageToVisit + ", That means \
-the request sent to the server was malformed or corrupted.";
-          break;
-        case 401:
-          pageData.label("accessDenied");
-          msg = "A 401 Error occurred when requesting " + URLOfPageToVisit + ". That means \
-access was denied to the client by the server.";
-          break;
-        case 403:
-          pageData.label("forbidden");
-          msg = "A 403 Error occurred when requesting " + URLOfPageToVisit + ". That means \
-the server considers access to the resource absolutely forbidden.";
-          break;
-        case 404:
-          pageData.label("notFound");
-          msg = "A 404 Error occurred when requesting " + URLOfPageToVisit + ". That means \
-the server could not find the given page.";
-          break;
-        default:
-          console.error("AN UNIDENTIFIED ERROR OCURRED!", request);
-      }
-      if (msg !== "") console.error(msg + "\n\tLinked-to from: " + curPage);
-    }
-
-    /* This function will execute whenever a document request fully resolves,
-    * regardless of whether it was successful or not.
-    *
-    * By incrementing the instances counter before a request is made (aove
-    * this method call) and decrementing it when a request completes, we can
-    * execute code exactly when crawling is fully complete, by checking when
-    * the total number of unresolved requests reaches 0.
-    */
-    function onComplete(request) {
-      request.callbackComplete = true;
-      requestCounter.decrement();
-    }
 
     /* Start filing request: */
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
-        checkRequestHeaders(httpRequest);
-      } else if (httpRequest.readyState === XMLHttpRequest.DONE) {
-        if (httpRequest.status === 200) { //Code for "Good"
-          normalResponseHandler(httpRequest.responseXML, httpRequest);
-        } else {
-          errorHandler(httpRequest);
-        }
-        onComplete(httpRequest);
+        checkRequestHeaders(
+          pageData,  //Loop Parameter
+          httpRequest //Request Parameter
+        );
       }
-    }
+      if (httpRequest.readyState !== XMLHttpRequest.DONE) {
+        return;
+      }
+      if (httpRequest.status === 200) { //Code for "Good"
+        normalResponseHandler(
+          pageData, URLOfPageToVisit,          //Loop Parameters
+          httpRequest.responseXML, httpRequest //Request Parameters
+        );
+      } else {
+        errorHandler(
+          pageData, URLOfPageToVisit, //Loop Parameters
+          httpRequest                 //Request Parameter
+        );
+      }
+      onComplete(httpRequest);
+    };
     httpRequest.open("GET", URLOfPageToVisit);
     httpRequest.responseType = "document";
 
@@ -928,30 +996,6 @@ function cutOff(str, maxLen, breakStr) {
   return str.substring(0, cutOffPoint);
 }
 
-/* Reformats a logging object to change the mapping. The returned object maps
- * from the url of a page (containing links classified by the given object) to
- * an array of corresponding link elements on that page. */
-function loggingObjectReformat(logObj) {
-  let pageToArrayOfElements = {};
-  for (let url in logObj) {
-    let pageList = logObj[url];
-    for (let i = 0, len = pageList.length; i < len; ++i) {
-      let caseObj = pageList[i];
-      let keys = Object.keys(caseObj);
-      if (keys.length !== 1) {
-        console.error(`I messed up at url ${url} and caseObj ${JSON.stringify(caseObj)}`);
-      }
-      let pageContainingElement = keys[0];
-      if (pageToArrayOfElements[pageContainingElement] === undefined) {
-        pageToArrayOfElements[pageContainingElement] = [caseObj[pageContainingElement]];
-      } else {
-        pageToArrayOfElements[pageContainingElement].push(caseObj[pageContainingElement]);
-      }
-    }
-  }
-  return pageToArrayOfElements;
-}
-
 /* This is called when the crawling is fully complete. it is the last
  * part of the script ot be executed: */
 function presentResults() {
@@ -968,8 +1012,8 @@ function presentResults() {
 
   /* Make the modal header, containing the minimize button, the title, etc.: */
   let headerStr = "Results";
-  headerStr += (timedOut) ? " (incomplete):" : ":";
-  const modalTitle = makeElement("h1", headerStr, {id:"crlr-title"});
+  headerStr += (crawlTerminatedBeforeCompletion) ? " (incomplete):" : ":";
+  const modalTitle = makeElement("h1", headerStr, {id: "crlr-title"});
   const modalHeaderMsg = makeElement("div", modalTitle,
     {
       id: "crlr-header-msg",
@@ -986,7 +1030,7 @@ function presentResults() {
 
   /* Make the modal content, for presenting crawl data and controls for viewing
    * that data: */
-  const modalContent = makeElement("div", undefined, {id:"crlr-content"});
+  const modalContent = makeElement("div", undefined, {id: "crlr-content"});
   ModalBuffer.appendChild(modalContent);
 
   /* Create textbox for specifying desired output: */
@@ -1016,14 +1060,14 @@ function presentResults() {
       }
     );
     return optionEle;
-  }
+  };
 
   /* Iterate over Group labels, then iterate over Element labels:
    * (The order doesn't actually matter.) */
   for (const label of GROUP_LABELS) {
     requiredLength = Math.max(requiredLength, label.length);
     autoCompleteItems.push(
-     optionElementFromLabel(label, RecordGroup.LabelTable)
+      optionElementFromLabel(label, RecordGroup.LabelTable)
     );
   }
   for (const label of ELEMENT_LABELS) {
@@ -1058,7 +1102,7 @@ function presentResults() {
       list: "crlr-autocomplete-list",
       size: requiredLength
     }
-  )
+  );
   const logObjInputContainer = makeElement(
     "div",
     [clearInputButton, autoCompleteList, inputTextBox],
@@ -1125,7 +1169,7 @@ function presentResults() {
 
   /* Create containers for output: */
   const pre = makeElement("pre");
-  const preCont = makeElement("div", pre, {class:"crlr-output"});
+  const preCont = makeElement("div", pre, {class: "crlr-output"});
   const dlLinkPara = makeElement("p");
   appendChildren(
     modalContent,
@@ -1142,6 +1186,9 @@ function presentResults() {
     if (recordList !== null) {
       for (const record of recordList) {
         let key, val;
+
+        /* Map from from a given URL to URLs of pages which contain a link whose
+         * HREF matches the given URL (i.e. link -> [pages]): */
         if (invertMapping) {
           /* Use the property here, so that absolute and relative elements
            * correspond to the same key. If the label is anchor, don't remove
@@ -1149,24 +1196,24 @@ function presentResults() {
           const retainAnchor = (label === "anchor");
           key = getHrefOrSrcProp(record.element, retainAnchor);
           val = record.document;
-        } else {
+        }
+        /* Map from page URL to HREFs of links on that page
+         * (i.e. page -> [links]): */
+        else {
+          key = record.document;
+
           /* Use the attribute here, so that relative elements can be founded by
            * using ctrl + f on the DOM: */
-          key = record.document;
-          val = getHrefOrSrcAttr(record.element)
+          val = getHrefOrSrcAttr(record.element);
         }
         maybeArrayPush(labelData, key, val);
       }
     }
     return labelData;
-  }
-  /* Inverse of the above. The mapping is from element href/src to an array of
-   * documents containing that
-  const labelToElementMap
+  };
 
   /* For handling the output of logging objects to the user: */
-  const outputEventFns = (function() {
-    let labelOfCurrentlyDisplayedData;
+  const updateOutput = (function() {
     let usingAltFormat;
 
     function outputDataToModal(label) {
@@ -1188,8 +1235,8 @@ function presentResults() {
       let linkText;
       let afterLinkText = "";
       if (previewTooLong) {
-        beforeLinkText = "Note that the data shown above is only a preview, as \
-the full data was too long. ";
+        beforeLinkText =  "Note that the data shown above is only a preview, ";
+        beforeLinkText += "as the full data was too long. ";
         linkText = "Click here";
         afterLinkText = " to download the full JSON file.";
       }
@@ -1202,7 +1249,7 @@ the full data was too long. ";
 
       let downloadName = window.location.hostname.replace(/^www\./i, "");
       downloadName += "_" + label;
-      if (timedOut) downloadName += "_(INCOMPLETE)";
+      if (crawlTerminatedBeforeCompletion) downloadName += "_(INCOMPLETE)";
       downloadName +=".json";
 
       const dlLink = makeElement(
@@ -1219,7 +1266,7 @@ the full data was too long. ";
     }
     /* Reads which log object to output, what format to use, and calls
      * outputLogObjToModal to actually change what is shown to the user: */
-    function updateOutput() {
+    return function updateOutput() {
       const wantedLabel = inputTextBox.value;
 
       /* If the user has not inputted a valid label, don't change the currently
@@ -1227,26 +1274,24 @@ the full data was too long. ";
       if (!ELEMENT_LABELS.has(wantedLabel) && !GROUP_LABELS.has(wantedLabel)) {
         return;
       }
-      labelOfCurrentlyDisplayedData = wantedLabel;
       usingAltFormat = altFormatCheckBox.checked;
       outputDataToModal(wantedLabel);
-    }
-    /* Return object containing functions: */
-    return {
-      updateOutput,
-    }
-  })();//Close closure
+    };
+  }());//Close closure
 
   /* Call the function immediately so that the data for the default label
    * is displayed immediately: */
-  outputEventFns.updateOutput();
-  inputTextBox.addEventListener("input", outputEventFns.updateOutput);
-  altFormatCheckBox.addEventListener("change", outputEventFns.updateOutput);
+  updateOutput();
+  inputTextBox.addEventListener("input", updateOutput);
+  altFormatCheckBox.addEventListener("change", updateOutput);
 
+  /* Add how long the crawler took to the header: */
   const endTime = performance.now();
-  let runningTime = Math.round((endTime - startTime)/10)/100;
-  let timeInfoEle = makeElement("p",`(Crawling took ${runningTime} seconds)`,
-      {id:"crlr-time"}
+  const runningTime = Math.round((endTime - startTime)/10)/100;
+  const timeInfoEle = makeElement(
+    "p",
+    `(Crawling took ${runningTime} seconds)`,
+    {id: "crlr-time"}
   );
   modalHeaderMsg.appendChild(timeInfoEle);
 
@@ -1268,41 +1313,41 @@ function RobotsTxt() {
     allow: [],
     disallow: [],
     sitemap: []
-  }
+  };
 
   /* Methods: */
   /* @Static */
   this.parseText = function (rawText) {
-    let disallowed = [];
-    let allowed = [];
-    let sitemap = [];
+    const disallowed = [];
+    const allowed = [];
+    const sitemap = [];
 
-    let lines = rawText.split(/[\n\r]/);
+    const lines = rawText.split(/[\n\r]/);
 
     /* Do allow and disallow statements in this block apply to us? I.e. are they
      * preceded by a user-agent statement which matches us? */
     let validUserAgentSection = true;
     for (let i = 0, len = lines.length; i < len; ++i) {
-      let line = lines[i].trim();
+      const line = lines[i].trim();
 
       /* Skip empty and comment lines: */
       if (line.length === 0 || line.charAt(0) === "#") continue;
 
       /* Split the line by the first colon ":": */
-      let parsedLine = (function() {
-        let splitPoint = line.indexOf(":");
+      const parsedLine = (function() {
+        const splitPoint = line.indexOf(":");
         if (splitPoint === -1) {
           return undefined;
         }
-        let firstHalf = line.substring(0, splitPoint);
-        let secondHalf = line.substring(splitPoint + 1);
+        const firstHalf = line.substring(0, splitPoint);
+        const secondHalf = line.substring(splitPoint + 1);
         return [firstHalf, secondHalf];
-      })();
+      }());
       if (parsedLine === undefined) {
         console.warn(`Don't understand: "${line}"`);
       }
-      let clauseType = parsedLine[0].trim().toLowerCase();
-      let clauseValue = parsedLine[1].trim();
+      const clauseType = parsedLine[0].trim().toLowerCase();
+      const clauseValue = parsedLine[1].trim();
 
       /* Check for sitemaps before checking the user agent so that they are always
        * visible to us: */
@@ -1341,7 +1386,7 @@ function RobotsTxt() {
       disallow: disallowed,
       sitemap: sitemap
     };
-  }
+  };
 
   /* @Static */
   this.matchesPattern = function (str, basePattern) {
@@ -1368,10 +1413,10 @@ function RobotsTxt() {
       }
     }
 
-    let patternSections = parsedPattern.split("*");
+    const patternSections = parsedPattern.split("*");
     let patternIndex = 0;
     for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
-      let subPat = patternSections[patternIndex];
+      const subPat = patternSections[patternIndex];
 
       /*Skip empty patterns: */
       if (subPat === "") {
@@ -1399,7 +1444,7 @@ function RobotsTxt() {
     /* If we reached the end of the string without finishing the pattern, it's
      * not a match: */
     return false;
-  }
+  };
   this.isUrlAllowed = function (fullUrl) {
     if (HOSTNAME !== (new URL(fullUrl)).hostname.toLowerCase()) {
       throw new Error("URL " + fullUrl + " is not within the same domain!");
@@ -1411,23 +1456,23 @@ function RobotsTxt() {
      *
      * For example, on a site's homepage, the path is "/", and
      * on an faq page, it might be "/faq.html" */
-    let pagePath = fullUrl.substr(DOMAIN.length); //@Refactor use location api?
+    const pagePath = fullUrl.substr(DOMAIN.length); //@Refactor use location api?
 
     /* Allow statements supersede disallow statements, so we can
      * check the allowed list first and shortcut to true if we
      * find a match: */
     for (let i = 0, len = this.patterns.allow.length; i < len; ++i) {
-      let pattern = this.patterns.allow[i]
+      const pattern = this.patterns.allow[i];
       if (this.matchesPattern(pagePath, pattern)) return true;
     }
     for (let i = 0, len = this.patterns.disallow.length; i < len; ++i) {
-      let pattern = this.patterns.disallow[i]
+      const pattern = this.patterns.disallow[i];
       if (this.matchesPattern(pagePath, pattern)) return false;
     }
     /* If this page is on neither the allowed nor disallowed
      * list, then we can assume it's allowed: */
     return true;
-  }
+  };
 
   this.requestAndParse = function (onComplete) {
     if (this.ignoreFile) {
@@ -1436,7 +1481,7 @@ function RobotsTxt() {
       return;
     }
 
-    let httpRequest = new XMLHttpRequest();
+    const httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = () => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) { //Code for "Good"
@@ -1448,10 +1493,10 @@ function RobotsTxt() {
         this.fileRead = true;
         onComplete(this);
       }
-    }
+    };
     httpRequest.open("GET", "/robots.txt");
     httpRequest.send();
-  }
+  };
 }
 
 const robotsTxtHandler = new RobotsTxt();
@@ -1501,6 +1546,7 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
 
     const anchorlessURL = urlRemoveAnchor(window.location);
     classifyImages(document, anchorlessURL);
+    classifyOther(document, anchorlessURL);
     const initialPageLinks = classifyLinks(document, anchorlessURL);
 
     /* A spoof link to mark the page where the crawl started as visited, so that
