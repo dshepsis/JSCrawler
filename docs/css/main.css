@@ -18,10 +18,10 @@ body {
 }
 /* Center the contents of the body with a defined width: */
 .center-col {
-  width: 1000px;
+  width: 900px;
   margin: auto;
 }
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   /* Shrink with the window if it gets narrow: */
   .center-col {
     width: 100%;
@@ -42,6 +42,9 @@ main > *:first-child {
 main > *:last-child {
   margin-bottom: 0;
 }
+main h2 {
+  color: black;
+}
 
 /* Header and footer styling: */
 header, footer {
@@ -57,6 +60,9 @@ header #header-content, footer #footer-content{
 header #header-content > *, footer #footer-content > * {
   margin-top: 0;
   margin-bottom: 0;
+}
+#app-info {
+  font-size: 16px;
 }
 
 /* Header-specific styling: */
@@ -87,4 +93,36 @@ header a, footer a {
 }
 a:hover {
   color: inherit;
+}
+
+pre#script-src {
+  display: flex;
+}
+pre#script-src code {
+  border: 1px dashed #112215;
+  background-color: #dddde2;
+  padding: 5px;
+  overflow: auto;
+  max-height: 500px;
+  min-width: 200px;
+  min-height: 2em;
+  margin: 0;
+  tab-size: 2;
+}
+
+/* Button Styling: */
+.inline-button {
+  font-size: 1em;
+  border: 2px solid hsla(153, 51%, 18%, 1);
+  color: hsla(153, 51%, 18%, 1);
+  background-color: transparent;
+  box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
+  transition: all .1s;
+  cursor: pointer;
+}
+.inline-button:active {
+  box-shadow: none;
+}
+.inline-button:hover {
+  background-color: hsla(153, 51%, 18%, 0.1);
 }

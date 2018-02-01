@@ -1,4 +1,5 @@
-*.json
 *.png
 Data
 Data/*
+node_modules
+*.ini

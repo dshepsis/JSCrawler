@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>JSCrawler Instruction Manual</title>
+  <meta name="description" content="An explanation on the capabilities and use of the JSCrawler user-script.">
+  <meta name="author" content="Daniel Shepsis">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- General interface Styling: -->
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+</head>
+
+<body>
+
+  <header>
+  <div id="header-content" class="center-col">
+    <h1 id="app-title">
+      JSCrawler Instruction Manual
+    </h1>
+    <p id="app-info">
+      <span id="edit-date">Last edited <template>date: MMM Do, YYYY</template></span>
+    </p>
+  </div>
+  </header>
+
+  <main role="main" class="center-col">
+    <h2 id="table-of-contents">Table of Contents:</h2>
+    <ol>
+      <li><a href="#running">Running the Script</a></li>
+    </ol>
+
+    <h2 id="running">Running the Script:</h2>
+    <ol>
+      <li>
+        <p>Copy the script by <button id="copy-button" class="inline-button">clicking here</button>:</p>
+        <pre id="script-src"><code><template>file:../crawlSite.js</template></code></pre>
+      </li>
+      <li>
+        Open the site which you want to inspect. Make sure you're using an
+        up-to-date version of Chrome or Firefox.
+      </li>
+      <li>
+        <p>
+          Open your browser's JavaScript console. To do this, press ctrl-shift-i
+          and go to the "console" tab. See below:
+        </p>
+        <img src="sasdfasdf" />
+      </li>
+    </ol>
+
+  </main>
+
+  <footer>
+  <div id="footer-content" class="center-col">
+    <a href="https://github.com/dshepsis/JSCrawler" id="ftr-repo-link">GitHub Repo</a>
+  </div>
+  </footer>
+
+
+<script>
+/* For making the button that copies the script work: */
+const copyButton = document.getElementById('copy-button');
+const scriptToCopy = document.getElementById('script-src');
+const canAutoCopy = (
+  document.queryCommandSupported !== undefined &&
+  document.queryCommandSupported('copy')
+);
+if (!canAutoCopy) {
+  copyButton.innerText += " and pressing ctrl-c"
+}
+
+function highlightContents(elem){
+  const range = document.createRange();
+  range.selectNodeContents(elem);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+const origText = copyButton.innerText;
+copyButton.addEventListener('click', function(event) {
+  highlightContents(scriptToCopy);
+  if (canAutoCopy) {
+    document.execCommand('copy');
+    copyButton.innerText = "Copied!";
+    window.setTimeout(function() {
+      copyButton.innerText = origText;
+    }, 1000);
+  }
+}, false);
+
+
+</script>
+</body>
+</html>
