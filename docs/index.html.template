@@ -33,7 +33,7 @@
     <ol>
       <li>
         <p>Copy the script by <button id="copy-button" class="inline-button">clicking here</button>:</p>
-        <pre id="script-src"><code><template>file:../crawlSite.js</template></code></pre>
+        <pre id="script-src"><code class="JavaScript"><template>file:../crawlSite.js</template></code></pre>
       </li>
       <li>
         Open the site which you want to inspect. Make sure you're using an
@@ -44,7 +44,12 @@
           Open your browser's JavaScript console. To do this, press ctrl-shift-i
           and go to the "console" tab. See below:
         </p>
-        <img src="sasdfasdf" />
+        <img src="img/dev_tools_console.png" alt="The console tab of the developer tools of Chrome (left) and Firefox(right)" class="click-to-open figure" />
+      </li>
+      <li>
+        <p>
+          Hello worldly watcher!
+        </p>
       </li>
     </ol>
 
@@ -55,7 +60,6 @@
     <a href="https://github.com/dshepsis/JSCrawler" id="ftr-repo-link">GitHub Repo</a>
   </div>
   </footer>
-
 
 <script>
 /* For making the button that copies the script work: */
@@ -77,7 +81,7 @@ function highlightContents(elem){
   selection.addRange(range);
 }
 
-const origText = copyButton.innerText;
+const origText = copyButton.innerHTML;
 copyButton.addEventListener('click', function(event) {
   highlightContents(scriptToCopy);
   if (canAutoCopy) {
@@ -89,7 +93,73 @@ copyButton.addEventListener('click', function(event) {
   }
 }, false);
 
+/* For making click-to-zoom images work: */
 
+/* A function for appending an array of children to a parent HTMLElement: */
+function appendChildren (parent, children) {
+  function appendItem(item) {
+    if (item instanceof HTMLElement) {
+      parent.appendChild(item);
+    } else {
+      const text = document.createTextNode(String(item));
+      parent.appendChild(text);
+    }
+  }
+  if (Array.isArray(children)) {
+    for (const child of children) {
+      appendItem(child);
+    }
+  } else {
+    appendItem(children);
+  }
+}
+
+/* Make an HTML Element with content and attributes: */
+function makeElement(type, content, attrObj) {
+  /* The new element being populated: */
+  const newEle = document.createElement(type);
+
+  /* If no content parameter was passed, leave the element childless. Otherwise,
+   * add the content (array or single item) to newEle: */
+  if (content !== undefined) {
+    appendChildren(newEle, content);
+  }
+
+  /* Apply information from the attributes object: */
+  if (attrObj !== undefined) {
+    for (const attribute of Object.keys(attrObj)) {
+      newEle.setAttribute(attribute, attrObj[attribute]);
+    }
+  }
+  return newEle;
+}
+
+function wrapElement(eleToWrap, wrapperEle) {
+  eleToWrap.parentNode.insertBefore(wrapperEle, eleToWrap.nextSibling);
+  wrapperEle.appendChild(eleToWrap);
+}
+
+/* Wrap all images with the 'click-to-open' class with a link that refers to
+ * the image's href, and which opens in a new tab: */
+const openImgs = document.getElementsByClassName('click-to-open');
+for (const img of openImgs) {
+  const imgSrc = img.getAttribute('src');
+  const linkToImgSrc = makeElement('a', undefined, {
+    href: imgSrc, target:'_blank', class: "img-wrapper"
+  });
+  wrapElement(img, linkToImgSrc);
+}
+
+const figureImgs = document.getElementsByClassName('figure');
+for (const img of figureImgs) {
+  /* If the image is wrapped in a link, wrap the link in the figure,
+   * not the image, so that the whole figure doesn't become a link: */
+  const parentIsLink = /A/i.test(img.parentElement.tagName);
+  const eleToWrap = (parentIsLink) ? img.parentElement : img;
+  const figure = makeElement('figure');
+  wrapElement(eleToWrap, figure);
+  figure.appendChild(makeElement('figcaption', img.alt));
+}
 </script>
 </body>
 </html>

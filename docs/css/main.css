@@ -123,6 +123,36 @@ pre#script-src code {
 .inline-button:active {
   box-shadow: none;
 }
-.inline-button:hover {
+.inline-button:hover, .inline-button:focus {
   background-color: hsla(153, 51%, 18%, 0.1);
+}
+
+/* Image Styling: */
+img {
+  max-width: 100%;
+}
+img.click-to-open {
+  border: 1px solid blue;
+}
+a.img-wrapper {
+  line-height: 0;
+  display: block;
+}
+
+figure {
+  border: 1px solid #999;
+  padding: 10px;
+  margin: 0 10px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
+}
+figure > * {
+  margin-bottom: 0.5em;
+}
+figure > *:last-child {
+  margin-bottom: 0;
+}
+figcaption {
+  font-size: 0.9em;
 }

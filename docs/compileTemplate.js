@@ -23,7 +23,7 @@ function processTemplateAndWriteFile(err, fileStr) {
   replaceTemplates(tplTokens, (compiledTemplate)=>{
     const newFileContent = compiledTemplate;
     const newFilePreview = newFileContent
-      .substr(0, 1000)
+      .substr(0, 500)
       .replace(/[\r\n]+/g, '$&\t');
     console.log(
       `Here's a preview of the replaced template:\n\t${newFilePreview}`
