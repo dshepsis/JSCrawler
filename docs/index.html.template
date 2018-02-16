@@ -6,6 +6,7 @@
   <meta name="description" content="An explanation on the capabilities and use of the JSCrawler user-script.">
   <meta name="author" content="Daniel Shepsis">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="img/favico.ico" />
   <!-- General interface Styling: -->
   <link rel="stylesheet" type="text/css" href="css/main.css" />
 </head>
@@ -27,32 +28,231 @@
     <h2 id="table-of-contents">Table of Contents:</h2>
     <ol>
       <li><a href="#running">Running the Script</a></li>
+      <li><a href="#flags">Script Flags</a></li>
     </ol>
 
     <h2 id="running">Running the Script:</h2>
     <ol>
-      <li>
+      <li id="running-copy-script">
         <p>Copy the script by <button id="copy-button" class="inline-button">clicking here</button>:</p>
-        <pre id="script-src"><code class="JavaScript"><template>file:../crawlSite.js</template></code></pre>
+        <pre id="script-src" class="code-block"><code class="JavaScript"><template>file:../crawlSite.js</template></code></pre>
       </li>
-      <li>
+      <li id="running-open-site"><p>
         Open the site which you want to inspect. Make sure you're using an
         up-to-date version of Chrome or Firefox.
-      </li>
-      <li>
+      </p></li>
+      <li id="running-open-console">
         <p>
-          Open your browser's JavaScript console. To do this, press ctrl-shift-i
+          Open your browser's JavaScript console. To do this, press <kbd>ctrl-shift-i</kbd>
           and go to the "console" tab. See below:
         </p>
         <img src="img/dev_tools_console.png" alt="The console tab of the developer tools of Chrome (left) and Firefox(right)" class="click-to-open figure" />
       </li>
+      <li id="running-log-out">
+        <p><strong>
+          Ensure you are not logged into the site you are crawling.
+        </strong></p>
+        <ol>
+          <li><p>
+            Make sure you are not logged in to the site you are crawling. The
+            reason for this is to prevent the script from crawling administration
+            pages or accidentally taking actions like clearing the cache or editing
+            pages
+          </p></li>
+          <li><p>
+            Note that I haven't ever observed the script editing or deleting pages
+            when running the script while logged in accidentally. I believe there
+            are validation measures in place which prevent this from occurring.
+            However, you should still be careful. Even if nothing went wrong,
+            there are often thousands of administration pages on any site, and
+            there's a good chance the script will time out, trigger DDoS
+            protection, and/or produce totally worthlessly overstuffed data
+          </p></li>
+          <li><p>
+            If you accidentally start the script while logged in, simply refresh the
+            page immediately. You will get a prompt asking you if you want to
+            leave the site. Just press <kbd>enter</kbd> or click “Yes” and the browser will
+            refresh. Then, make sure nothing catastrophic happened (nothing
+            should have) and be more careful next time.
+          </p></li>
+          <li><p>
+            You may wish to run the script in your browser's “Incognito” or
+            Private mode to reduce the chances of any such issues in the first
+            place.
+          </p></li>
+        </ol>
+      </li>
+      <li id="running-paste-script">
+        <p>
+          Paste the script into the browser's console
+        </p>
+        <ol>
+          <li><p>
+            In some browser's (namely Firefox at the time of writing) you will
+            get a warning for pasting something in. This is a security feature.
+            Simply follow the on-screen instructions to bypass it.
+          </p></li>
+          <li><p>
+            If you are concerned about the security implications of copying and
+            pasting a large script into your browser, the main assurance I can
+            offer you is that the script cannot escape the tab/window it was run
+            in, cannot request information from any site besides the one it
+            started in (even from other Rutgers sites), and you should already
+            be completely logged out from the current site before running the
+            script, so it could not collect any personal information even if it
+            wanted to.
+          </p></li>
+          <li><p>
+            You can also view the full, commented source-code of the script
+            and assure yourself that no suspicious code is there.
+          </p></li>
+          <li><p>
+            Depending on the computer you're using, there may be some noticeable
+            lag when pasting in the script, due to the large amount of text.
+          </p></li>
+        </ol>
+      </li>
+      <li id="running-add-flags">
+        <p>
+          If desired, add in any flags you want in the script's last line:
+        </p>
+        <img src="img/scriptFlags.png" alt="The last line of the script in the browser console, with some flags added." class="click-to-open figure" />
+        <p>
+          To view the list of flags and their functionalities,
+          <a href="#flags">click here</a>.
+        </p>
+      </li>
       <li>
         <p>
-          Hello worldly watcher!
+          Press <kbd>enter</kbd> (<kbd>ctrl-enter</kbd> in some browsers) to
+          start the script. You should immediately see a small green box appear
+          in the top left of the browser window, and rapid printouts in the console:
         </p>
+        <img src="img/scriptRunning.png" alt="A browser window running the crawler script. The script prints many messages to the browser console while crawling." class="click-to-open figure" />
+      </li>
+      <li id="running-hold-enter">
+        <p>If any dialogue boxes appear, hold enter.</p>
+        <ol>
+          <li><p>
+            Hold enter while the script runs so that any dialogue boxes which
+            appear are canceled immediately.
+          </p></li>
+          <li><p>
+            Dialogue boxes mainly appear if the server wants extra credentials
+            (username/password) for requesting a page. Unfortunately, the
+            crawler script can't close these boxes for you, and can't know ahead
+            of time which resources require credentials and which don't.
+            Generally, you don't need to crawl these pages, so you don't need to
+            know or enter the credentials.
+          </p></li>
+        </ol>
+      </li>
+      <li id="running-wait">
+        <p>Wait for the crawling to complete.</p>
+        <ol>
+          <li><p>
+            It will complete when the number of active requests (shown in
+            the blue-bordered box in the top left) reaches 0.
+          </p></li>
+          <li>
+            <p>
+              Note that this number isn't a strict indication of progress. The
+              number of active requests can oscillate up and down during the crawl
+              as more pages are discovered and checked. The number may also stall
+              for a few seconds at points. This is usually fine, but may indicate
+              a network error or a bug in the crawler script.
+            </p>
+            <p>
+              If the number does
+              not change for more than 20 seconds or so, please try resetting the
+              browser, checking your internet connection, and running the script
+              again. If that fails, please report the issue to a developer, and/or
+              file a bug report on
+              <a href="https://github.com/dshepsis/JSCrawler/issues" target="_blank">GitHub</a>.
+            </p>
+          </li>
+        </ol>
+      </li>
+      <li id="running-see-modal">
+        <p>When the script completes, you will see a results modal<p>
+        <ol>
+          <li>
+            <p>
+              The modal will cover the page and follow you if you attempt to
+              scroll the page under it. If you want to see the page, click the button
+              with the "_" symbol at the top-left of the modal. This will minimize
+              it. If you click on the site again afterwards, the modal will become
+              translucent:
+            </p>
+          </li>
+        </ol>
       </li>
     </ol>
 
+    <h2 id="flags">Script Flags:</h2>
+    <p>
+      The crawler script accepts a few different flags which can modify its
+      default behavior. You can input flags to the crawler by adding them to the
+      string on the last line of the script, as shown below:
+    </p>
+    <img src="img/scriptFlags.png" alt="The last line of the script in the browser console, with some flags added." class="click-to-open figure" />
+    <p>
+      Note that flags are <strong>not</strong> case-sensistive. Additionally,
+      some flags can be typed multiple different ways.
+    </p>
+    <p>
+      These are the different flags you can set for the crawler:
+    </p>
+    <ul>
+      <li><p>
+        <strong><code>-ignoreRobotsTxt</code></strong>: By default, the crawler
+        will request and obey a site's robots.txt file before beginning the crawl (e.g.
+        <a href="https://www.rutgers.edu/robots.txt" target="_blank">www.rutgers.edu/robots.txt</a>).
+        This file asks web-crawlers, like those used by search engines, to not
+        check and index certain pages, usually to save bandwidth and server
+        resources. If you add this flag, the crawler will not request the
+        robots.txt file, effectively ignoring it.
+      </p></li>
+      <li><p>
+        <strong><code>-ignoreBannedStr</code></strong>: The crawler script contains
+        an array of strings which are considered "banned" under the variable
+        <code>BANNED_STRINGS</code>. By default, the list contains
+        only "drupaldev". If a link's href or and image's src contains any of
+        these strings, then that element will be logged under the <strong>bannedString</strong>
+        category. Links containing banned strings will also not be crawled. This
+        flag disables this behavior, treating <code>BANNED_STRINGS</code>
+        as an empty list.
+      </p></li>
+      <li><p>
+        <strong><code>-ignoreTimer</code></strong>: By default, the crawler will
+        terminate the crawl of it takes longer than 60 seconds. This typically
+        only happens if the site is very large, the internet connection is very
+        slow, or the site contains an infinite URL space, such as an
+        event-calendar. This flag disables the timer, so that the crawl will not
+        be stopped early.
+      </p></li>
+      <li><p>
+        <strong><code>-onePage</code></strong>: This flag makes the crawler only
+        check the current page. It will still request other pages linked to from
+        the current one, but only to determine whether those links are valid.
+        Use this when you do not want information on an entire site, and are
+        only interested in the current page.
+      </p></li>
+      <li>
+        <p>
+          <strong><code>-disallow'pattern, pattern, pattern...''</code></strong>:
+          This flag allows you to specify a list of extra
+          <a href="https://developers.google.com/search/reference/robots_txt#example-path-matches" target="_blank">robots.txt-styled</a>
+          disallowed patterns for the crawler to follow. For example, if you type:
+        </p>
+        <pre class="code-block"><code>startCrawl("-disallow'/about/, /academics/'");</code></pre>
+        <p>
+          the crawler will not crawl/check any pages located in the "about" or
+          "academics" folders/groups. This flag is useful for excluding folders
+          that contain large amounts of uninteresting content, such as event-calendars.
+        </p>
+      </li>
+    </ul>
   </main>
 
   <footer>
@@ -60,6 +260,18 @@
     <a href="https://github.com/dshepsis/JSCrawler" id="ftr-repo-link">GitHub Repo</a>
   </div>
   </footer>
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
 /* For making the button that copies the script work: */
@@ -161,5 +373,7 @@ for (const img of figureImgs) {
   figure.appendChild(makeElement('figcaption', img.alt));
 }
 </script>
+
+<template>dev-refresh</template>
 </body>
 </html>

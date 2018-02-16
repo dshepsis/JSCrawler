@@ -19,6 +19,7 @@ body {
 /* Center the contents of the body with a defined width: */
 .center-col {
   width: 900px;
+  max-width: 100%;
   margin: auto;
 }
 @media (max-width: 900px) {
@@ -67,8 +68,10 @@ header #header-content > *, footer #footer-content > * {
 
 /* Header-specific styling: */
 header {
-  color: #fff;
   border-bottom: 3px solid rgba(255,255,255,0.25);
+}
+#header-content h1{
+  color: white;
 }
 #header-content {
   display: flex;
@@ -95,11 +98,12 @@ a:hover {
   color: inherit;
 }
 
-pre#script-src {
+pre.code-block {
   display: flex;
 }
-pre#script-src code {
-  border: 1px dashed #112215;
+pre.code-block code {
+  border: 1px solid #999;
+  box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
   background-color: #dddde2;
   padding: 5px;
   overflow: auto;
@@ -136,13 +140,16 @@ img.click-to-open {
 }
 a.img-wrapper {
   line-height: 0;
-  display: block;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 figure {
   border: 1px solid #999;
   padding: 10px;
-  margin: 0 10px;
+  display: table;
+  margin: 10px auto;
   text-align: center;
   background: rgba(0, 0, 0, 0.05);
   box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
@@ -155,4 +162,19 @@ figure > *:last-child {
 }
 figcaption {
   font-size: 0.9em;
+}
+
+/* Nested List Styling: */
+li {
+  margin: 10px 0;
+}
+li > p {
+  margin: 10px 0;
+}
+ol ol li {
+  list-style-type: lower-alpha;
+  font-size: 0.9em;
+}
+ol ol ol li {
+  list-style-type: disc;
 }
