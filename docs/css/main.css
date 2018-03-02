@@ -21,6 +21,7 @@ body {
   width: 900px;
   max-width: 100%;
   margin: auto;
+  position: relative;
 }
 @media (max-width: 900px) {
   /* Shrink with the window if it gets narrow: */
@@ -50,6 +51,7 @@ main h2 {
 /* Header and footer styling: */
 header, footer {
   position: relative; /* So that they are not overlayed by the main section */
+  z-index: 2;
   width: 100%;
   color: #eeeef3;
   padding: 0.5em 0;
@@ -177,4 +179,68 @@ ol ol li {
 }
 ol ol ol li {
   list-style-type: disc;
+}
+
+/* Anchor and anchor-link styling: */
+
+/* Headers need a little margin to fit the link icon: */
+h2.anchor-point {
+  margin-left: 0.5em;
+}
+
+/* Highlighting anchors: */
+/* The target element's header should be highlighted somehow: */
+h2.anchor-point:target {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+.anchor-point:target .item-header {
+  font-size: 1.1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* These will be positioned relative to the center-col, because that is the
+ * first positioned ancestor: */
+.self-anchor-link {
+  display: block;
+  position: absolute;
+  font-size: 0.7em;
+  left: 4px;
+  margin-top: 5px;
+  text-decoration: none;
+  user-select: none;
+}
+*:hover > .self-anchor-link, *:target > .self-anchor-link {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* For labels which are issues, give them clear markings: */
+li.issue-label::before, li.warning-label::before {
+  content: "!!";
+  position: absolute;
+  font-weight: bold;
+  background-color: #f44;
+  border-radius: 50%;
+  padding: 3.5px;
+  color: white;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  font-size: 0.8em;
+  display: inline-block;
+  text-align: center;
+  margin-left: -1.7em;
+  margin-top: 0.2em;
+}
+li.warning-label::before {
+  content: "!";
+  background-color: #db1;
+}
+
+/* Multi-column list styling */
+ul.multi-col-list {
+  column-gap: 2em;
+  column-width: 5em;
+}
+ul.multi-col-list > :first-child {
+  margin-top: 0;
 }
