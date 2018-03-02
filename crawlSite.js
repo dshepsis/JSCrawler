@@ -1,6 +1,17 @@
 'use strict';
 const startTime = performance.now();
 
+/* Polyfill iteration on HTMLCollections for Edge and other browsers: */
+(function() {
+  const getIter = (cnstr) => cnstr.prototype[Symbol.iterator];
+  const createIter = (cnstr) => {
+    if (!getIter(cnstr)) {
+      cnstr.prototype[Symbol.iterator] = getIter(Array);
+    }
+  };
+  [HTMLCollection, NodeList].forEach(createIter);
+}());
+
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */
 function validateType(ambiguousVar, desiredType, nameStr = "variable") {
