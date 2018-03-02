@@ -686,6 +686,17 @@ https://newbrunswick.rutgers.edu/</code></pre>
 #############################################################################-->
 
 <script>
+/* Polyfill iteration on HTMLCollections for Edge and other browsers: */
+(function() {
+  const getIter = (cnstr) => cnstr.prototype[Symbol.iterator];
+  const createIter = (cnstr) => {
+    if (!getIter(cnstr)) {
+      cnstr.prototype[Symbol.iterator] = getIter(Array);
+    }
+  };
+  [HTMLCollection, NodeList].forEach(createIter);
+}());
+
 /* For making the button that copies the script work: */
 const copyButton = document.getElementById('copy-button');
 const scriptToCopy = document.getElementById('script-src');
