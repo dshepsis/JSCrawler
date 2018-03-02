@@ -1,4 +1,5 @@
 <!DOCTYPE HTML>
+<template>edit-warning</template>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -12,7 +13,6 @@
 </head>
 
 <body>
-
   <header>
   <div id="header-content" class="center-col">
     <h1 id="app-title">
@@ -28,28 +28,31 @@
     <h2 id="table-of-contents">Table of Contents:</h2>
     <ol>
       <li><a href="#running">Running the Script</a></li>
+      <li><a href="#modal">The Results Modal</a></li>
+      <li><a href="#labels">Result Labels</a></li>
       <li><a href="#flags">Script Flags</a></li>
     </ol>
 
-    <h2 id="running">Running the Script:</h2>
+    <h2 id="running" class="anchor-point">Running the Script:</h2>
     <ol>
-      <li id="running-copy-script">
-        <p>Copy the script by <button id="copy-button" class="inline-button">clicking here</button>:</p>
+      <li id="running-copy-script" class="anchor-point">
+        <p><span class="item-header">Copy the script</span> by <button id="copy-button" class="inline-button">clicking here</button>:</p>
         <pre id="script-src" class="code-block"><code class="JavaScript"><template>file:../crawlSite.js</template></code></pre>
       </li>
-      <li id="running-open-site"><p>
-        Open the site which you want to inspect. Make sure you're using an
-        up-to-date version of Chrome or Firefox.
+      <li id="running-open-site" class="anchor-point"><p>
+        <span class="item-header">Open the site</span> which you want to inspect.
+        Make sure you're using an up-to-date version of Chrome or Firefox.
       </p></li>
-      <li id="running-open-console">
+      <li id="running-open-console" class="anchor-point">
         <p>
-          Open your browser's JavaScript console. To do this, press <kbd>ctrl-shift-i</kbd>
-          and go to the "console" tab. See below:
+          <span class="item-header">Open your browser's JavaScript console</span>.
+          To do this, press <kbd>ctrl-shift-i</kbd> and go to the "console" tab.
+          See below:
         </p>
         <img src="img/dev_tools_console.png" alt="The console tab of the developer tools of Chrome (left) and Firefox(right)" class="click-to-open figure" />
       </li>
-      <li id="running-log-out">
-        <p><strong>
+      <li id="running-log-out" class="anchor-point">
+        <p><strong class="item-header">
           Ensure you are not logged into the site you are crawling.
         </strong></p>
         <ol>
@@ -82,9 +85,10 @@
           </p></li>
         </ol>
       </li>
-      <li id="running-paste-script">
+      <li id="running-paste-script" class="anchor-point">
         <p>
-          Paste the script into the browser's console
+          <span class="item-header">Paste the script</span> into the browser's
+          console.
         </p>
         <ol>
           <li><p>
@@ -112,9 +116,10 @@
           </p></li>
         </ol>
       </li>
-      <li id="running-add-flags">
+      <li id="running-add-flags" class="anchor-point">
         <p>
-          If desired, add in any flags you want in the script's last line:
+          If desired, <span class="item-header">add in any flags</span> you want
+          in the script's last line:
         </p>
         <img src="img/scriptFlags.png" alt="The last line of the script in the browser console, with some flags added." class="click-to-open figure" />
         <p>
@@ -122,16 +127,31 @@
           <a href="#flags">click here</a>.
         </p>
       </li>
-      <li>
+      <li id="running-start-script" class="anchor-point">
         <p>
           Press <kbd>enter</kbd> (<kbd>ctrl-enter</kbd> in some browsers) to
-          start the script. You should immediately see a small green box appear
-          in the top left of the browser window, and rapid printouts in the console:
+          <span class="item-header">start the script</span>. You should
+          immediately see a small, blue-bordered
+          box appear in the top left of the browser window, and rapid printouts
+          in the console:
         </p>
         <img src="img/scriptRunning.png" alt="A browser window running the crawler script. The script prints many messages to the browser console while crawling." class="click-to-open figure" />
+        <ol>
+          <li>
+            <p>
+              You may see warnings and errors (yellow and red colored log
+              statements, respectively). This is normal, as the crawler may log
+              warnings and errors when it runs into unexpected content or
+              network errors. Usually, the crawler will stil finish normally and
+              report useful information. If you do not know how to interpret
+              these log statements, simply ignore them, and continue as
+              described below.
+            </p>
+          </li>
+        </ol>
       </li>
-      <li id="running-hold-enter">
-        <p>If any dialogue boxes appear, hold enter.</p>
+      <li id="running-hold-enter" class="anchor-point">
+        <p>If any dialogue boxes appear, <span class="item-header">hold enter</span>.</p>
         <ol>
           <li><p>
             Hold enter while the script runs so that any dialogue boxes which
@@ -147,8 +167,8 @@
           </p></li>
         </ol>
       </li>
-      <li id="running-wait">
-        <p>Wait for the crawling to complete.</p>
+      <li id="running-wait" class="anchor-point">
+        <p><span class="item-header">Wait</span> for the crawling to complete.</p>
         <ol>
           <li><p>
             It will complete when the number of active requests (shown in
@@ -173,8 +193,12 @@
           </li>
         </ol>
       </li>
-      <li id="running-see-modal">
-        <p>When the script completes, you will see a results modal<p>
+      <li id="running-results-modal" class="anchor-point">
+        <p>
+          When the script completes, you will
+          <span class="item-header">see a results modal</span>:
+        </p>
+        <img src="img/modal_results.png" alt="The results modal, which lays over the page. It reports information found during the crawl." class="click-to-open figure" />
         <ol>
           <li>
             <p>
@@ -184,12 +208,408 @@
               it. If you click on the site again afterwards, the modal will become
               translucent:
             </p>
+            <img src="img/modal_minimize.png" alt="The modal's minimize button, which goes translucent when the user clicks back on the webpage." class="click-to-open figure" />
           </li>
         </ol>
       </li>
     </ol>
 
-    <h2 id="flags">Script Flags:</h2>
+    <h2 id="modal" class="anchor-point">The Results Modal:</h2>
+    <img src="img/modal_results.png" alt="The results modal, which lays over the page. It reports information found during the crawl." class="click-to-open figure" />
+    <p>
+      When the crawler finishes running, it will generate an interactive modal
+      which contains information collected during the crawl. This section
+      discusses the various parts of the modal interface.
+    </p>
+    <ul>
+      <li id="modal-minimize" class="anchor-point">
+        <h4 class="item-header">Minimize Button:</h4>
+        <img src="img/modal_minimize_outline.png" alt="The modal's minimize button" class="click-to-open figure" />
+        <p>
+          The minimize button is used to hide the contents of the modal, so that
+          the page underneath it can still be interacted with normally without
+          opening a new browser tab or window. Clicking it will hide the modal,
+          except for the button, which will remain visible, though translucent.
+          Clicking the button again will re-open the modal, unchanged.
+        </p>
+      </li>
+      <li id="modal-label" class="anchor-point">
+        <h4 class="item-header">Label Selection Textbox</h4>
+        <img src="img/modal_label_textbox_outline.png" alt="The textbox for selecting which label to view data for." class="click-to-open figure" />
+        <p>
+          The crawler labels each of the links, images, and other elements it
+          checks. To view a list of labels and their meanings,
+          <a href="#labels">click here</a>. You can view all of the
+          data under each label by typing the label's name into the
+          textbox. By default, the label chosen is "link", which makes the modal
+          show all links found on the site during the crawl.
+        </p>
+        <p>
+          You can empty the textbox by clicking on the large "✖" button
+          at the left of the textbox. Double-clicking on the textbox, or pressing
+          the down-arrow key, while it is empty will bring up a complete list of
+          labels:
+        </p>
+        <img src="img/modal_label_options.png" alt="Part of the drop-down list of options for labels." class="click-to-open figure" />
+        <p>
+          Labels which have no corresponding results are marked as "(Empty)".
+          Clicking on one of the drop-down options will auto-fill the textbox.
+        </p>
+      </li>
+      <li id="modal-invert" class="anchor-point">
+        <h4 class="item-header">Invert Output Mapping</h4>
+        <img src="img/modal_invert_mapping_box.png" alt='The "Invert Output Mapping" checkbox.' class="click-to-open figure" />
+        <p>
+          Ordinarily, the output of the crawler is given as a list of URLs
+          representing pages on the site crawled, each of which maps to another
+          list of URLs, these representing the HREFs of links or the Src's of
+          images which are on that page (and which have the specified label).
+          This default mapping is useful for going through pages one-by-one and
+          fixing all of the issues on that page.
+        </p>
+        <p>
+          When the "Invert Output Mapping" checkbox is checked, this order
+          is reversed. The output is transformed into a list of URLs
+          corresponding to HREFs or Src's, each mapping to a list of pages on
+          which the corresponding link or image is found. This alternate mapping
+          is useful for finding all of the instances of a given link or image,
+          so they can be changed one-by-one.
+        </p>
+      </li>
+      <li id="modal-output" class="anchor-point">
+        <h4 class="item-header">Output Preview Box</h4>
+        <img src="img/modal_output_preview.png" alt="The box containing a preview of the modal's output for the given label." class="click-to-open figure" />
+        <p>
+          The list of page URLs and link/image HREFs/Src's is shown in the
+          middle of the modal. If the list is too long, it is truncated to
+          avoid lagging the browser. If it is small enough, the full output will
+          be displayed. <a href="#modal-invert">See above</a> for an explanation
+          of the formatting of the output.
+        </p>
+        <p>
+          You can tell whether the output is truncated by either
+          reading the paragraph below the preview box, or by checking the last
+          line of output in the box. If the output is truncated, the last line
+          will contain an ellipses "<strong><code>...</code></strong>". If the
+          output is complete, it will contain a closing curly brace
+          "<strong><code>}</code></strong>".
+        </p>
+        <p>
+          If you would like to view the full output, you can right click on the
+          download link below the preview box and click "Open in new tab".
+        </p>
+      </li>
+      <li id="modal-download" class="anchor-point">
+        <h4 class="item-header">Download Message</h4>
+        <img src="img/modal_download_text.png" alt="The message under the output preview box, which includes the link to download the results for the given label." class="click-to-open figure" />
+        <p>
+          Below the output preview box is a paragraph which explains whether the
+          currently shown output is a preview or if it is complete. Either way,
+          the paragraph will contain a download link. Clicking this link will
+          bring up your browser's file-download dialogue box, allowing you to
+          quickly save the results (for a given label) of a crawl,
+          so that it can be reviewed later.
+        </p>
+        <p>
+          The file will be saved as .JSON file,
+          which is simply a plain-text format that can be viewed in any text
+          editor.
+        </p>
+        <p>
+          You can also view the full output of a crawl by right-clicking on the
+          download link and clicking "Open in new tab" in the drop-down menu.
+        </p>
+      </li>
+    </ul>
+
+    <h2 id="labels" class="anchor-point">Result Labels:</h2>
+    <p>
+      The crawler works by checking each image and link (and some other types
+      of elements) on each page that it finds. These elements are recorded and
+      given different labels based on properties of interest, such as whether a
+      link points to an internal page or an external site.
+    </p>
+    <p>
+      You can view all of the elements with a given label by typing the label's
+      name into the textbox on the results modal after a crawl has completed.
+      <a href="#modal-label">See above</a> for more info.
+    </p>
+    <p>
+      Here are all of the different labels currently implemented, their meanings,
+      and information on how they should be fixed, if they signify issues with
+      the site:
+    </p>
+    <ul>
+      <li id="labels-link" class="anchor-point"><p>
+      	<strong class="item-header">link</strong>: Refers to all elements found during the crawl
+        which are <code>&lt;a&gt;</code> tags. These are regular hyper-links that you can
+        click on to go to another page, <a href="#labels-link">like this</a>.
+        This label includes both internal and external links found on the site.
+        Note that this tag doesn't refer to <code>&lt;link&gt;</code> elements,
+        which serve a separate function and aren't normally visible on a page.
+      </p></li>
+      <li id="labels-image" class="anchor-point"><p>
+      	<strong class="item-header">image</strong>: Refers to all <code>img</code> elements found.
+      </p></li>
+      <li id="labels-iframe" class="anchor-point"><p>
+      	<strong class="item-header">iframe</strong>: Refers to all <code>iframe</code> elements
+        found. These elements are used for embedding another page's or site's
+        contents within a page. These are often used for embedding video or
+        social-media streams.
+      </p></li>
+      <li id="labels-internal" class="anchor-point">
+        <p>
+        	<strong class="item-header">internal</strong>: Refers to all links and iframes which point
+          to a page within the same domain, as well as images which are hosted
+          on the same domain. "Domain" refers to the part of a site's URL before
+          the first forward slash <code>/</code>.
+        </p>
+        <p>
+          For example, these pages are all on the same domain:
+        </p>
+        <pre class="code-block"><code>https://nbchancellor.rutgers.edu/
+https://nbchancellor.rutgers.edu/news-announcements/news-and-communications
+https://nbchancellor.rutgers.edu/about-office/about-office</code></pre>
+
+        <p>
+          ...That domain being "https://nbchancellor.rutgers.edu". However,
+          these pages are all on separate domains:
+        </p>
+        <pre class="code-block"><code>https://nbchancellor.rutgers.edu/
+https://www.rutgers.edu/
+https://newbrunswick.rutgers.edu/</code></pre>
+        <p>
+          Only pages internal to the domain on which the crawler was started can
+          be crawled, due to security constraints placed on the script by the
+          browser.
+        </p>
+      </li>
+      <li id="labels-external" class="anchor-point"><p>
+      	<strong class="item-header">external</strong>: Refers to all links, iframes, and images
+        which point to resources that are hosted on a different domain than
+        the one on which the crawler was started. <a href="#labels-internal">See
+        above</a> for an explanation of domains.
+      </p></li>
+      <li id="labels-null" class="anchor-point"><p>
+      	<strong class="item-header">null</strong>: Refers to all links with empty HREF attributes,
+        and all iframes and images with ampty src attributes. Null links are
+        sometimes used as buttons, but they may still be unintentional. They
+        usually do not cause major issues, though. Null images and iframes are
+        rare, and should probably be removed.
+      </p></li>
+      <li id="labels-Email" class="anchor-point"><p>
+      	<strong class="item-header">Email</strong>: Refers to links to email addresses. Clicking
+        one of these will usually bring up your operating system's default email
+        client, opening a draft message to the speficied recipient.
+        These links are usually intentional as contact points, though public
+        disclosure of a private email address may be a concern.
+      </p></li>
+      <li id="labels-localFile" class="issue-label anchor-point"><p>
+      	<strong class="item-header">localFile</strong>: Refers to erroneous links and images whose
+        URLs start with "file://" instead of "https://". These links refer to
+        resources local to an editor's computer, and are usually caused by
+        mistakes, where an editor attempts to embed a file without actually
+        uploading it to the site. They do not work at all for normal users, so
+        they must be removed or replaced with the appropriate file once it has
+        been properly uploaded to the site.
+      </p></li>
+      <li id="labels-javascriptLink" class="anchor-point"><p>
+      	<strong class="item-header">javascriptLink</strong>: Refers to links whose URLs start with
+        "JavaScript:" instead of "https://". These links will execute the
+        JavaScript included in the URL when they are clicked. These rarely cause
+        problems, but their use in new code is discouraged, since they can cause
+        code duplication and are not semantically clear. Instead, use
+        <code>&lt;button&gt;</code>s with event-handlers attached in a script
+        using <code>element.addEventListener</code>. However, fixing existing
+        links is not generally necessary or productive.
+      </p></li>
+      <li id="labels-http-httpsError" class="warning-label anchor-point"><p>
+      	<strong class="item-header">http-httpsError</strong>: Refers to links, images, or iframes
+        which use "http://" when the site has been loaded under https, or
+        vice-versa. These are usually non-issues, but may cause security
+        warnings to the user. As such, they should be fixed by replacing the
+        "http://" with "https://".
+      </p></li>
+      <li id="labels-unusualScheme" class="warning-label anchor-point"><p>
+      	<strong class="item-header">unusualScheme</strong>: Refers to links with otherwise
+        unrecognized protocols or schemes. The protocol/scheme is the string
+        that comes before the first colon <code>:</code> in a URL, such as
+        "http", "https", "mailto", "file", etc. Links found here are not
+        necessarily erroneous, but they should probably be investigated to make
+        sure they're behaving as intended.
+      </p></li>
+      <li id="labels-visited" class="anchor-point"><p>
+      	<strong class="item-header">visited</strong>: Refers to all links and images which the
+        crawler has checked. Note that only local links are included as only
+        local links can be crawled. External images can and are stil checked by
+        the crawler, however.
+      </p></li>
+      <li id="labels-unknownContentType" class="warning-label anchor-point"><p>
+      	<strong class="item-header">unknownContentType</strong>: Refers to links which refer to
+        resources that aren't of a known content type. "Content-type" refers to
+        the MIME-type of file the server returns, e.g. text/html, image/png,
+        video/mp4, etc. Links in this category usually are not issues, as they
+        tend to just be more exotic, though still valid content types. Still,
+        these links should be investigated manually to ensure they are working as
+        intended.
+      </p></li>
+      <li id="labels-redirects" class="warning-label anchor-point"><p>
+      	<strong class="item-header">redirects</strong>: Refers to links which initially appeared to
+        be internal and valid for the crawler to check, but which are redirected
+        by the server to external and/or invalid resources, causing a network
+        error when requested. These are usually fine on the user's end, but
+        may indicate a link causing some undefined network error.
+      </p></li>
+      <li id="labels-accessDenied" class="anchor-point">
+        <p>
+          <strong class="item-header">accessDenied</strong>: Refers to links which point to resources
+          that the server requires some credentials to access. When these links
+          are clicked or requested by the crawler, a dialogue box will appear in
+          the browser asking for a username and password.
+        </p>
+        <p>
+          These are rarely unintended,
+          but they do cause issues for the crawler, as these dialogue boxes can't
+          be closed by the crawler itself, but can halt its progress. If these
+          appear during a crawl, please close them promptly by pressing
+          <kbd>space</kbd> or <kbd>enter</kbd>.
+        </p>
+      </li>
+      <li id="labels-forbidden" class="issue-label anchor-point"><p>
+      	<strong class="item-header">forbidden</strong>: Refers to links which point to resources
+        that the server considers forbidden to access. These are usually issues,
+        as they indicate a link in a public-section of the site that will always
+        cause a 403 error if clicked. Generally, these links should just be
+        removed, but in some cases, the resource referred to should be changed
+        so that it isn't forbidden. Ask the project manager what to the
+        appropriate action is.
+      </p></li>
+      <li id="labels-notFound" class="issue-label anchor-point"><p>
+      	<strong class="item-header">notFound</strong>: Refers to links which point to resources that
+        the server cannot locate. In other words, "404: File not found".
+        This may be caused by the resource not having been uploaded to the
+        server, or by the link's href being misspelled. To fix these, attempt to
+        locate the intended resource (page or file) and either upload it to the
+        site at the appropriate address, or change the link to refer to the
+        correct address.
+      </p></li>
+      <li id="labels-robotsDisallowed" class="anchor-point"><p>
+      	<strong class="item-header">robotsDisallowed</strong>: Refers to pages which the crawler
+        knows about, but did not request and crawl due to the page being
+        disallowed by the site's robots.txt file. For an explanation of
+        the robots.txt file, <a href="#flags-ignoreRobotsTxt">click here</a>.
+      </p></li>
+      <li id="labels-unloaded" class="issue-label anchor-point"><p>
+      	<strong class="item-header">unloaded</strong>: Refers to images which did not load properly
+        when requested by the crawler. Generally, this indicates that the image
+        file is either not found (equivalent to a 404 label) or is somehow
+        corrupted. Fix these by either locating the correct resource or
+        uploading it to the site, similar to how a
+        <a href="#labels-notFound">notFound link</a> is fixed.
+      </p></li>
+      <li id="labels-file" class="anchor-point"><p>
+      	<strong class="item-header">file</strong>: Refers to a link which points to a resource which
+        was determined by the crawler to be a known type of file, other than an
+        html file. The crawler, by default, recognizes
+        a few common file types:
+        <ul class="multi-col-list">
+					<li>doc</li>
+					<li>docx</li>
+					<li>gif</li>
+					<li>jpeg</li>
+					<li>jpg</li>
+					<li>pdf</li>
+					<li>png</li>
+					<li>ppt</li>
+					<li>pptx</li>
+					<li>xls</li>
+					<li>xlsm</li>
+					<li>xlsx</li>
+        </ul>
+      </p></li>
+      <li id="labels-startPage" class="anchor-point"><p>
+      	<strong class="item-header">startPage</strong>: Refers to the page on which the crawl was
+        started. This will always be included, and represented as a single "fake"
+        link to the starting URL from the starting URL. This fake link also
+        appears in the "visited" label, but not in the "link" label.
+      </p></li>
+      <li id="labels-bannedString" class="issue-label anchor-point">
+        <p>
+        	<strong class="item-header">bannedString</strong>: Refers to a link,
+          image, or iframe whose URL contains a banned string. To learn more
+          about banned strings,
+          <a href="#flags-ignoreBannedStr">click here</a>.
+        </p>
+        <p>
+          <strong>Note</strong>: Links containing banned strings are not
+          crawled.
+        </p>
+        <p>
+          By default, this includes all links to Drupal dev sites. Live sites
+          should contain all of their own content, and should not link/point to
+          development sites, so these links/images/iframes should be corrected
+          by duplicating the content from the dev site to the live site (if
+          needed) and changing the link from an absolute dev-site link to a
+          relative link.
+        </p>
+        <p>
+          If you are crawling a dev-site, you will need to either change the
+          list of banned strings manually, or add the
+          <a href="#flags-ignoreBannedStr"><code>-ignoreBannedStr</code></a>
+          flag, or else the crawler will not be able to crawl the site, as
+          banned-string links are not crawled.
+        </p>
+      </li>
+      <li id="labels-absoluteInternal" class="issue-label anchor-point"><p>
+      	<strong class="item-header">absoluteInternal</strong>: Refers to links
+        which which are internal to the site but still use an absolute URL. For
+        example, a link with <code>href="https://www.rutgers.edu/academics"</code>
+        from "https://www.rutgers.edu/". These should be fixed by removing the
+        origin part of the URL (e.g. leaving only "/academics").
+      </p></li>
+      <li id="labels-anchor" class="anchor-point"><p>
+      	<strong class="item-header">anchor</strong>: Refers to anchor links,
+        which are links whose URLs contain a "#". These links will scroll to a
+        specific point on a page after navigating to that page (if it is
+        different from the current one).
+      </p></li>
+      <li id="labels-improperSize" class="warning-label anchor-point"><p>
+      	<strong class="item-header">improperSize</strong>: Refers to images
+        which are displayed at non-native sizes. Images which are displayed at
+        larger sizes than the original file should be avoided, as they are often
+        blurry. Images which are displayed at smaller sizes than the original
+        should be replaced with a manually down-scalled version of the image, as
+        sending a larger image is a waste of bandwidth and data.
+      </p></li>
+      <li id="labels-noAltText" class="warning-label anchor-point">
+        <p>
+        	<strong class="item-header">noAltText</strong>: Refers to images without
+          an alt attribute. The "alt" attribute is an accessibility feature, and is
+          used to describe the images to vision-impaired users relying on
+          screen-readers. Alt text is also displayed when the image fails to load.
+        </p>
+        <p>
+          In general, all images should have alt text for the sake of accessibility.
+          If you find an image without alt text, you should generally ask an
+          editor or project manager to provide text, rather than writing it
+          yourself.
+        </p>
+      </li>
+      <li id="labels-emptyTitle" class="warning-label anchor-point">
+        <p>
+        	<strong class="item-header">emptyTitle</strong>: Refers to iframes without
+          a title attribute. On iframes, the the title attribute is an accessibility
+          feature used by screen-readers to inform the user about the contents of
+          that iframe.
+        </p>
+        <p>
+          Similar to images without alt text, these iframes should be fixed by
+          asking for appropriate title text, and applying it to the iframe.
+        </p>
+      </li>
+    </ul>
+
+    <h2 id="flags" class="anchor-point">Script Flags:</h2>
     <p>
       The crawler script accepts a few different flags which can modify its
       default behavior. You can input flags to the crawler by adding them to the
@@ -204,8 +624,8 @@
       These are the different flags you can set for the crawler:
     </p>
     <ul>
-      <li><p>
-        <strong><code>-ignoreRobotsTxt</code></strong>: By default, the crawler
+      <li id="flags-ignoreRobotsTxt" class="anchor-point"><p>
+        <strong class="item-header"><code>-ignoreRobotsTxt</code></strong>: By default, the crawler
         will request and obey a site's robots.txt file before beginning the crawl (e.g.
         <a href="https://www.rutgers.edu/robots.txt" target="_blank">www.rutgers.edu/robots.txt</a>).
         This file asks web-crawlers, like those used by search engines, to not
@@ -213,8 +633,8 @@
         resources. If you add this flag, the crawler will not request the
         robots.txt file, effectively ignoring it.
       </p></li>
-      <li><p>
-        <strong><code>-ignoreBannedStr</code></strong>: The crawler script contains
+      <li id="flags-ignoreBannedStr" class="anchor-point"><p>
+        <strong class="item-header"><code>-ignoreBannedStr</code></strong>: The crawler script contains
         an array of strings which are considered "banned" under the variable
         <code>BANNED_STRINGS</code>. By default, the list contains
         only "drupaldev". If a link's href or and image's src contains any of
@@ -223,24 +643,24 @@
         flag disables this behavior, treating <code>BANNED_STRINGS</code>
         as an empty list.
       </p></li>
-      <li><p>
-        <strong><code>-ignoreTimer</code></strong>: By default, the crawler will
+      <li id="flags-ignoreTimer" class="anchor-point"><p>
+        <strong class="item-header"><code>-ignoreTimer</code></strong>: By default, the crawler will
         terminate the crawl of it takes longer than 60 seconds. This typically
         only happens if the site is very large, the internet connection is very
         slow, or the site contains an infinite URL space, such as an
         event-calendar. This flag disables the timer, so that the crawl will not
         be stopped early.
       </p></li>
-      <li><p>
-        <strong><code>-onePage</code></strong>: This flag makes the crawler only
+      <li id="flags-onePage" class="anchor-point"><p>
+        <strong class="item-header"><code>-onePage</code></strong>: This flag makes the crawler only
         check the current page. It will still request other pages linked to from
         the current one, but only to determine whether those links are valid.
         Use this when you do not want information on an entire site, and are
         only interested in the current page.
       </p></li>
-      <li>
+      <li id="flags-disallow" class="anchor-point">
         <p>
-          <strong><code>-disallow'pattern, pattern, pattern...''</code></strong>:
+          <strong class="item-header"><code>-disallow'pattern, pattern, pattern...'</code></strong>:
           This flag allows you to specify a list of extra
           <a href="https://developers.google.com/search/reference/robots_txt#example-path-matches" target="_blank">robots.txt-styled</a>
           disallowed patterns for the crawler to follow. For example, if you type:
@@ -261,17 +681,9 @@
   </div>
   </footer>
 
-
-
-
-
-
-
-
-
-
-
-
+<!--###########################################################################
+##############################  End main content #############################
+#############################################################################-->
 
 <script>
 /* For making the button that copies the script work: */
@@ -362,6 +774,7 @@ for (const img of openImgs) {
   wrapElement(img, linkToImgSrc);
 }
 
+/* Wrap all figure images in figures, and add the image's alt-text as a caption: */
 const figureImgs = document.getElementsByClassName('figure');
 for (const img of figureImgs) {
   /* If the image is wrapped in a link, wrap the link in the figure,
@@ -372,8 +785,17 @@ for (const img of figureImgs) {
   wrapElement(eleToWrap, figure);
   figure.appendChild(makeElement('figcaption', img.alt));
 }
-</script>
 
-<template>dev-refresh</template>
+
+/* For adding links next to header items which set the anchor to that item: */
+const anchorPoints = document.getElementsByClassName('anchor-point');
+for (const anchorPoint of anchorPoints) {
+  const linkEle = makeElement('a', '🔗', {
+    href: `#${anchorPoint.id}`,
+    class: 'self-anchor-link'
+  });
+  anchorPoint.insertBefore(linkEle, anchorPoint.firstChild);
+}
+</script>
 </body>
 </html>

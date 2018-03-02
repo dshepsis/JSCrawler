@@ -112,7 +112,7 @@ const QUIT = (noisy)=>{
     request.abortedDueToTimeout = true;
     request.abort();
     if (noisy) {
-      console.warn("Aborting request at index " + r + " of allRequests");
+      console.warn(`Aborting request at index ${r} of allRequests`);
     }
   }
 };
@@ -124,7 +124,7 @@ const QUIT = (noisy)=>{
 const TIMEOUT_TIMER = window.setTimeout(()=>QUIT(true), MAX_TIMEOUT);
 
 function urlRemoveAnchor(locationObj) {
-  if (typeof locationObj === "string") {
+  if (typeof locationObj === 'string') {
     /* For some reason, creating a link with an empty string for an href makes
      * that link think it refers to the current page. In other words, an empty
      * href behaves like "/". So we have to manually avoid this behavior to
@@ -685,7 +685,8 @@ function classifyImages(doc, curPageURL) {
       continue;
     }
     /* Images don't naturally have location properties, so use the URL api: */
-    const imgSrcHostname = new URL(srcProp).hostname.toLowerCase();
+    const imgLocation = new URL(srcProp);
+    const imgSrcHostname = imgLocation.hostname.toLowerCase();
     const isInternal = (imgSrcHostname === HOSTNAME);
 
     /* Unfortunately, whether an image is available or broken must be determined
@@ -736,6 +737,12 @@ function classifyImages(doc, curPageURL) {
     } else {
       imageRecord.group.label("external");
     }
+
+    if (imgLocation.protocol === 'file:') {
+      imageRecord.group.label("localFile");
+    } else if (imgLocation.protocol !== PROTOCOL){
+      imageRecord.group.label("http-httpsError");
+    }
   }//Close for loop iterating over images
 }//Close function classifyImages
 
@@ -751,7 +758,8 @@ function classifyOther(doc, curPageURL) {
       eleRecord.group.label("null");
       continue;
     }
-    const iframeSrcHostname = new URL(srcProp).hostname.toLowerCase();
+    const iframeLocation = new URL(srcProp);
+    const iframeSrcHostname = iframeLocation.hostname.toLowerCase();
     const isInternal = (iframeSrcHostname === HOSTNAME);
 
     if (!iframe.title) {
@@ -767,6 +775,12 @@ function classifyOther(doc, curPageURL) {
       }
     } else {
       eleRecord.group.label("external");
+    }
+
+    if (iframeLocation.protocol === 'file:') {
+      eleRecord.group.label("localFile");
+    } else if (iframeLocation.protocol !== PROTOCOL){
+      eleRecord.group.label("http-httpsError");
     }
   }//Close for loop iterating over iframes
 }//Close function classifyOther
@@ -815,7 +829,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
     /* Then, check the request's content-type: */
     const contentType = request.getResponseHeader("Content-Type");
     const validContentType = "text/html";
-    if (contentType.substr(0, validContentType.length) !== validContentType) {
+    if (!contentType.startsWith(validContentType)) {
       if (!isRecognizedFile) {
         pageRecordGroup.label("unknownContentType");
       }
