@@ -214,8 +214,7 @@ function getHrefOrSrcProp(ele, retainAnchor) {
   if (ele.src  !== undefined) {
     return ele.src;
   }
-  throw new TypeError(`elementInDocument must have either an href or a \
-source.`);
+  throw new TypeError(`elementInDocument must have either an href or a source.`);
 }
 /* Similar to above, except returns the attribute instead of the property: */
 function getHrefOrSrcAttr(ele) {
@@ -252,6 +251,7 @@ const GROUP_LABELS = freezeSet(new Set([
   "accessDenied",
   "forbidden",
   "notFound",
+  "internalServiceError",
   "robotsDisallowed",
   "unloaded",
   "file"
@@ -541,8 +541,10 @@ function classifyLinks(doc, curPageURL) {
     const bannedStr = BANNED_STRINGS.isStringBanned(link.href);
     if (bannedStr) {
       linkRecord.label("bannedString");
-      console.error(`Found link ${hrefAttr} containing a banned string: \
-${bannedStr}.\n\tLinked-to from: ${curPageURL}`);
+      console.error(
+        `Found link ${hrefAttr} containing a banned string: ${bannedStr}.\n\t`+
+        `Linked-to from: ${curPageURL}`
+      );
       markElement(link, "red", "BANNED STRING LINK");
 
       /* Don't parse the link further. Banned-string links will not be crawled. */
@@ -918,6 +920,11 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
       case 404:
         pageRecordGroup.label("notFound");
         msg = `${msgHead}That means the server could not find the given page.`;
+        break;
+      case 500:
+        pageRecordGroup.label("internalServiceError");
+        msg =  `${msgHead}That means that the server encountered some unexpected `;
+        msg += `condition which prevented it from fulfilling the request.`;
         break;
       default:
         console.error("AN UNIDENTIFIED ERROR OCURRED!", request);

@@ -493,6 +493,13 @@ https://newbrunswick.rutgers.edu/</code></pre>
         site at the appropriate address, or change the link to refer to the
         correct address.
       </p></li>
+      <li id="labels-internalServiceError" class="issue-label anchor-point"><p>
+      	<strong class="item-header">internalServiceError</strong>: Refers to
+        links which point to resources that the server fails to retrieve. Usually
+        this indicates a bug or misconfiguration on the server end. In general,
+        a developer responsible for the server should be alerted about these
+        links. Beyond this, little can be done besides removing the link.
+      </p></li>
       <li id="labels-robotsDisallowed" class="anchor-point"><p>
       	<strong class="item-header">robotsDisallowed</strong>: Refers to pages which the crawler
         knows about, but did not request and crawl due to the page being
