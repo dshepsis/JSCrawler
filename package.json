@@ -1,5 +1,32 @@
 {
-  "scripts": {
-    "precommit": "node compileTemplate index.html.template"
-  }
+ "husky": {
+   "hooks": {
+      "pre-commit": "cd docs && node compileTemplate index.html.template"
+    }
+  },
+  "name": "jscrawler",
+  "description": "A Site-Crawler written entirely in JavaScript, meant to be run from the client",
+  "version": "1.0.0",
+  "main": "crawlSite.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dshepsis/JSCrawler.git"
+  },
+  "keywords": [
+    "User",
+    "Script"
+  ],
+  "author": "Daniel Shepsis",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/dshepsis/JSCrawler/issues"
+  },
+  "homepage": "https://github.com/dshepsis/JSCrawler#readme",
+  "devDependencies": {
+    "husky": "^0.15.0-rc.8"
+  },
+  "dependencies": {}
 }

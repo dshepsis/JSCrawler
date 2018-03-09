@@ -1,5 +1,8 @@
 {
   "scripts": {
-    "precommit": "node compileTemplate index.html.template"
+    "postinstall": "cd .. && npm install"
+  },
+  "devDependencies": {
+    "moment": "^2.21.0"
   }
 }

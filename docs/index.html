@@ -11,7 +11,7 @@
   <meta name="author" content="Daniel Shepsis">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="img/favico.ico" />
-  <!-- General interface Styling: -->
+  <!-- General interface styling: -->
   <link rel="stylesheet" type="text/css" href="css/main.css" />
 </head>
 
@@ -22,7 +22,7 @@
       JSCrawler Instruction Manual
     </h1>
     <p id="app-info">
-      <span id="edit-date">Last edited Mar 2nd, 2018</span>
+      <span id="edit-date">Last edited Mar 9th, 2018</span>
     </p>
   </div>
   </header>
@@ -42,6 +42,17 @@
         <p><span class="item-header">Copy the script</span> by <button id="copy-button" class="inline-button">clicking here</button>:</p>
         <pre id="script-src" class="code-block"><code class="JavaScript">'use strict';
 const startTime = performance.now();
+
+/* Polyfill iteration on HTMLCollections for Edge and other browsers: */
+(function() {
+  const getIter = (cnstr) => cnstr.prototype[Symbol.iterator];
+  const createIter = (cnstr) => {
+    if (!getIter(cnstr)) {
+      cnstr.prototype[Symbol.iterator] = getIter(Array);
+    }
+  };
+  [HTMLCollection, NodeList].forEach(createIter);
+}());
 
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */

@@ -1,0 +1,1049 @@
+MyName2018-03-09 12:11:07.1034|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 254 at GitClient.cs:474 after blocking 0.0131013s
+2018-03-09 11:44:10.3279|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 28 at GitClient.cs:600 after blocking 0.0033391s
+2018-03-09 11:44:10.3710|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2018-03-09 11:44:10.3710|INFO|thread: 1|NewCommitViewModel|Took 132ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:44:10.3710|INFO|thread: 1|NewCommitViewModel|Took 130ms to render file list for C:\Users\MyName\Documents\MyOtherRepo
+2018-03-09 11:44:10.3860|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 29 at GitClient.cs:381
+2018-03-09 11:44:10.3860|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 29 at GitClient.cs:381 after waiting 0.0001431s
+2018-03-09 11:44:10.3860|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 30 at RepositoryViewModel.cs:319
+2018-03-09 11:44:10.3860|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 30 at RepositoryViewModel.cs:319 after waiting 4.04E-05s
+2018-03-09 11:44:10.3860|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 31 at RepositoryViewModel.cs:319
+2018-03-09 11:44:10.3860|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 31 at RepositoryViewModel.cs:319 after waiting 1.42E-05s
+2018-03-09 11:44:10.3860|INFO|thread: 1|AsyncReaderWriterLock|Released concurrent scheduler for operation: 31 at RepositoryViewModel.cs:319 after blocking 2E-05s
+2018-03-09 11:44:10.3860|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 32 at RepositoryViewModel.cs:319
+2018-03-09 11:44:10.3860|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 32 at RepositoryViewModel.cs:319 after waiting 0.0001973s
+2018-03-09 11:44:10.4041|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 30 at RepositoryViewModel.cs:319 after blocking 0.0150604s
+2018-03-09 11:44:10.4041|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 32 at RepositoryViewModel.cs:319 after blocking 0.0196924s
+2018-03-09 11:44:10.4171|INFO|thread:30|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:44:10.4171|INFO|thread:30|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:44:10.4171|INFO|thread:30|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'diff-tree -r -z --no-renames --name-status c3ad72ff21de6f375ade87e66c278febdd9c020d 236fc942cf840700f9bb2245e3682e3df83558c7 ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:44:10.6437|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 29 at GitClient.cs:381 after blocking 0.2576218s
+2018-03-09 11:44:10.6608|INFO|thread: 1|SelectedCommitViewModel|Took 281ms to load files for commit 6427979 in repo C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:44:10.6668|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 33 at GitClient.cs:474
+2018-03-09 11:44:10.6668|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 33 at GitClient.cs:474 after waiting 0.0001991s
+2018-03-09 11:44:10.7229|INFO|thread: 8|AsyncReaderWriterLock|Released concurrent scheduler for operation: 33 at GitClient.cs:474 after blocking 0.0560222s
+2018-03-09 11:44:10.8172|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 34 at GitClient.cs:381
+2018-03-09 11:44:10.8172|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 34 at GitClient.cs:381 after waiting 3.02E-05s
+2018-03-09 11:44:10.8382|INFO|thread: 4|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:44:10.8382|INFO|thread: 4|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:44:10.8382|INFO|thread: 4|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'diff-tree -r -z --no-renames --name-status 18646a264273f6d49ebdd4fc987050ae20a91549 52e3d7c5c86998da28918db22778701b584f31ad ', Working Directory: C:\Users\MyName\Documents\MyOtherRepo\
+2018-03-09 11:44:11.0297|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 35 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0297|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 35 at ICommittedFileForklift.cs:95 after waiting 0.0011435s
+2018-03-09 11:44:11.0297|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 36 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0448|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 37 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0448|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 38 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0448|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 39 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0448|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 40 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0608|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 41 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0608|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 42 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0608|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 43 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0728|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 44 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0728|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 45 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0728|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 46 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0728|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 47 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0889|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 48 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0889|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 49 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0889|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 50 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.0889|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 51 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.1069|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 52 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:11.1240|INFO|thread:13|AsyncReaderWriterLock|Released concurrent scheduler for operation: 35 at ICommittedFileForklift.cs:95 after blocking 0.0930413s
+2018-03-09 11:44:11.1240|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 36 at ICommittedFileForklift.cs:95 after waiting 0.0839818s
+2018-03-09 11:44:11.1240|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 37 at ICommittedFileForklift.cs:95 after waiting 0.0804404s
+2018-03-09 11:44:11.1380|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 38 at ICommittedFileForklift.cs:95 after waiting 0.0889938s
+2018-03-09 11:44:11.1380|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 36 at ICommittedFileForklift.cs:95 after blocking 0.0135s
+2018-03-09 11:44:11.1380|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 39 at ICommittedFileForklift.cs:95 after waiting 0.0854978s
+2018-03-09 11:44:11.1380|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 34 at GitClient.cs:381 after blocking 0.3246521s
+2018-03-09 11:44:11.1380|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 40 at ICommittedFileForklift.cs:95 after waiting 0.0855333s
+2018-03-09 11:44:11.1571|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 37 at ICommittedFileForklift.cs:95 after blocking 0.0327235s
+2018-03-09 11:44:11.1571|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 41 at ICommittedFileForklift.cs:95 after waiting 0.0971258s
+2018-03-09 11:44:11.1721|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 39 at ICommittedFileForklift.cs:95 after blocking 0.0344529s
+2018-03-09 11:44:11.1721|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 42 at ICommittedFileForklift.cs:95 after waiting 0.1074733s
+2018-03-09 11:44:11.1721|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 43 at ICommittedFileForklift.cs:95 after waiting 0.1035778s
+2018-03-09 11:44:11.1721|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 38 at ICommittedFileForklift.cs:95 after blocking 0.0347071s
+2018-03-09 11:44:11.1861|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 44 at ICommittedFileForklift.cs:95 after waiting 0.1137813s
+2018-03-09 11:44:11.1861|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 40 at ICommittedFileForklift.cs:95 after blocking 0.0447555s
+2018-03-09 11:44:11.2082|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 42 at ICommittedFileForklift.cs:95 after blocking 0.0356329s
+2018-03-09 11:44:11.2082|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 45 at ICommittedFileForklift.cs:95 after waiting 0.1308529s
+2018-03-09 11:44:11.2082|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 41 at ICommittedFileForklift.cs:95 after blocking 0.0503795s
+2018-03-09 11:44:11.2082|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 46 at ICommittedFileForklift.cs:95 after waiting 0.1269622s
+2018-03-09 11:44:11.2222|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 43 at ICommittedFileForklift.cs:95 after blocking 0.0500644s
+2018-03-09 11:44:11.2222|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 47 at ICommittedFileForklift.cs:95 after waiting 0.1374142s
+2018-03-09 11:44:11.2523|INFO|thread:29|AsyncReaderWriterLock|Released concurrent scheduler for operation: 44 at ICommittedFileForklift.cs:95 after blocking 0.0652978s
+2018-03-09 11:44:11.2523|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 48 at ICommittedFileForklift.cs:95 after waiting 0.1628547s
+2018-03-09 11:44:11.2654|INFO|thread:29|SoftwareUpdateViewModel|Checking for new version
+2018-03-09 11:44:11.2654|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 45 at ICommittedFileForklift.cs:95 after blocking 0.0587253s
+2018-03-09 11:44:11.2654|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 49 at ICommittedFileForklift.cs:95 after waiting 0.1727742s
+2018-03-09 11:44:11.2654|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 46 at ICommittedFileForklift.cs:95 after blocking 0.0622764s
+2018-03-09 11:44:11.2654|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 50 at ICommittedFileForklift.cs:95 after waiting 0.1717925s
+2018-03-09 11:44:11.2824|INFO|thread:28|AsyncReaderWriterLock|Released concurrent scheduler for operation: 47 at ICommittedFileForklift.cs:95 after blocking 0.0595751s
+2018-03-09 11:44:11.2824|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 51 at ICommittedFileForklift.cs:95 after waiting 0.179508s
+2018-03-09 11:44:11.2934|INFO|thread:13|AsyncReaderWriterLock|Released concurrent scheduler for operation: 50 at ICommittedFileForklift.cs:95 after blocking 0.0235484s
+2018-03-09 11:44:11.2934|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 52 at ICommittedFileForklift.cs:95 after waiting 0.1872285s
+2018-03-09 11:44:11.2934|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 49 at ICommittedFileForklift.cs:95 after blocking 0.029468s
+2018-03-09 11:44:11.2934|INFO|thread:34|AsyncReaderWriterLock|Released concurrent scheduler for operation: 48 at ICommittedFileForklift.cs:95 after blocking 0.044364s
+2018-03-09 11:44:11.2934|INFO|thread:13|AsyncReaderWriterLock|Released concurrent scheduler for operation: 52 at ICommittedFileForklift.cs:95 after blocking 0.007192s
+2018-03-09 11:44:11.2934|INFO|thread: 8|AsyncReaderWriterLock|Released concurrent scheduler for operation: 51 at ICommittedFileForklift.cs:95 after blocking 0.0192582s
+2018-03-09 11:44:12.0493|INFO|thread: 1|SelectedCommitViewModel|Took 1232ms to load files for commit 24b9a0f in repo C:\Users\MyName\Documents\MyOtherRepo
+2018-03-09 11:44:12.4255|INFO|thread:14|DashboardViewModel|Selected repository 'dshepsis/MyRepo'
+2018-03-09 11:44:12.4255|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 53 at GitClient.cs:195
+2018-03-09 11:44:12.4255|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 53 at GitClient.cs:195 after waiting 6.97E-05s
+2018-03-09 11:44:12.4255|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 54 at RepositoryModel.cs:596
+2018-03-09 11:44:12.4255|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 54 at RepositoryModel.cs:596 after waiting 8.31E-05s
+2018-03-09 11:44:12.4335|INFO|thread:28|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 55 at GitClient.cs:267
+2018-03-09 11:44:12.4335|INFO|thread:34|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 55 at GitClient.cs:267 after waiting 6.97E-05s
+2018-03-09 11:44:12.4335|INFO|thread:28|AsyncReaderWriterLock|Released concurrent scheduler for operation: 54 at RepositoryModel.cs:596 after blocking 0.0041457s
+2018-03-09 11:44:12.4335|INFO|thread:13|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:44:12.4335|INFO|thread:13|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:44:12.4335|INFO|thread:13|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:44:12.4535|INFO|thread:36|AsyncReaderWriterLock|Released concurrent scheduler for operation: 53 at GitClient.cs:195 after blocking 0.02448s
+2018-03-09 11:44:12.4846|INFO|thread: 5|BackgroundFetcher|Got a refresh period for C:\Users\MyName\Documents\MyRepo\.git of 300 seconds
+2018-03-09 11:44:12.4846|INFO|thread: 5|BackgroundFetcher|Added a delay for C:\Users\MyName\Documents\MyRepo\.git of 29767 milliseconds
+2018-03-09 11:44:12.5207|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 56 at GitClient.cs:588
+2018-03-09 11:44:12.5207|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 56 at GitClient.cs:588 after waiting 8.44E-05s
+2018-03-09 11:44:12.5207|INFO|thread:35|AsyncReaderWriterLock|Released concurrent scheduler for operation: 56 at GitClient.cs:588 after blocking 0.0026702s
+2018-03-09 11:44:12.6360|INFO|thread:30|ConcurrentRepositoryConnection|Took 138ms to git status
+2018-03-09 11:44:12.6360|INFO|thread:30|ConcurrentRepositoryConnection|Took 138ms to git status and parse output
+2018-03-09 11:44:12.6360|INFO|thread:30|NewCommitViewModel|Took 206ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:44:12.6360|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 55 at GitClient.cs:267 after blocking 0.2061156s
+2018-03-09 11:44:12.9709|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 57 at RepositoryViewModel.cs:726
+2018-03-09 11:44:12.9709|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 57 at RepositoryViewModel.cs:726 after waiting 7.2E-05s
+2018-03-09 11:44:12.9709|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 57 at RepositoryViewModel.cs:726 after blocking 0.0048382s
+2018-03-09 11:44:12.9709|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 58 at ICommittedFileForklift.cs:95
+2018-03-09 11:44:12.9709|INFO|thread:28|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 58 at ICommittedFileForklift.cs:95 after waiting 2.17E-05s
+2018-03-09 11:44:12.9820|INFO|thread:42|AsyncReaderWriterLock|Released concurrent scheduler for operation: 58 at ICommittedFileForklift.cs:95 after blocking 0.0044653s
+2018-03-09 11:44:13.2347|INFO|thread: 1|NewCommitViewModel|Took 595ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:44:13.2347|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 59 at RepositoryViewModel.cs:319
+2018-03-09 11:44:13.2347|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 59 at RepositoryViewModel.cs:319 after waiting 7.42E-05s
+2018-03-09 11:44:13.2467|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 59 at RepositoryViewModel.cs:319 after blocking 0.0112453s
+2018-03-09 11:44:14.9856|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 60 at GitClient.cs:474
+2018-03-09 11:44:14.9856|INFO|thread:35|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 60 at GitClient.cs:474 after waiting 9.02E-05s
+2018-03-09 11:44:15.0066|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 60 at GitClient.cs:474 after blocking 0.021308s
+2018-03-09 11:44:23.3013|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 61 at GitClient.cs:474
+2018-03-09 11:44:23.3013|INFO|thread:35|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 61 at GitClient.cs:474 after waiting 3.02E-05s
+2018-03-09 11:44:23.3153|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 61 at GitClient.cs:474 after blocking 0.01436s
+2018-03-09 11:44:39.3965|INFO|thread:30|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 62 at GitClient.cs:474
+2018-03-09 11:44:39.3965|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 62 at GitClient.cs:474 after waiting 6.66E-05s
+2018-03-09 11:44:39.4215|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 62 at GitClient.cs:474 after blocking 0.0243386s
+2018-03-09 11:44:43.5410|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 63 at GitClient.cs:474
+2018-03-09 11:44:43.5410|INFO|thread:35|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 63 at GitClient.cs:474 after waiting 8.04E-05s
+2018-03-09 11:44:43.5811|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 63 at GitClient.cs:474 after blocking 0.0398489s
+2018-03-09 11:44:45.3945|INFO|thread: 8|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 64 at GitClient.cs:474
+2018-03-09 11:44:45.3945|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 64 at GitClient.cs:474 after waiting 7.46E-05s
+2018-03-09 11:44:45.4146|INFO|thread: 8|AsyncReaderWriterLock|Released concurrent scheduler for operation: 64 at GitClient.cs:474 after blocking 0.01996s
+2018-03-09 11:45:30.6281|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 65 at GitClient.cs:195
+2018-03-09 11:45:30.6281|INFO|thread:13|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 65 at GitClient.cs:195 after waiting 7.95E-05s
+2018-03-09 11:45:30.6281|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 66 at RepositoryModel.cs:596
+2018-03-09 11:45:30.6281|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 66 at RepositoryModel.cs:596 after waiting 0.0002986s
+2018-03-09 11:45:30.6541|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 67 at GitClient.cs:267
+2018-03-09 11:45:30.6541|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 66 at RepositoryModel.cs:596 after blocking 0.0248302s
+2018-03-09 11:45:30.6541|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 67 at GitClient.cs:267 after waiting 0.0001733s
+2018-03-09 11:45:30.6692|INFO|thread: 5|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:45:30.6692|INFO|thread: 5|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:45:30.6692|INFO|thread: 5|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:45:30.6692|INFO|thread:38|AsyncReaderWriterLock|Released concurrent scheduler for operation: 65 at GitClient.cs:195 after blocking 0.0458466s
+2018-03-09 11:45:30.8496|INFO|thread: 4|ConcurrentRepositoryConnection|Took 138ms to git status
+2018-03-09 11:45:30.8496|INFO|thread: 4|ConcurrentRepositoryConnection|Took 139ms to git status and parse output
+2018-03-09 11:45:30.8496|INFO|thread: 4|NewCommitViewModel|Took 199ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:45:30.8536|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 67 at GitClient.cs:267 after blocking 0.1990214s
+2018-03-09 11:45:30.8536|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 68 at GitClient.cs:474
+2018-03-09 11:45:30.8536|INFO|thread:29|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 68 at GitClient.cs:474 after waiting 1.95E-05s
+2018-03-09 11:45:30.8737|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 68 at GitClient.cs:474 after blocking 0.0192368s
+2018-03-09 11:45:30.8737|INFO|thread:38|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 69 at GitClient.cs:474
+2018-03-09 11:45:30.8737|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 69 at GitClient.cs:474 after waiting 1.86E-05s
+2018-03-09 11:45:30.8737|INFO|thread:28|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 70 at GitClient.cs:474
+2018-03-09 11:45:30.8737|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 70 at GitClient.cs:474 after waiting 1.82E-05s
+2018-03-09 11:45:30.8737|INFO|thread: 8|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 71 at GitClient.cs:474
+2018-03-09 11:45:30.8737|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 71 at GitClient.cs:474 after waiting 1.28E-05s
+2018-03-09 11:45:30.8737|INFO|thread:35|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 72 at GitClient.cs:474
+2018-03-09 11:45:30.8737|INFO|thread:35|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 72 at GitClient.cs:474 after waiting 5.42E-05s
+2018-03-09 11:45:30.8737|INFO|thread: 1|NewCommitViewModel|Took 25ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:45:30.8737|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 73 at RepositoryViewModel.cs:319
+2018-03-09 11:45:30.8877|INFO|thread:38|AsyncReaderWriterLock|Released concurrent scheduler for operation: 69 at GitClient.cs:474 after blocking 0.0106462s
+2018-03-09 11:45:30.8877|INFO|thread:28|AsyncReaderWriterLock|Released concurrent scheduler for operation: 70 at GitClient.cs:474 after blocking 0.0093533s
+2018-03-09 11:45:30.8877|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 73 at RepositoryViewModel.cs:319 after waiting 0.008252s
+2018-03-09 11:45:30.8877|INFO|thread:35|AsyncReaderWriterLock|Released concurrent scheduler for operation: 72 at GitClient.cs:474 after blocking 0.009284s
+2018-03-09 11:45:30.8877|INFO|thread: 8|AsyncReaderWriterLock|Released concurrent scheduler for operation: 71 at GitClient.cs:474 after blocking 0.0182697s
+2018-03-09 11:45:30.9048|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 73 at RepositoryViewModel.cs:319 after blocking 0.0169684s
+2018-03-09 11:45:33.1673|INFO|thread:41|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 74 at GitClient.cs:474
+2018-03-09 11:45:33.1673|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 74 at GitClient.cs:474 after waiting 9.77E-05s
+2018-03-09 11:45:33.1994|INFO|thread:41|AsyncReaderWriterLock|Released concurrent scheduler for operation: 74 at GitClient.cs:474 after blocking 0.0311924s
+2018-03-09 11:45:34.4320|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 75 at GitClient.cs:474
+2018-03-09 11:45:34.4320|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 75 at GitClient.cs:474 after waiting 4.57E-05s
+2018-03-09 11:45:34.4511|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 75 at GitClient.cs:474 after blocking 0.0191071s
+2018-03-09 11:45:41.3661|INFO|thread:37|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 76 at GitClient.cs:474
+2018-03-09 11:45:41.3661|INFO|thread:41|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 76 at GitClient.cs:474 after waiting 9.46E-05s
+2018-03-09 11:45:41.3941|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 76 at GitClient.cs:474 after blocking 0.0283662s
+2018-03-09 11:45:44.6849|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 77 at GitClient.cs:474
+2018-03-09 11:45:44.6849|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 77 at GitClient.cs:474 after waiting 8.88E-05s
+2018-03-09 11:45:44.7200|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 77 at GitClient.cs:474 after blocking 0.0351764s
+2018-03-09 11:46:16.6746|INFO|thread: 1|AsyncReaderWriterLock|Acquiring exclusive scheduler for operation 78 at ICommitCreator.cs:89
+2018-03-09 11:46:16.6746|INFO|thread:16|AsyncReaderWriterLock|Acquired exclusive scheduler for operation: 78 at ICommitCreator.cs:89 after waiting 0.0001417s
+2018-03-09 11:46:16.6746|INFO|thread:37|ExclusiveRepositoryConnection|Creating Commit
+2018-03-09 11:46:16.7086|INFO|thread:37|ExclusiveRepositoryConnection|Creating new commit with 6 file(s). Fixing Package.json and Husky stuff
+
+Husky wasn't actually working before. I *think* I fixed it now. Let's
+see.
+
+2018-03-09 11:46:16.7177|INFO|thread:37|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:16.7177|INFO|thread:37|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:16.7177|INFO|thread:37|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:16.9262|INFO|thread:41|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:16.9262|INFO|thread:41|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:16.9262|INFO|thread:41|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html.template" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:17.1498|INFO|thread: 4|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:17.1498|INFO|thread: 4|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:17.1498|INFO|thread: 4|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:17.3353|INFO|thread:37|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:17.3353|INFO|thread:37|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:17.3353|INFO|thread:37|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:17.5840|INFO|thread:46|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:17.5840|INFO|thread:46|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:17.5840|INFO|thread:46|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:17.8276|INFO|thread:37|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:17.8276|INFO|thread:37|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:17.8276|INFO|thread:37|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:18.0389|INFO|thread:46|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:18.0389|INFO|thread:46|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:18.0389|INFO|thread:46|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'commit -F "C:\Users\MyName\AppData\Local\Temp\d83a9a90-66d6-48dc-a5f7-67c4e21cb6b3" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:18.6987|INFO|thread:47|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 79 at RepositoryModel.cs:596
+2018-03-09 11:46:18.6987|INFO|thread:48|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 80 at GitClient.cs:267
+2018-03-09 11:46:18.6987|INFO|thread: 8|AsyncReaderWriterLock|Released exclusive scheduler for operation: 78 at ICommitCreator.cs:89 after blocking 2.0248262s
+2018-03-09 11:46:18.6987|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 80 at GitClient.cs:267 after waiting 0.0004466s
+2018-03-09 11:46:18.6987|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 79 at RepositoryModel.cs:596 after waiting 0.0006782s
+2018-03-09 11:46:18.6987|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 79 at RepositoryModel.cs:596 after blocking 0.0039964s
+2018-03-09 11:46:18.6987|INFO|thread:39|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:18.6987|INFO|thread:39|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:18.6987|INFO|thread:39|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:18.7368|WARN|thread: 1|StandardUserErrors|Showing user error Failed to create a new commit.
+GitHub.IO.ProcessException: .git/hooks/pre-commit: line 6: node: command not found
+2018-03-09 11:46:18.8925|INFO|thread:46|ConcurrentRepositoryConnection|Took 136ms to git status
+2018-03-09 11:46:18.8925|INFO|thread:46|ConcurrentRepositoryConnection|Took 137ms to git status and parse output
+2018-03-09 11:46:18.8925|INFO|thread:46|NewCommitViewModel|Took 197ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:46:18.8925|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 80 at GitClient.cs:267 after blocking 0.1969725s
+2018-03-09 11:46:18.8925|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 81 at GitClient.cs:474
+2018-03-09 11:46:18.8925|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 81 at GitClient.cs:474 after waiting 1.55E-05s
+2018-03-09 11:46:18.8925|INFO|thread:45|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 82 at GitClient.cs:474
+2018-03-09 11:46:18.8925|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 82 at GitClient.cs:474 after waiting 1.06E-05s
+2018-03-09 11:46:18.8925|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 83 at GitClient.cs:474
+2018-03-09 11:46:18.8925|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 83 at GitClient.cs:474 after waiting 9.7E-06s
+2018-03-09 11:46:18.8925|INFO|thread:37|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 84 at GitClient.cs:474
+2018-03-09 11:46:18.9015|INFO|thread: 1|NewCommitViewModel|Took 5ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:46:18.9015|INFO|thread:50|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 85 at GitClient.cs:474
+2018-03-09 11:46:18.9015|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 86 at GitClient.cs:474
+2018-03-09 11:46:18.9015|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 84 at GitClient.cs:474 after waiting 0.0070217s
+2018-03-09 11:46:18.9015|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 83 at GitClient.cs:474 after blocking 0.009576s
+2018-03-09 11:46:18.9015|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 85 at GitClient.cs:474 after waiting 0.0064746s
+2018-03-09 11:46:18.9015|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 82 at GitClient.cs:474 after blocking 0.0113155s
+2018-03-09 11:46:18.9015|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 86 at GitClient.cs:474 after waiting 0.0051s
+2018-03-09 11:46:18.9015|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 81 at GitClient.cs:474 after blocking 0.0137195s
+2018-03-09 11:46:18.9015|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 84 at GitClient.cs:474 after blocking 0.0089866s
+2018-03-09 11:46:18.9195|INFO|thread:50|AsyncReaderWriterLock|Released concurrent scheduler for operation: 85 at GitClient.cs:474 after blocking 0.0103822s
+2018-03-09 11:46:18.9195|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 86 at GitClient.cs:474 after blocking 0.017384s
+2018-03-09 11:46:26.0371|INFO|thread:49|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 87 at GitClient.cs:474
+2018-03-09 11:46:26.0371|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 87 at GitClient.cs:474 after waiting 8.88E-05s
+2018-03-09 11:46:26.0642|INFO|thread:49|AsyncReaderWriterLock|Released concurrent scheduler for operation: 87 at GitClient.cs:474 after blocking 0.0274129s
+2018-03-09 11:46:26.9300|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 88 at GitClient.cs:474
+2018-03-09 11:46:26.9300|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 88 at GitClient.cs:474 after waiting 5.64E-05s
+2018-03-09 11:46:26.9581|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 88 at GitClient.cs:474 after blocking 0.028524s
+2018-03-09 11:46:29.5524|INFO|thread: 1|AsyncReaderWriterLock|Acquiring exclusive scheduler for operation 89 at ICommitCreator.cs:89
+2018-03-09 11:46:29.5524|INFO|thread:54|AsyncReaderWriterLock|Acquired exclusive scheduler for operation: 89 at ICommitCreator.cs:89 after waiting 5.77E-05s
+2018-03-09 11:46:29.5524|INFO|thread:53|ExclusiveRepositoryConnection|Creating Commit
+2018-03-09 11:46:29.5764|INFO|thread:53|ExclusiveRepositoryConnection|Creating new commit with 6 file(s). Fixing Package.json and Husky stuff
+
+Husky wasn't actually working before. I *think* I fixed it now. Let's
+see.
+
+2018-03-09 11:46:29.5764|INFO|thread:53|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:29.5764|INFO|thread:53|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:29.5764|INFO|thread:53|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:29.8041|INFO|thread:41|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:29.8041|INFO|thread:41|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:29.8041|INFO|thread:41|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html.template" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:29.9936|INFO|thread: 5|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:29.9936|INFO|thread: 5|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:29.9936|INFO|thread: 5|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:30.1771|INFO|thread:52|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:30.1771|INFO|thread:52|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:30.1771|INFO|thread:52|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:30.3746|INFO|thread:51|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:30.3746|INFO|thread:51|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:30.3746|INFO|thread:51|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:30.5761|INFO|thread:50|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:30.5761|INFO|thread:50|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:30.5761|INFO|thread:50|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:30.7997|INFO|thread:46|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:30.7997|INFO|thread:46|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:30.7997|INFO|thread:46|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'commit -F "C:\Users\MyName\AppData\Local\Temp\f57d0c9d-ae1d-4f0e-bf27-76a27e5a9523" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:31.2488|INFO|thread:45|AsyncReaderWriterLock|Released exclusive scheduler for operation: 89 at ICommitCreator.cs:89 after blocking 1.6965683s
+2018-03-09 11:46:31.2488|INFO|thread:47|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 90 at RepositoryModel.cs:596
+2018-03-09 11:46:31.2488|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 90 at RepositoryModel.cs:596 after waiting 8.84E-05s
+2018-03-09 11:46:31.2488|INFO|thread:48|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 91 at GitClient.cs:267
+2018-03-09 11:46:31.2488|INFO|thread:53|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 91 at GitClient.cs:267 after waiting 0.0001955s
+2018-03-09 11:46:31.2488|WARN|thread: 1|StandardUserErrors|Showing user error Failed to create a new commit.
+GitHub.IO.ProcessException: .git/hooks/pre-commit: line 6: node: command not found
+2018-03-09 11:46:31.2488|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 90 at RepositoryModel.cs:596 after blocking 0.0047426s
+2018-03-09 11:46:31.2659|INFO|thread:43|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:31.2659|INFO|thread:43|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:31.2659|INFO|thread:43|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:31.4574|INFO|thread:51|ConcurrentRepositoryConnection|Took 146ms to git status
+2018-03-09 11:46:31.4574|INFO|thread:51|ConcurrentRepositoryConnection|Took 146ms to git status and parse output
+2018-03-09 11:46:31.4574|INFO|thread:51|NewCommitViewModel|Took 211ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:46:31.4574|INFO|thread:51|AsyncReaderWriterLock|Released concurrent scheduler for operation: 91 at GitClient.cs:267 after blocking 0.2108547s
+2018-03-09 11:46:31.4574|INFO|thread:41|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 92 at GitClient.cs:474
+2018-03-09 11:46:31.4574|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 92 at GitClient.cs:474 after waiting 2.97E-05s
+2018-03-09 11:46:31.4644|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 93 at GitClient.cs:474
+2018-03-09 11:46:31.4644|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 93 at GitClient.cs:474 after waiting 1.11E-05s
+2018-03-09 11:46:31.4644|INFO|thread: 8|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 94 at GitClient.cs:474
+2018-03-09 11:46:31.4644|INFO|thread:49|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 94 at GitClient.cs:474 after waiting 1.37E-05s
+2018-03-09 11:46:31.4644|INFO|thread:55|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 95 at GitClient.cs:474
+2018-03-09 11:46:31.4644|INFO|thread:50|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 95 at GitClient.cs:474 after waiting 1.55E-05s
+2018-03-09 11:46:31.4644|INFO|thread: 1|NewCommitViewModel|Took 5ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:46:31.4644|INFO|thread:53|AsyncReaderWriterLock|Released concurrent scheduler for operation: 95 at GitClient.cs:474 after blocking 0.0099382s
+2018-03-09 11:46:31.4644|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 94 at GitClient.cs:474 after blocking 0.0107617s
+2018-03-09 11:46:31.4644|INFO|thread:37|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 96 at GitClient.cs:474
+2018-03-09 11:46:31.4644|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 96 at GitClient.cs:474 after waiting 6.22E-05s
+2018-03-09 11:46:31.4644|INFO|thread:55|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 97 at GitClient.cs:474
+2018-03-09 11:46:31.4644|INFO|thread:55|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 97 at GitClient.cs:474 after waiting 5.51E-05s
+2018-03-09 11:46:31.4644|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 93 at GitClient.cs:474 after blocking 0.0128355s
+2018-03-09 11:46:31.4644|INFO|thread:41|AsyncReaderWriterLock|Released concurrent scheduler for operation: 92 at GitClient.cs:474 after blocking 0.0147128s
+2018-03-09 11:46:31.4855|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 96 at GitClient.cs:474 after blocking 0.0090933s
+2018-03-09 11:46:31.4995|INFO|thread:55|AsyncReaderWriterLock|Released concurrent scheduler for operation: 97 at GitClient.cs:474 after blocking 0.0222257s
+2018-03-09 11:46:37.9438|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 98 at GitClient.cs:195
+2018-03-09 11:46:37.9438|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 98 at GitClient.cs:195 after waiting 5.51E-05s
+2018-03-09 11:46:37.9438|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 99 at RepositoryModel.cs:596
+2018-03-09 11:46:37.9508|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 99 at RepositoryModel.cs:596 after waiting 0.0060626s
+2018-03-09 11:46:37.9759|INFO|thread:54|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 100 at GitClient.cs:267
+2018-03-09 11:46:37.9799|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 99 at RepositoryModel.cs:596 after blocking 0.0258493s
+2018-03-09 11:46:37.9799|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 100 at GitClient.cs:267 after waiting 0.0011533s
+2018-03-09 11:46:38.0140|INFO|thread:54|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:46:38.0140|INFO|thread:54|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:46:38.0140|INFO|thread:54|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:46:38.0932|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 98 at GitClient.cs:195 after blocking 0.1493125s
+2018-03-09 11:46:38.5681|INFO|thread:16|ConcurrentRepositoryConnection|Took 241ms to git status
+2018-03-09 11:46:38.5681|INFO|thread:16|ConcurrentRepositoryConnection|Took 242ms to git status and parse output
+2018-03-09 11:46:38.5721|INFO|thread:16|NewCommitViewModel|Took 596ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:46:38.5721|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 100 at GitClient.cs:267 after blocking 0.5924935s
+2018-03-09 11:46:38.5721|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 101 at GitClient.cs:474
+2018-03-09 11:46:38.5721|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 101 at GitClient.cs:474 after waiting 2.57E-05s
+2018-03-09 11:46:38.5721|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 102 at GitClient.cs:474
+2018-03-09 11:46:38.5721|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 102 at GitClient.cs:474 after waiting 5.82E-05s
+2018-03-09 11:46:38.5881|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 103 at GitClient.cs:474
+2018-03-09 11:46:38.5881|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 103 at GitClient.cs:474 after waiting 8.17E-05s
+2018-03-09 11:46:38.5881|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 102 at GitClient.cs:474 after blocking 0.0135822s
+2018-03-09 11:46:38.5881|INFO|thread:49|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 104 at GitClient.cs:474
+2018-03-09 11:46:38.5881|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 104 at GitClient.cs:474 after waiting 1.46E-05s
+2018-03-09 11:46:38.5881|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 101 at GitClient.cs:474 after blocking 0.0154613s
+2018-03-09 11:46:38.5881|INFO|thread:54|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 105 at GitClient.cs:474
+2018-03-09 11:46:38.5881|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 105 at GitClient.cs:474 after waiting 5.46E-05s
+2018-03-09 11:46:38.5881|INFO|thread: 1|NewCommitViewModel|Took 21ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:46:38.5881|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 106 at RepositoryViewModel.cs:319
+2018-03-09 11:46:38.5881|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 106 at RepositoryViewModel.cs:319 after waiting 0.0002862s
+2018-03-09 11:46:38.5881|INFO|thread:41|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 107 at GitClient.cs:474
+2018-03-09 11:46:38.5881|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 103 at GitClient.cs:474 after blocking 0.0091564s
+2018-03-09 11:46:38.5881|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 107 at GitClient.cs:474 after waiting 0.0031515s
+2018-03-09 11:46:38.5881|INFO|thread:49|AsyncReaderWriterLock|Released concurrent scheduler for operation: 104 at GitClient.cs:474 after blocking 0.0092604s
+2018-03-09 11:46:38.6132|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 105 at GitClient.cs:474 after blocking 0.0224262s
+2018-03-09 11:46:38.6132|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 107 at GitClient.cs:474 after blocking 0.0153893s
+2018-03-09 11:46:38.6132|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 106 at RepositoryViewModel.cs:319 after blocking 0.0222315s
+2018-03-09 11:49:42.2032|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 108 at BranchSynchronizer.cs:141
+2018-03-09 11:49:42.2032|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 108 at BranchSynchronizer.cs:141 after waiting 6E-05s
+2018-03-09 11:49:42.2574|INFO|thread:55|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on feature-Aborting_requests_at_timeout
+2018-03-09 11:49:42.2704|INFO|thread:55|ConcurrentRepositoryConnection|branch stats: ahead 1, behind 0 on feature-manual
+2018-03-09 11:49:42.2704|INFO|thread:55|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on master
+2018-03-09 11:49:42.2794|INFO|thread:55|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on Refactor-Alt_Storage
+2018-03-09 11:49:42.2794|INFO|thread:55|ConcurrentRepositoryConnection|Pruning merged local branches
+2018-03-09 11:49:42.3025|INFO|thread:55|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:49:42.3025|INFO|thread:55|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:49:42.3025|INFO|thread:55|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'branch --merged master ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:49:42.3957|INFO|thread:43|BackgroundFetcher|Got a refresh period for C:\Users\MyName\Documents\MyRepo\.git of 300 seconds
+2018-03-09 11:49:42.3957|INFO|thread:43|BackgroundFetcher|Added a delay for C:\Users\MyName\Documents\MyRepo\.git of 3534 milliseconds
+2018-03-09 11:49:42.3957|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2018-03-09 11:49:42.4098|INFO|thread:55|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:49:42.4098|INFO|thread:55|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:49:42.4098|INFO|thread:55|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'log -g --abbrev-commit --pretty=oneline HEAD -n 2500 ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:49:42.4178|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 109 at GitClient.cs:600
+2018-03-09 11:49:42.4178|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 109 at GitClient.cs:600 after waiting 0.0001631s
+2018-03-09 11:49:42.4178|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 109 at GitClient.cs:600 after blocking 0.0056773s
+2018-03-09 11:49:42.6554|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 110 at GitClient.cs:195
+2018-03-09 11:49:42.6554|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 110 at GitClient.cs:195 after waiting 3.33E-05s
+2018-03-09 11:49:42.6554|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 111 at RepositoryModel.cs:596
+2018-03-09 11:49:42.6554|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 111 at RepositoryModel.cs:596 after waiting 4.48E-05s
+2018-03-09 11:49:42.6554|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 108 at BranchSynchronizer.cs:141 after blocking 0.4521086s
+2018-03-09 11:49:42.6554|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 112 at GitClient.cs:267
+2018-03-09 11:49:42.6554|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 112 at GitClient.cs:267 after waiting 2.13E-05s
+2018-03-09 11:49:42.6554|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 111 at RepositoryModel.cs:596 after blocking 0.0042937s
+2018-03-09 11:49:42.6695|INFO|thread:54|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:49:42.6695|INFO|thread:54|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:49:42.6695|INFO|thread:54|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:49:42.6695|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 110 at GitClient.cs:195 after blocking 0.0238537s
+2018-03-09 11:49:42.8408|INFO|thread: 4|ConcurrentRepositoryConnection|Took 142ms to git status
+2018-03-09 11:49:42.8408|INFO|thread: 4|ConcurrentRepositoryConnection|Took 142ms to git status and parse output
+2018-03-09 11:49:42.8408|INFO|thread: 4|NewCommitViewModel|Took 187ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:49:42.8408|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 112 at GitClient.cs:267 after blocking 0.1872658s
+2018-03-09 11:49:42.8408|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 113 at GitClient.cs:474
+2018-03-09 11:49:42.8408|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 113 at GitClient.cs:474 after waiting 0.0001035s
+2018-03-09 11:49:42.8408|INFO|thread:43|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 114 at GitClient.cs:474
+2018-03-09 11:49:42.8408|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 115 at GitClient.cs:474
+2018-03-09 11:49:42.8408|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 114 at GitClient.cs:474 after waiting 6.26E-05s
+2018-03-09 11:49:42.8408|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 115 at GitClient.cs:474 after waiting 5.37E-05s
+2018-03-09 11:49:42.8609|INFO|thread: 1|NewCommitViewModel|Took 14ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:49:42.8609|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 116 at RepositoryViewModel.cs:319
+2018-03-09 11:49:42.8609|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 117 at GitClient.cs:474
+2018-03-09 11:49:42.8609|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 118 at GitClient.cs:474
+2018-03-09 11:49:42.8609|INFO|thread: 4|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 119 at GitClient.cs:474
+2018-03-09 11:49:42.8609|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 116 at RepositoryViewModel.cs:319 after waiting 0.0049497s
+2018-03-09 11:49:42.8609|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 115 at GitClient.cs:474 after blocking 0.0141817s
+2018-03-09 11:49:42.8609|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 117 at GitClient.cs:474 after waiting 0.0006124s
+2018-03-09 11:49:42.8609|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 114 at GitClient.cs:474 after blocking 0.0147168s
+2018-03-09 11:49:42.8609|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 118 at GitClient.cs:474 after waiting 0.0008817s
+2018-03-09 11:49:42.8769|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 113 at GitClient.cs:474 after blocking 0.0277333s
+2018-03-09 11:49:42.8769|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 119 at GitClient.cs:474 after waiting 0.0107351s
+2018-03-09 11:49:42.8960|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 116 at RepositoryViewModel.cs:319 after blocking 0.029272s
+2018-03-09 11:49:42.8960|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 118 at GitClient.cs:474 after blocking 0.0290831s
+2018-03-09 11:49:42.8960|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 117 at GitClient.cs:474 after blocking 0.0297404s
+2018-03-09 11:49:42.8960|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 119 at GitClient.cs:474 after blocking 0.020896s
+2018-03-09 11:54:45.7499|INFO|thread:43|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 120 at BranchSynchronizer.cs:141
+2018-03-09 11:54:45.7499|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 120 at BranchSynchronizer.cs:141 after waiting 0.0003133s
+2018-03-09 11:54:45.7710|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on feature-Aborting_requests_at_timeout
+2018-03-09 11:54:45.7710|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 1, behind 0 on feature-manual
+2018-03-09 11:54:45.7770|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on master
+2018-03-09 11:54:45.7770|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on Refactor-Alt_Storage
+2018-03-09 11:54:45.7770|INFO|thread:39|ConcurrentRepositoryConnection|Pruning merged local branches
+2018-03-09 11:54:45.7770|INFO|thread:39|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:54:45.7770|INFO|thread:39|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:54:45.7770|INFO|thread:39|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'branch --merged master ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:54:45.8412|INFO|thread:39|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:54:45.8412|INFO|thread:39|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:54:45.8412|INFO|thread:39|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'log -g --abbrev-commit --pretty=oneline HEAD -n 2500 ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:54:45.9114|INFO|thread:43|BackgroundFetcher|Got a refresh period for C:\Users\MyName\Documents\MyRepo\.git of 300 seconds
+2018-03-09 11:54:45.9114|INFO|thread:43|BackgroundFetcher|Added a delay for C:\Users\MyName\Documents\MyRepo\.git of 6588 milliseconds
+2018-03-09 11:54:45.9304|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2018-03-09 11:54:45.9404|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 121 at GitClient.cs:600
+2018-03-09 11:54:45.9404|INFO|thread:65|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 121 at GitClient.cs:600 after waiting 0.0006817s
+2018-03-09 11:54:45.9404|INFO|thread:66|AsyncReaderWriterLock|Released concurrent scheduler for operation: 121 at GitClient.cs:600 after blocking 0.0031435s
+2018-03-09 11:54:46.0257|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 122 at GitClient.cs:195
+2018-03-09 11:54:46.0257|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 122 at GitClient.cs:195 after waiting 2.22E-05s
+2018-03-09 11:54:46.0257|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 123 at RepositoryModel.cs:596
+2018-03-09 11:54:46.0257|INFO|thread:55|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 123 at RepositoryModel.cs:596 after waiting 1.55E-05s
+2018-03-09 11:54:46.0257|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 120 at BranchSynchronizer.cs:141 after blocking 0.2753156s
+2018-03-09 11:54:46.0257|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 124 at GitClient.cs:267
+2018-03-09 11:54:46.0257|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 124 at GitClient.cs:267 after waiting 3.51E-05s
+2018-03-09 11:54:46.0257|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 123 at RepositoryModel.cs:596 after blocking 0.0044333s
+2018-03-09 11:54:46.0257|INFO|thread:54|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:54:46.0257|INFO|thread:54|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:54:46.0257|INFO|thread:54|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:54:46.0487|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 122 at GitClient.cs:195 after blocking 0.023768s
+2018-03-09 11:54:46.2032|INFO|thread:46|ConcurrentRepositoryConnection|Took 133ms to git status
+2018-03-09 11:54:46.2032|INFO|thread:46|ConcurrentRepositoryConnection|Took 134ms to git status and parse output
+2018-03-09 11:54:46.2032|INFO|thread:46|NewCommitViewModel|Took 176ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:54:46.2032|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 124 at GitClient.cs:267 after blocking 0.1765085s
+2018-03-09 11:54:46.2032|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 125 at GitClient.cs:474
+2018-03-09 11:54:46.2032|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 125 at GitClient.cs:474 after waiting 9.11E-05s
+2018-03-09 11:54:46.2032|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 126 at GitClient.cs:474
+2018-03-09 11:54:46.2032|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 126 at GitClient.cs:474 after waiting 3.15E-05s
+2018-03-09 11:54:46.2253|INFO|thread: 1|NewCommitViewModel|Took 18ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:54:46.2253|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 127 at RepositoryViewModel.cs:319
+2018-03-09 11:54:46.2253|INFO|thread:65|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 128 at GitClient.cs:474
+2018-03-09 11:54:46.2253|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 129 at GitClient.cs:474
+2018-03-09 11:54:46.2253|INFO|thread:65|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 127 at RepositoryViewModel.cs:319 after waiting 0.0011871s
+2018-03-09 11:54:46.2253|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 128 at GitClient.cs:474 after waiting 0.0001066s
+2018-03-09 11:54:46.2253|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 130 at GitClient.cs:474
+2018-03-09 11:54:46.2253|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 125 at GitClient.cs:474 after blocking 0.0179897s
+2018-03-09 11:54:46.2253|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 129 at GitClient.cs:474 after waiting 0.0002328s
+2018-03-09 11:54:46.2253|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 126 at GitClient.cs:474 after blocking 0.0150271s
+2018-03-09 11:54:46.2253|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 130 at GitClient.cs:474 after waiting 0.0005324s
+2018-03-09 11:54:46.2293|INFO|thread:45|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 131 at GitClient.cs:474
+2018-03-09 11:54:46.2293|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 128 at GitClient.cs:474 after blocking 0.0132804s
+2018-03-09 11:54:46.2293|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 131 at GitClient.cs:474 after waiting 0.010644s
+2018-03-09 11:54:46.2293|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 130 at GitClient.cs:474 after blocking 0.0153591s
+2018-03-09 11:54:46.2534|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 129 at GitClient.cs:474 after blocking 0.0269515s
+2018-03-09 11:54:46.2614|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 127 at RepositoryViewModel.cs:319 after blocking 0.0350689s
+2018-03-09 11:54:46.2614|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 131 at GitClient.cs:474 after blocking 0.0222204s
+2018-03-09 11:55:47.9145|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 132 at GitClient.cs:195
+2018-03-09 11:55:47.9145|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 132 at GitClient.cs:195 after waiting 8.75E-05s
+2018-03-09 11:55:47.9165|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 133 at RepositoryModel.cs:596
+2018-03-09 11:55:47.9165|INFO|thread:65|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 133 at RepositoryModel.cs:596 after waiting 5.46E-05s
+2018-03-09 11:55:47.9165|INFO|thread:43|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 134 at GitClient.cs:267
+2018-03-09 11:55:47.9165|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 134 at GitClient.cs:267 after waiting 0.000152s
+2018-03-09 11:55:47.9165|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 133 at RepositoryModel.cs:596 after blocking 0.0134951s
+2018-03-09 11:55:47.9406|INFO|thread:54|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:55:47.9406|INFO|thread:54|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:55:47.9406|INFO|thread:54|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:55:47.9546|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 132 at GitClient.cs:195 after blocking 0.0396s
+2018-03-09 11:55:48.1461|INFO|thread: 4|ConcurrentRepositoryConnection|Took 165ms to git status
+2018-03-09 11:55:48.1461|INFO|thread: 4|ConcurrentRepositoryConnection|Took 165ms to git status and parse output
+2018-03-09 11:55:48.1461|INFO|thread: 4|NewCommitViewModel|Took 220ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:55:48.1461|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 134 at GitClient.cs:267 after blocking 0.2197698s
+2018-03-09 11:55:48.1522|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 135 at GitClient.cs:474
+2018-03-09 11:55:48.1522|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 135 at GitClient.cs:474 after waiting 5.46E-05s
+2018-03-09 11:55:48.1522|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 136 at GitClient.cs:474
+2018-03-09 11:55:48.1522|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 136 at GitClient.cs:474 after waiting 7.64E-05s
+2018-03-09 11:55:48.1522|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 137 at GitClient.cs:474
+2018-03-09 11:55:48.1522|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 137 at GitClient.cs:474 after waiting 6.13E-05s
+2018-03-09 11:55:48.1522|INFO|thread:54|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 138 at GitClient.cs:474
+2018-03-09 11:55:48.1522|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 138 at GitClient.cs:474 after waiting 6.17E-05s
+2018-03-09 11:55:48.1742|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 136 at GitClient.cs:474 after blocking 0.0154711s
+2018-03-09 11:55:48.1742|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 135 at GitClient.cs:474 after blocking 0.023256s
+2018-03-09 11:55:48.1742|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 138 at GitClient.cs:474 after blocking 0.0145226s
+2018-03-09 11:55:48.1742|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 137 at GitClient.cs:474 after blocking 0.0167968s
+2018-03-09 11:55:48.2113|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 139 at GitClient.cs:474
+2018-03-09 11:55:48.2113|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 139 at GitClient.cs:474 after waiting 1.91E-05s
+2018-03-09 11:55:48.2113|INFO|thread:54|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 140 at GitClient.cs:474
+2018-03-09 11:55:48.2113|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 140 at GitClient.cs:474 after waiting 6.4E-05s
+2018-03-09 11:55:48.2213|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 140 at GitClient.cs:474 after blocking 0.008864s
+2018-03-09 11:55:48.2304|INFO|thread: 1|NewCommitViewModel|Took 80ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:55:48.2304|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 139 at GitClient.cs:474 after blocking 0.01882s
+2018-03-09 11:55:48.2304|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 141 at RepositoryViewModel.cs:319
+2018-03-09 11:55:48.2304|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 141 at RepositoryViewModel.cs:319 after waiting 1.64E-05s
+2018-03-09 11:55:48.2474|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 141 at RepositoryViewModel.cs:319 after blocking 0.01716s
+2018-03-09 11:56:16.7606|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 142 at GitClient.cs:195
+2018-03-09 11:56:16.7606|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 142 at GitClient.cs:195 after waiting 3.86E-05s
+2018-03-09 11:56:16.7606|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 143 at RepositoryModel.cs:596
+2018-03-09 11:56:16.7606|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 143 at RepositoryModel.cs:596 after waiting 0.0024991s
+2018-03-09 11:56:16.7606|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 144 at GitClient.cs:267
+2018-03-09 11:56:16.7606|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 143 at RepositoryModel.cs:596 after blocking 0.0054213s
+2018-03-09 11:56:16.7606|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 144 at GitClient.cs:267 after waiting 0.0001053s
+2018-03-09 11:56:16.7886|INFO|thread:39|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:56:16.7886|INFO|thread:39|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:56:16.7886|INFO|thread:39|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:56:16.7916|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 142 at GitClient.cs:195 after blocking 0.0310484s
+2018-03-09 11:56:17.0099|INFO|thread:52|ConcurrentRepositoryConnection|Took 170ms to git status
+2018-03-09 11:56:17.0099|INFO|thread:52|ConcurrentRepositoryConnection|Took 170ms to git status and parse output
+2018-03-09 11:56:17.0099|INFO|thread:52|NewCommitViewModel|Took 252ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:56:17.0099|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 144 at GitClient.cs:267 after blocking 0.2521107s
+2018-03-09 11:56:17.0099|INFO|thread:65|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 145 at GitClient.cs:474
+2018-03-09 11:56:17.0099|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 145 at GitClient.cs:474 after waiting 2.17E-05s
+2018-03-09 11:56:17.0390|INFO|thread:65|AsyncReaderWriterLock|Released concurrent scheduler for operation: 145 at GitClient.cs:474 after blocking 0.0160168s
+2018-03-09 11:56:17.0420|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 146 at GitClient.cs:474
+2018-03-09 11:56:17.0420|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 146 at GitClient.cs:474 after waiting 2.53E-05s
+2018-03-09 11:56:17.0420|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 147 at GitClient.cs:474
+2018-03-09 11:56:17.0420|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 147 at GitClient.cs:474 after waiting 5.77E-05s
+2018-03-09 11:56:17.0420|INFO|thread: 1|NewCommitViewModel|Took 23ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:56:17.0420|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 148 at RepositoryViewModel.cs:319
+2018-03-09 11:56:17.0420|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 149 at GitClient.cs:474
+2018-03-09 11:56:17.0420|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 148 at RepositoryViewModel.cs:319 after waiting 0.0001964s
+2018-03-09 11:56:17.0420|INFO|thread:45|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 150 at GitClient.cs:474
+2018-03-09 11:56:17.0420|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 151 at GitClient.cs:474
+2018-03-09 11:56:17.0420|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 149 at GitClient.cs:474 after waiting 0.0002195s
+2018-03-09 11:56:17.0420|INFO|thread:39|AsyncReaderWriterLock|Released concurrent scheduler for operation: 146 at GitClient.cs:474 after blocking 0.0112871s
+2018-03-09 11:56:17.0420|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 150 at GitClient.cs:474 after waiting 0.0084884s
+2018-03-09 11:56:17.0420|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 149 at GitClient.cs:474 after blocking 0.0092204s
+2018-03-09 11:56:17.0420|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 151 at GitClient.cs:474 after waiting 0.0092675s
+2018-03-09 11:56:17.0420|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 147 at GitClient.cs:474 after blocking 0.0121151s
+2018-03-09 11:56:17.0580|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 148 at RepositoryViewModel.cs:319 after blocking 0.0131088s
+2018-03-09 11:56:17.0580|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 151 at GitClient.cs:474 after blocking 0.0084915s
+2018-03-09 11:56:17.0580|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 150 at GitClient.cs:474 after blocking 0.0180564s
+2018-03-09 11:59:52.3431|INFO|thread:43|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 152 at BranchSynchronizer.cs:141
+2018-03-09 11:59:52.3431|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 152 at BranchSynchronizer.cs:141 after waiting 0.0001293s
+2018-03-09 11:59:52.3652|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on feature-Aborting_requests_at_timeout
+2018-03-09 11:59:52.3702|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 1, behind 0 on feature-manual
+2018-03-09 11:59:52.3702|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on master
+2018-03-09 11:59:52.3702|INFO|thread:39|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on Refactor-Alt_Storage
+2018-03-09 11:59:52.3702|INFO|thread:39|ConcurrentRepositoryConnection|Pruning merged local branches
+2018-03-09 11:59:52.3702|INFO|thread:39|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:59:52.3702|INFO|thread:39|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:59:52.3702|INFO|thread:39|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'branch --merged master ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:59:52.4324|INFO|thread:39|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:59:52.4324|INFO|thread:39|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:59:52.4324|INFO|thread:39|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'log -g --abbrev-commit --pretty=oneline HEAD -n 2500 ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:59:52.5086|INFO|thread: 4|BackgroundFetcher|Got a refresh period for C:\Users\MyName\Documents\MyRepo\.git of 300 seconds
+2018-03-09 11:59:52.5086|INFO|thread: 4|BackgroundFetcher|Added a delay for C:\Users\MyName\Documents\MyRepo\.git of 28886 milliseconds
+2018-03-09 11:59:52.5146|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2018-03-09 11:59:52.5376|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 153 at GitClient.cs:600
+2018-03-09 11:59:52.5376|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 153 at GitClient.cs:600 after waiting 0.0004493s
+2018-03-09 11:59:52.5416|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 153 at GitClient.cs:600 after blocking 0.0037075s
+2018-03-09 11:59:52.6239|INFO|thread:65|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 154 at GitClient.cs:195
+2018-03-09 11:59:52.6239|INFO|thread:39|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 154 at GitClient.cs:195 after waiting 2.4E-05s
+2018-03-09 11:59:52.6239|INFO|thread:65|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 155 at RepositoryModel.cs:596
+2018-03-09 11:59:52.6239|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 155 at RepositoryModel.cs:596 after waiting 7.5E-06s
+2018-03-09 11:59:52.6239|INFO|thread:65|AsyncReaderWriterLock|Released concurrent scheduler for operation: 152 at BranchSynchronizer.cs:141 after blocking 0.2809156s
+2018-03-09 11:59:52.6239|INFO|thread:55|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 156 at GitClient.cs:267
+2018-03-09 11:59:52.6239|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 156 at GitClient.cs:267 after waiting 2.53E-05s
+2018-03-09 11:59:52.6239|INFO|thread:55|AsyncReaderWriterLock|Released concurrent scheduler for operation: 155 at RepositoryModel.cs:596 after blocking 0.004508s
+2018-03-09 11:59:52.6379|INFO|thread:64|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 11:59:52.6379|INFO|thread:64|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 11:59:52.6379|INFO|thread:64|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 11:59:52.6379|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 154 at GitClient.cs:195 after blocking 0.0243608s
+2018-03-09 11:59:52.8339|INFO|thread:54|ConcurrentRepositoryConnection|Took 159ms to git status
+2018-03-09 11:59:52.8339|INFO|thread:54|ConcurrentRepositoryConnection|Took 159ms to git status and parse output
+2018-03-09 11:59:52.8379|INFO|thread:54|NewCommitViewModel|Took 209ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:59:52.8379|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 156 at GitClient.cs:267 after blocking 0.209596s
+2018-03-09 11:59:52.8379|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 157 at GitClient.cs:474
+2018-03-09 11:59:52.8379|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 157 at GitClient.cs:474 after waiting 1.77E-05s
+2018-03-09 11:59:52.8549|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 157 at GitClient.cs:474 after blocking 0.0156653s
+2018-03-09 11:59:52.8549|INFO|thread:45|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 158 at GitClient.cs:474
+2018-03-09 11:59:52.8549|INFO|thread:65|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 158 at GitClient.cs:474 after waiting 1.6E-05s
+2018-03-09 11:59:52.8549|INFO|thread:54|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 159 at GitClient.cs:474
+2018-03-09 11:59:52.8549|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 159 at GitClient.cs:474 after waiting 1.51E-05s
+2018-03-09 11:59:52.8549|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 160 at GitClient.cs:474
+2018-03-09 11:59:52.8549|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 160 at GitClient.cs:474 after waiting 9.7E-06s
+2018-03-09 11:59:52.8710|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 158 at GitClient.cs:474 after blocking 0.0131475s
+2018-03-09 11:59:52.8710|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 160 at GitClient.cs:474 after blocking 0.0120004s
+2018-03-09 11:59:52.8710|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 159 at GitClient.cs:474 after blocking 0.0175586s
+2018-03-09 11:59:52.8710|INFO|thread:66|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 161 at GitClient.cs:474
+2018-03-09 11:59:52.8710|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 161 at GitClient.cs:474 after waiting 7.64E-05s
+2018-03-09 11:59:52.8710|INFO|thread:37|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 162 at GitClient.cs:474
+2018-03-09 11:59:52.8710|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 162 at GitClient.cs:474 after waiting 7.02E-05s
+2018-03-09 11:59:52.8710|INFO|thread: 1|NewCommitViewModel|Took 42ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 11:59:52.8710|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 163 at RepositoryViewModel.cs:319
+2018-03-09 11:59:52.8710|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 163 at RepositoryViewModel.cs:319 after waiting 0.0002888s
+2018-03-09 11:59:52.9071|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 162 at GitClient.cs:474 after blocking 0.0264386s
+2018-03-09 11:59:52.9071|INFO|thread:66|AsyncReaderWriterLock|Released concurrent scheduler for operation: 161 at GitClient.cs:474 after blocking 0.0292502s
+2018-03-09 11:59:52.9071|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 163 at RepositoryViewModel.cs:319 after blocking 0.0324555s
+2018-03-09 12:05:21.2330|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 164 at BranchSynchronizer.cs:141
+2018-03-09 12:05:21.2330|INFO|thread:55|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 164 at BranchSynchronizer.cs:141 after waiting 0.000148s
+2018-03-09 12:05:21.2560|INFO|thread:45|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on feature-Aborting_requests_at_timeout
+2018-03-09 12:05:21.2601|INFO|thread:45|ConcurrentRepositoryConnection|branch stats: ahead 1, behind 0 on feature-manual
+2018-03-09 12:05:21.2601|INFO|thread:45|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on master
+2018-03-09 12:05:21.2601|INFO|thread:45|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on Refactor-Alt_Storage
+2018-03-09 12:05:21.2601|INFO|thread:45|ConcurrentRepositoryConnection|Pruning merged local branches
+2018-03-09 12:05:21.2601|INFO|thread:45|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:05:21.2601|INFO|thread:45|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:05:21.2601|INFO|thread:45|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'branch --merged master ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:05:21.3292|INFO|thread:45|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:05:21.3292|INFO|thread:45|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:05:21.3292|INFO|thread:45|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'log -g --abbrev-commit --pretty=oneline HEAD -n 2500 ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:05:21.3974|INFO|thread:37|BackgroundFetcher|Got a refresh period for C:\Users\MyName\Documents\MyRepo\.git of 300 seconds
+2018-03-09 12:05:21.3974|INFO|thread:37|BackgroundFetcher|Added a delay for C:\Users\MyName\Documents\MyRepo\.git of 22440 milliseconds
+2018-03-09 12:05:21.3974|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2018-03-09 12:05:21.4345|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 165 at GitClient.cs:600
+2018-03-09 12:05:21.4345|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 165 at GitClient.cs:600 after waiting 0.0010928s
+2018-03-09 12:05:21.4345|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 165 at GitClient.cs:600 after blocking 0.0055044s
+2018-03-09 12:05:21.5348|INFO|thread:65|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 166 at GitClient.cs:195
+2018-03-09 12:05:21.5348|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 166 at GitClient.cs:195 after waiting 2.48E-05s
+2018-03-09 12:05:21.5348|INFO|thread:65|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 167 at RepositoryModel.cs:596
+2018-03-09 12:05:21.5348|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 167 at RepositoryModel.cs:596 after waiting 3.2E-05s
+2018-03-09 12:05:21.5348|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 164 at BranchSynchronizer.cs:141 after blocking 0.3016552s
+2018-03-09 12:05:21.5348|INFO|thread:66|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 168 at GitClient.cs:267
+2018-03-09 12:05:21.5348|INFO|thread:37|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 168 at GitClient.cs:267 after waiting 2.88E-05s
+2018-03-09 12:05:21.5348|INFO|thread:66|AsyncReaderWriterLock|Released concurrent scheduler for operation: 167 at RepositoryModel.cs:596 after blocking 0.0046395s
+2018-03-09 12:05:21.5518|INFO|thread:46|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:05:21.5518|INFO|thread:46|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:05:21.5518|INFO|thread:46|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:05:21.5609|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 166 at GitClient.cs:195 after blocking 0.0262906s
+2018-03-09 12:05:21.7161|INFO|thread:54|ConcurrentRepositoryConnection|Took 128ms to git status
+2018-03-09 12:05:21.7161|INFO|thread:54|ConcurrentRepositoryConnection|Took 128ms to git status and parse output
+2018-03-09 12:05:21.7161|INFO|thread:54|NewCommitViewModel|Took 180ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:05:21.7161|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 168 at GitClient.cs:267 after blocking 0.1803925s
+2018-03-09 12:05:21.7161|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 169 at GitClient.cs:474
+2018-03-09 12:05:21.7161|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 169 at GitClient.cs:474 after waiting 1.68E-05s
+2018-03-09 12:05:21.7342|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 170 at GitClient.cs:474
+2018-03-09 12:05:21.7342|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 170 at GitClient.cs:474 after waiting 5.28E-05s
+2018-03-09 12:05:21.7342|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 169 at GitClient.cs:474 after blocking 0.0128271s
+2018-03-09 12:05:21.7342|INFO|thread:43|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 171 at GitClient.cs:474
+2018-03-09 12:05:21.7342|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 171 at GitClient.cs:474 after waiting 2.62E-05s
+2018-03-09 12:05:21.7342|INFO|thread:55|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 172 at GitClient.cs:474
+2018-03-09 12:05:21.7342|INFO|thread:55|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 172 at GitClient.cs:474 after waiting 6.48E-05s
+2018-03-09 12:05:21.7342|INFO|thread: 1|NewCommitViewModel|Took 18ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:05:21.7342|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 173 at RepositoryViewModel.cs:319
+2018-03-09 12:05:21.7342|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 174 at GitClient.cs:474
+2018-03-09 12:05:21.7342|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 173 at RepositoryViewModel.cs:319 after waiting 0.0001875s
+2018-03-09 12:05:21.7342|INFO|thread:37|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 175 at GitClient.cs:474
+2018-03-09 12:05:21.7452|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 170 at GitClient.cs:474 after blocking 0.011232s
+2018-03-09 12:05:21.7452|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 174 at GitClient.cs:474 after waiting 0.0064422s
+2018-03-09 12:05:21.7452|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 171 at GitClient.cs:474 after blocking 0.0096746s
+2018-03-09 12:05:21.7452|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 175 at GitClient.cs:474 after waiting 0.0036871s
+2018-03-09 12:05:21.7452|INFO|thread:55|AsyncReaderWriterLock|Released concurrent scheduler for operation: 172 at GitClient.cs:474 after blocking 0.0107826s
+2018-03-09 12:05:21.7452|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 173 at RepositoryViewModel.cs:319 after blocking 0.0129097s
+2018-03-09 12:05:21.7452|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 174 at GitClient.cs:474 after blocking 0.0089933s
+2018-03-09 12:05:21.7663|INFO|thread:66|AsyncReaderWriterLock|Released concurrent scheduler for operation: 175 at GitClient.cs:474 after blocking 0.0200035s
+2018-03-09 12:06:19.3142|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 176 at GitClient.cs:195
+2018-03-09 12:06:19.3142|INFO|thread:45|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 176 at GitClient.cs:195 after waiting 6.44E-05s
+2018-03-09 12:06:19.3142|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 177 at RepositoryModel.cs:596
+2018-03-09 12:06:19.3423|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 177 at RepositoryModel.cs:596 after waiting 0.0277697s
+2018-03-09 12:06:19.3533|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 178 at GitClient.cs:267
+2018-03-09 12:06:19.3533|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 177 at RepositoryModel.cs:596 after blocking 0.0106857s
+2018-03-09 12:06:19.3533|INFO|thread:16|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 178 at GitClient.cs:267 after waiting 0.0001937s
+2018-03-09 12:06:19.3734|INFO|thread:52|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:19.3734|INFO|thread:52|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:19.3734|INFO|thread:52|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:19.3734|INFO|thread: 4|AsyncReaderWriterLock|Released concurrent scheduler for operation: 176 at GitClient.cs:195 after blocking 0.0633595s
+2018-03-09 12:06:19.5693|INFO|thread:43|ConcurrentRepositoryConnection|Took 145ms to git status
+2018-03-09 12:06:19.5693|INFO|thread:43|ConcurrentRepositoryConnection|Took 145ms to git status and parse output
+2018-03-09 12:06:19.5733|INFO|thread:43|NewCommitViewModel|Took 220ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:06:19.5733|INFO|thread:43|AsyncReaderWriterLock|Released concurrent scheduler for operation: 178 at GitClient.cs:267 after blocking 0.2200609s
+2018-03-09 12:06:19.5733|INFO|thread:37|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 179 at GitClient.cs:474
+2018-03-09 12:06:19.5733|INFO|thread: 4|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 179 at GitClient.cs:474 after waiting 2.93E-05s
+2018-03-09 12:06:19.5733|INFO|thread: 5|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 180 at GitClient.cs:474
+2018-03-09 12:06:19.5733|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 180 at GitClient.cs:474 after waiting 2.04E-05s
+2018-03-09 12:06:19.5733|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 181 at GitClient.cs:474
+2018-03-09 12:06:19.5733|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 181 at GitClient.cs:474 after waiting 1.42E-05s
+2018-03-09 12:06:19.5733|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 182 at GitClient.cs:474
+2018-03-09 12:06:19.5733|INFO|thread:39|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 183 at GitClient.cs:474
+2018-03-09 12:06:19.5733|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 182 at GitClient.cs:474 after waiting 9.3E-06s
+2018-03-09 12:06:19.5733|INFO|thread: 1|NewCommitViewModel|Took 5ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:06:19.5733|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 184 at RepositoryViewModel.cs:319
+2018-03-09 12:06:19.5733|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 181 at GitClient.cs:474 after blocking 0.0101875s
+2018-03-09 12:06:19.5733|INFO|thread:54|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 183 at GitClient.cs:474 after waiting 0.0098604s
+2018-03-09 12:06:19.5944|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 185 at GitClient.cs:474
+2018-03-09 12:06:19.5944|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 180 at GitClient.cs:474 after blocking 0.0175973s
+2018-03-09 12:06:19.5944|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 184 at RepositoryViewModel.cs:319 after waiting 0.0155546s
+2018-03-09 12:06:19.5944|INFO|thread:43|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 185 at GitClient.cs:474 after waiting 0.0007631s
+2018-03-09 12:06:19.5944|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 182 at GitClient.cs:474 after blocking 0.0167977s
+2018-03-09 12:06:19.5944|INFO|thread:37|AsyncReaderWriterLock|Released concurrent scheduler for operation: 179 at GitClient.cs:474 after blocking 0.0217657s
+2018-03-09 12:06:19.6114|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 185 at GitClient.cs:474 after blocking 0.0162208s
+2018-03-09 12:06:19.6114|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 183 at GitClient.cs:474 after blocking 0.0232168s
+2018-03-09 12:06:19.6114|INFO|thread: 5|AsyncReaderWriterLock|Released concurrent scheduler for operation: 184 at RepositoryViewModel.cs:319 after blocking 0.0198253s
+2018-03-09 12:06:22.6661|INFO|thread: 1|AsyncReaderWriterLock|Acquiring exclusive scheduler for operation 186 at ICommitCreator.cs:89
+2018-03-09 12:06:22.6661|INFO|thread: 4|AsyncReaderWriterLock|Acquired exclusive scheduler for operation: 186 at ICommitCreator.cs:89 after waiting 0.000104s
+2018-03-09 12:06:22.6661|INFO|thread:40|ExclusiveRepositoryConnection|Creating Commit
+2018-03-09 12:06:22.7112|INFO|thread:40|ExclusiveRepositoryConnection|Creating new commit with 7 file(s). Fixing Package.json and Husky stuff
+
+Husky wasn't actually working before. I *think* I fixed it now. Let's
+see.
+
+2018-03-09 12:06:22.7212|INFO|thread:40|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:22.7212|INFO|thread:40|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:22.7212|INFO|thread:40|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:22.9258|INFO|thread:64|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:22.9258|INFO|thread:64|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:22.9258|INFO|thread:64|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html.template" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:23.1288|INFO|thread:30|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:23.1288|INFO|thread:30|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:23.1288|INFO|thread:30|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:23.3211|INFO|thread:52|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:23.3211|INFO|thread:52|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:23.3211|INFO|thread:52|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:23.5123|INFO|thread:34|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:23.5123|INFO|thread:34|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:23.5123|INFO|thread:34|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "GitHubLog.txt" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:23.7429|INFO|thread:36|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:23.7439|INFO|thread:36|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:23.7439|INFO|thread:36|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:23.9386|INFO|thread:38|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:23.9386|INFO|thread:38|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:23.9386|INFO|thread:38|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:24.1329|INFO|thread:29|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:24.1329|INFO|thread:29|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:24.1329|INFO|thread:29|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'commit -F "C:\Users\MyName\AppData\Local\Temp\5a50d88a-5f77-4773-afef-229cb4834679" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:24.5744|INFO|thread: 5|AsyncReaderWriterLock|Released exclusive scheduler for operation: 186 at ICommitCreator.cs:89 after blocking 1.9081564s
+2018-03-09 12:06:24.5744|INFO|thread:47|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 187 at RepositoryModel.cs:596
+2018-03-09 12:06:24.5744|INFO|thread: 5|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 187 at RepositoryModel.cs:596 after waiting 0.0001493s
+2018-03-09 12:06:24.5744|INFO|thread:48|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 188 at GitClient.cs:267
+2018-03-09 12:06:24.5744|INFO|thread:27|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 188 at GitClient.cs:267 after waiting 1.55E-05s
+2018-03-09 12:06:24.5744|WARN|thread: 1|StandardUserErrors|Showing user error Failed to create a new commit.
+GitHub.IO.ProcessException: .git/hooks/pre-commit: line 6: node: command not found
+2018-03-09 12:06:24.5744|INFO|thread:54|AsyncReaderWriterLock|Released concurrent scheduler for operation: 187 at RepositoryModel.cs:596 after blocking 0.0043782s
+2018-03-09 12:06:24.5914|INFO|thread:66|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:24.5914|INFO|thread:66|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:24.5914|INFO|thread:66|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:06:24.7818|INFO|thread:16|ConcurrentRepositoryConnection|Took 149ms to git status
+2018-03-09 12:06:24.7818|INFO|thread:16|ConcurrentRepositoryConnection|Took 149ms to git status and parse output
+2018-03-09 12:06:24.7818|INFO|thread:16|NewCommitViewModel|Took 210ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:06:24.7818|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 188 at GitClient.cs:267 after blocking 0.2103356s
+2018-03-09 12:06:24.7818|INFO|thread:16|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 189 at GitClient.cs:474
+2018-03-09 12:06:24.7818|INFO|thread:38|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 189 at GitClient.cs:474 after waiting 2.71E-05s
+2018-03-09 12:06:24.7818|INFO|thread:45|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 190 at GitClient.cs:474
+2018-03-09 12:06:24.7818|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 190 at GitClient.cs:474 after waiting 2.08E-05s
+2018-03-09 12:06:24.7818|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 191 at GitClient.cs:474
+2018-03-09 12:06:24.7818|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 191 at GitClient.cs:474 after waiting 1.77E-05s
+2018-03-09 12:06:24.7908|INFO|thread:52|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 192 at GitClient.cs:474
+2018-03-09 12:06:24.7908|INFO|thread: 1|NewCommitViewModel|Took 5ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:06:24.7908|INFO|thread:52|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 192 at GitClient.cs:474 after waiting 7.33E-05s
+2018-03-09 12:06:24.7908|INFO|thread:44|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 193 at GitClient.cs:474
+2018-03-09 12:06:24.7908|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 191 at GitClient.cs:474 after blocking 0.0102231s
+2018-03-09 12:06:24.7908|INFO|thread:66|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 193 at GitClient.cs:474 after waiting 0.009404s
+2018-03-09 12:06:24.7908|INFO|thread:45|AsyncReaderWriterLock|Released concurrent scheduler for operation: 190 at GitClient.cs:474 after blocking 0.0120942s
+2018-03-09 12:06:24.8069|INFO|thread:42|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 194 at GitClient.cs:474
+2018-03-09 12:06:24.8069|INFO|thread:27|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 194 at GitClient.cs:474 after waiting 7.02E-05s
+2018-03-09 12:06:24.8069|INFO|thread:52|AsyncReaderWriterLock|Released concurrent scheduler for operation: 192 at GitClient.cs:474 after blocking 0.0171942s
+2018-03-09 12:06:24.8069|INFO|thread:16|AsyncReaderWriterLock|Released concurrent scheduler for operation: 189 at GitClient.cs:474 after blocking 0.0211928s
+2018-03-09 12:06:24.8069|INFO|thread:66|AsyncReaderWriterLock|Released concurrent scheduler for operation: 193 at GitClient.cs:474 after blocking 0.0170453s
+2018-03-09 12:06:24.8069|INFO|thread:42|AsyncReaderWriterLock|Released concurrent scheduler for operation: 194 at GitClient.cs:474 after blocking 0.0132395s
+2018-03-09 12:06:26.8401|INFO|thread: 1|PortablePackageManager|Already extracted posh-git.7z, returning 100%
+2018-03-09 12:06:26.8401|INFO|thread: 1|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:06:26.8401|INFO|thread: 1|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14\NativeBinaries\x86;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\PharosSystems\Core;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\gnuplot\bin;C:\Program Files\MATLAB\R2017b\bin;C:\Program Files (x86)\Microsoft SQL Server\80\Tools\Binn\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Common Files\AspenTech Shared\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\;c:\Program Files\Microsoft SQL Server\110\DTS\Binn\;C:\Program Files\nodejs\;C:\Users\MyName\AppData\Local\Programs\Python\Python36\Scripts\;C:\Users\MyName\AppData\Local\Programs\Python\Python36\;C:\Program Files\Java\jdk1.8.0_65\bin;C:\Users\MyName\AppData\Local\atom\bin;C:\MinGW\bin;C:\MinGW\bin\SDL_Image;C:\mingw_dev_lib\bin;C:\Users\MyName\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\texlive\2017\bin\win32;C:\Octave\Octave-4.2.1\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Roaming\npm;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:06:26.8401|INFO|thread: 1|ProcessWrapper|Starting: Process - FileName: 'C:\Windows\System32\WindowsPowerShell\v1.0\Powershell.exe', Args: '-NoExit -ExecutionPolicy Unrestricted -File "C:\Users\MyName\AppData\Local\GitHub\PoshGit_73b8bf9c588df6d17c193e270da0ed4cf890d868\profile.example.ps1"', Working Directory: C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:08:34.1476|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 195 at GitClient.cs:195
+2018-03-09 12:08:34.1476|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 195 at GitClient.cs:195 after waiting 0.0001084s
+2018-03-09 12:08:34.1476|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 196 at RepositoryModel.cs:596
+2018-03-09 12:08:34.1506|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 196 at RepositoryModel.cs:596 after waiting 0.0007426s
+2018-03-09 12:08:34.1506|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 197 at GitClient.cs:267
+2018-03-09 12:08:34.1506|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 196 at RepositoryModel.cs:596 after blocking 0.0146835s
+2018-03-09 12:08:34.1506|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 197 at GitClient.cs:267 after waiting 0.0001048s
+2018-03-09 12:08:34.1887|INFO|thread:25|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:08:34.1887|INFO|thread:25|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:08:34.1887|INFO|thread:25|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:08:34.2007|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 195 at GitClient.cs:195 after blocking 0.0525151s
+2018-03-09 12:08:34.3988|INFO|thread:64|ConcurrentRepositoryConnection|Took 159ms to git status
+2018-03-09 12:08:34.3988|INFO|thread:64|ConcurrentRepositoryConnection|Took 160ms to git status and parse output
+2018-03-09 12:08:34.4028|INFO|thread:64|NewCommitViewModel|Took 237ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:08:34.4028|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 197 at GitClient.cs:267 after blocking 0.2378418s
+2018-03-09 12:08:34.4028|INFO|thread:22|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 198 at GitClient.cs:474
+2018-03-09 12:08:34.4028|INFO|thread: 8|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 198 at GitClient.cs:474 after waiting 2.88E-05s
+2018-03-09 12:08:34.4028|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 199 at GitClient.cs:474
+2018-03-09 12:08:34.4028|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 199 at GitClient.cs:474 after waiting 2E-05s
+2018-03-09 12:08:34.4028|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 200 at GitClient.cs:474
+2018-03-09 12:08:34.4028|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 200 at GitClient.cs:474 after waiting 5.82E-05s
+2018-03-09 12:08:34.4028|INFO|thread:20|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 201 at GitClient.cs:474
+2018-03-09 12:08:34.4028|INFO|thread:23|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 202 at GitClient.cs:474
+2018-03-09 12:08:34.4028|INFO|thread:20|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 201 at GitClient.cs:474 after waiting 5.55E-05s
+2018-03-09 12:08:34.4028|INFO|thread: 1|NewCommitViewModel|Took 6ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:08:34.4028|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 203 at RepositoryViewModel.cs:319
+2018-03-09 12:08:34.4198|INFO|thread:20|AsyncReaderWriterLock|Released concurrent scheduler for operation: 201 at GitClient.cs:474 after blocking 0.0111608s
+2018-03-09 12:08:34.4198|INFO|thread:20|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 202 at GitClient.cs:474 after waiting 0.011248s
+2018-03-09 12:08:34.4198|INFO|thread:21|AsyncReaderWriterLock|Released concurrent scheduler for operation: 199 at GitClient.cs:474 after blocking 0.013852s
+2018-03-09 12:08:34.4198|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 203 at RepositoryViewModel.cs:319 after waiting 0.0117835s
+2018-03-09 12:08:34.4198|INFO|thread:22|AsyncReaderWriterLock|Released concurrent scheduler for operation: 198 at GitClient.cs:474 after blocking 0.0164853s
+2018-03-09 12:08:34.4198|INFO|thread:23|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 204 at GitClient.cs:474
+2018-03-09 12:08:34.4198|INFO|thread:23|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 204 at GitClient.cs:474 after waiting 5.64E-05s
+2018-03-09 12:08:34.4198|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 200 at GitClient.cs:474 after blocking 0.0171297s
+2018-03-09 12:08:34.4449|INFO|thread:20|AsyncReaderWriterLock|Released concurrent scheduler for operation: 202 at GitClient.cs:474 after blocking 0.025028s
+2018-03-09 12:08:34.4449|INFO|thread:13|AsyncReaderWriterLock|Released concurrent scheduler for operation: 203 at RepositoryViewModel.cs:319 after blocking 0.0237675s
+2018-03-09 12:08:34.4449|INFO|thread:23|AsyncReaderWriterLock|Released concurrent scheduler for operation: 204 at GitClient.cs:474 after blocking 0.0240013s
+2018-03-09 12:08:38.2132|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 205 at GitClient.cs:195
+2018-03-09 12:08:38.2132|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 205 at GitClient.cs:195 after waiting 1.82E-05s
+2018-03-09 12:08:38.2132|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 206 at RepositoryModel.cs:596
+2018-03-09 12:08:38.2132|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 206 at RepositoryModel.cs:596 after waiting 5.15E-05s
+2018-03-09 12:08:38.2132|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 207 at GitClient.cs:267
+2018-03-09 12:08:38.2132|INFO|thread:21|AsyncReaderWriterLock|Released concurrent scheduler for operation: 206 at RepositoryModel.cs:596 after blocking 0.0085084s
+2018-03-09 12:08:38.2132|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 207 at GitClient.cs:267 after waiting 7.42E-05s
+2018-03-09 12:08:38.2407|INFO|thread:30|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:08:38.2407|INFO|thread:30|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:08:38.2407|INFO|thread:30|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:08:38.2507|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 205 at GitClient.cs:195 after blocking 0.0369613s
+2018-03-09 12:08:38.4395|INFO|thread:23|ConcurrentRepositoryConnection|Took 157ms to git status
+2018-03-09 12:08:38.4395|INFO|thread:23|ConcurrentRepositoryConnection|Took 157ms to git status and parse output
+2018-03-09 12:08:38.4395|INFO|thread:23|NewCommitViewModel|Took 222ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:08:38.4395|INFO|thread:23|AsyncReaderWriterLock|Released concurrent scheduler for operation: 207 at GitClient.cs:267 after blocking 0.2224223s
+2018-03-09 12:08:38.4485|INFO|thread:22|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 208 at GitClient.cs:474
+2018-03-09 12:08:38.4485|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 208 at GitClient.cs:474 after waiting 0.000128s
+2018-03-09 12:08:38.4635|INFO|thread:22|AsyncReaderWriterLock|Released concurrent scheduler for operation: 208 at GitClient.cs:474 after blocking 0.0155995s
+2018-03-09 12:08:38.4635|INFO|thread: 1|NewCommitViewModel|Took 26ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:08:38.4635|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 209 at RepositoryViewModel.cs:319
+2018-03-09 12:08:38.4635|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 210 at GitClient.cs:474
+2018-03-09 12:08:38.4635|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 209 at RepositoryViewModel.cs:319 after waiting 0.0006613s
+2018-03-09 12:08:38.4635|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 211 at GitClient.cs:474
+2018-03-09 12:08:38.4635|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 210 at GitClient.cs:474 after waiting 0.0003102s
+2018-03-09 12:08:38.4635|INFO|thread:23|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 212 at GitClient.cs:474
+2018-03-09 12:08:38.4635|INFO|thread:23|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 213 at GitClient.cs:474
+2018-03-09 12:08:38.4635|INFO|thread:23|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 214 at GitClient.cs:474
+2018-03-09 12:08:38.4635|INFO|thread:23|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 211 at GitClient.cs:474 after waiting 0.0009937s
+2018-03-09 12:08:38.4635|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 212 at GitClient.cs:474 after waiting 0.0007262s
+2018-03-09 12:08:38.4836|INFO|thread:23|AsyncReaderWriterLock|Released concurrent scheduler for operation: 211 at GitClient.cs:474 after blocking 0.0103004s
+2018-03-09 12:08:38.4836|INFO|thread:23|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 213 at GitClient.cs:474 after waiting 0.0105395s
+2018-03-09 12:08:38.4836|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 212 at GitClient.cs:474 after blocking 0.0100742s
+2018-03-09 12:08:38.4836|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 214 at GitClient.cs:474 after waiting 0.0105213s
+2018-03-09 12:08:38.4836|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 210 at GitClient.cs:474 after blocking 0.0167395s
+2018-03-09 12:08:38.4836|INFO|thread:69|AsyncReaderWriterLock|Released concurrent scheduler for operation: 209 at RepositoryViewModel.cs:319 after blocking 0.018796s
+2018-03-09 12:08:38.5046|INFO|thread:23|AsyncReaderWriterLock|Released concurrent scheduler for operation: 213 at GitClient.cs:474 after blocking 0.02096s
+2018-03-09 12:08:38.5046|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 214 at GitClient.cs:474 after blocking 0.0212302s
+2018-03-09 12:10:43.6787|INFO|thread:23|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 215 at BranchSynchronizer.cs:141
+2018-03-09 12:10:43.6787|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 215 at BranchSynchronizer.cs:141 after waiting 7.2E-05s
+2018-03-09 12:10:43.6997|INFO|thread:21|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on feature-Aborting_requests_at_timeout
+2018-03-09 12:10:43.6997|INFO|thread:21|ConcurrentRepositoryConnection|branch stats: ahead 1, behind 0 on feature-manual
+2018-03-09 12:10:43.6997|INFO|thread:21|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on master
+2018-03-09 12:10:43.6997|INFO|thread:21|ConcurrentRepositoryConnection|branch stats: ahead 0, behind 0 on Refactor-Alt_Storage
+2018-03-09 12:10:43.6997|INFO|thread:21|ConcurrentRepositoryConnection|Pruning merged local branches
+2018-03-09 12:10:43.7198|INFO|thread:21|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:43.7198|INFO|thread:21|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:43.7198|INFO|thread:21|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'branch --merged master ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:43.7820|INFO|thread:21|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:43.7820|INFO|thread:21|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:43.7820|INFO|thread:21|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'log -g --abbrev-commit --pretty=oneline HEAD -n 2500 ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:43.8441|INFO|thread: 8|BackgroundFetcher|Got a refresh period for C:\Users\MyName\Documents\MyRepo\.git of 300 seconds
+2018-03-09 12:10:43.8441|INFO|thread: 8|BackgroundFetcher|Added a delay for C:\Users\MyName\Documents\MyRepo\.git of 8720 milliseconds
+2018-03-09 12:10:43.8441|INFO|thread: 1|NewPullRequestViewModel|No matching pull request found, clearing selection...
+2018-03-09 12:10:43.8882|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 216 at GitClient.cs:600
+2018-03-09 12:10:43.8882|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 216 at GitClient.cs:600 after waiting 0.0005751s
+2018-03-09 12:10:43.8882|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 216 at GitClient.cs:600 after blocking 0.00328s
+2018-03-09 12:10:43.9985|INFO|thread:25|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 217 at GitClient.cs:195
+2018-03-09 12:10:43.9985|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 217 at GitClient.cs:195 after waiting 2.48E-05s
+2018-03-09 12:10:43.9985|INFO|thread:25|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 218 at RepositoryModel.cs:596
+2018-03-09 12:10:43.9985|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 218 at RepositoryModel.cs:596 after waiting 5.2E-05s
+2018-03-09 12:10:43.9985|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 215 at BranchSynchronizer.cs:141 after blocking 0.3199432s
+2018-03-09 12:10:43.9985|INFO|thread:30|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 219 at GitClient.cs:267
+2018-03-09 12:10:43.9985|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 219 at GitClient.cs:267 after waiting 4.04E-05s
+2018-03-09 12:10:43.9985|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 218 at RepositoryModel.cs:596 after blocking 0.0046644s
+2018-03-09 12:10:44.0136|INFO|thread:21|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:44.0136|INFO|thread:21|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:44.0136|INFO|thread:21|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:44.0136|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 217 at GitClient.cs:195 after blocking 0.0242257s
+2018-03-09 12:10:44.1804|INFO|thread:40|ConcurrentRepositoryConnection|Took 138ms to git status
+2018-03-09 12:10:44.1804|INFO|thread:40|ConcurrentRepositoryConnection|Took 138ms to git status and parse output
+2018-03-09 12:10:44.1894|INFO|thread:40|NewCommitViewModel|Took 186ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:10:44.1894|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 219 at GitClient.cs:267 after blocking 0.1866396s
+2018-03-09 12:10:44.1894|INFO|thread:69|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 220 at GitClient.cs:474
+2018-03-09 12:10:44.1894|INFO|thread:25|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 220 at GitClient.cs:474 after waiting 3.77E-05s
+2018-03-09 12:10:44.1894|INFO|thread:30|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 221 at GitClient.cs:474
+2018-03-09 12:10:44.1894|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 221 at GitClient.cs:474 after waiting 2.13E-05s
+2018-03-09 12:10:44.1994|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 222 at GitClient.cs:474
+2018-03-09 12:10:44.1994|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 222 at GitClient.cs:474 after waiting 3.24E-05s
+2018-03-09 12:10:44.1994|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 221 at GitClient.cs:474 after blocking 0.013684s
+2018-03-09 12:10:44.1994|INFO|thread:30|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 223 at GitClient.cs:474
+2018-03-09 12:10:44.1994|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 223 at GitClient.cs:474 after waiting 6.26E-05s
+2018-03-09 12:10:44.1994|INFO|thread:69|AsyncReaderWriterLock|Released concurrent scheduler for operation: 220 at GitClient.cs:474 after blocking 0.0170395s
+2018-03-09 12:10:44.1994|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 222 at GitClient.cs:474 after blocking 0.0109128s
+2018-03-09 12:10:44.1994|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 224 at GitClient.cs:474
+2018-03-09 12:10:44.1994|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 224 at GitClient.cs:474 after waiting 6.08E-05s
+2018-03-09 12:10:44.1994|INFO|thread:69|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 225 at GitClient.cs:474
+2018-03-09 12:10:44.1994|INFO|thread:69|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 225 at GitClient.cs:474 after waiting 5.95E-05s
+2018-03-09 12:10:44.1994|INFO|thread: 1|NewCommitViewModel|Took 22ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:10:44.1994|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 226 at RepositoryViewModel.cs:319
+2018-03-09 12:10:44.2135|INFO|thread:21|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 226 at RepositoryViewModel.cs:319 after waiting 7.11E-05s
+2018-03-09 12:10:44.2135|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 223 at GitClient.cs:474 after blocking 0.010176s
+2018-03-09 12:10:44.2335|INFO|thread:69|AsyncReaderWriterLock|Released concurrent scheduler for operation: 225 at GitClient.cs:474 after blocking 0.0207204s
+2018-03-09 12:10:44.2335|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 224 at GitClient.cs:474 after blocking 0.0224013s
+2018-03-09 12:10:44.2335|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 226 at RepositoryViewModel.cs:319 after blocking 0.023524s
+2018-03-09 12:10:53.9374|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 227 at GitClient.cs:195
+2018-03-09 12:10:53.9374|INFO|thread:21|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 227 at GitClient.cs:195 after waiting 7.28E-05s
+2018-03-09 12:10:53.9374|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 228 at RepositoryModel.cs:596
+2018-03-09 12:10:53.9374|INFO|thread:25|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 228 at RepositoryModel.cs:596 after waiting 0.0005244s
+2018-03-09 12:10:53.9585|INFO|thread:25|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 229 at GitClient.cs:267
+2018-03-09 12:10:53.9585|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 229 at GitClient.cs:267 after waiting 9.95E-05s
+2018-03-09 12:10:53.9585|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 228 at RepositoryModel.cs:596 after blocking 0.0203266s
+2018-03-09 12:10:53.9725|INFO|thread:30|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:53.9725|INFO|thread:30|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:53.9725|INFO|thread:30|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:53.9826|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 227 at GitClient.cs:195 after blocking 0.0455244s
+2018-03-09 12:10:54.1518|INFO|thread:64|ConcurrentRepositoryConnection|Took 137ms to git status
+2018-03-09 12:10:54.1518|INFO|thread:64|ConcurrentRepositoryConnection|Took 138ms to git status and parse output
+2018-03-09 12:10:54.1518|INFO|thread:64|NewCommitViewModel|Took 196ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:10:54.1518|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 229 at GitClient.cs:267 after blocking 0.1960907s
+2018-03-09 12:10:54.1518|INFO|thread:30|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 230 at GitClient.cs:474
+2018-03-09 12:10:54.1518|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 230 at GitClient.cs:474 after waiting 6E-05s
+2018-03-09 12:10:54.1518|INFO|thread:69|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 231 at GitClient.cs:474
+2018-03-09 12:10:54.1518|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 231 at GitClient.cs:474 after waiting 2.22E-05s
+2018-03-09 12:10:54.1518|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 232 at GitClient.cs:474
+2018-03-09 12:10:54.1518|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 232 at GitClient.cs:474 after waiting 3.06E-05s
+2018-03-09 12:10:54.1669|INFO|thread:25|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 233 at GitClient.cs:474
+2018-03-09 12:10:54.1669|INFO|thread:25|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 233 at GitClient.cs:474 after waiting 0.0001466s
+2018-03-09 12:10:54.1669|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 232 at GitClient.cs:474 after blocking 0.0101333s
+2018-03-09 12:10:54.1669|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 234 at GitClient.cs:474
+2018-03-09 12:10:54.1669|INFO|thread:69|AsyncReaderWriterLock|Released concurrent scheduler for operation: 231 at GitClient.cs:474 after blocking 0.0123786s
+2018-03-09 12:10:54.1669|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 234 at GitClient.cs:474 after waiting 0.0002711s
+2018-03-09 12:10:54.1669|INFO|thread: 1|NewCommitViewModel|Took 20ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:10:54.1669|INFO|thread: 1|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 235 at RepositoryViewModel.cs:319
+2018-03-09 12:10:54.1669|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 235 at RepositoryViewModel.cs:319 after waiting 0.0001862s
+2018-03-09 12:10:54.1669|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 236 at GitClient.cs:474
+2018-03-09 12:10:54.1669|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 233 at GitClient.cs:474 after blocking 0.0095395s
+2018-03-09 12:10:54.1669|INFO|thread:21|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 236 at GitClient.cs:474 after waiting 0.0004142s
+2018-03-09 12:10:54.1669|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 230 at GitClient.cs:474 after blocking 0.0160493s
+2018-03-09 12:10:54.1849|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 234 at GitClient.cs:474 after blocking 0.010364s
+2018-03-09 12:10:54.1849|INFO|thread:21|AsyncReaderWriterLock|Released concurrent scheduler for operation: 236 at GitClient.cs:474 after blocking 0.0186924s
+2018-03-09 12:10:54.1849|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 235 at RepositoryViewModel.cs:319 after blocking 0.0209426s
+2018-03-09 12:10:58.2364|INFO|thread: 1|AsyncReaderWriterLock|Acquiring exclusive scheduler for operation 237 at ICommitCreator.cs:89
+2018-03-09 12:10:58.2364|INFO|thread:25|AsyncReaderWriterLock|Acquired exclusive scheduler for operation: 237 at ICommitCreator.cs:89 after waiting 0.0001084s
+2018-03-09 12:10:58.2364|INFO|thread:22|ExclusiveRepositoryConnection|Creating Commit
+2018-03-09 12:10:58.2825|INFO|thread:22|ExclusiveRepositoryConnection|Creating new commit with 6 file(s). Fixing Package.json and Husky stuff
+
+Husky wasn't actually working before. I *think* I fixed it now. Let's
+see.
+
+2018-03-09 12:10:58.2825|INFO|thread:22|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:58.2825|INFO|thread:22|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:58.2825|INFO|thread:22|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html.template" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:58.5042|INFO|thread:30|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:58.5042|INFO|thread:30|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:58.5042|INFO|thread:30|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:58.6907|INFO|thread: 8|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:58.6907|INFO|thread: 8|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:58.6907|INFO|thread: 8|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:58.8933|INFO|thread:69|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:58.8933|INFO|thread:69|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:58.8933|INFO|thread:69|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "GitHubLog.txt" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:59.1109|INFO|thread: 8|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:59.1109|INFO|thread: 8|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:59.1109|INFO|thread: 8|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:59.3254|INFO|thread:13|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:59.3254|INFO|thread:13|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:59.3254|INFO|thread:13|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:10:59.5811|INFO|thread:21|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:10:59.5811|INFO|thread:21|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:10:59.5811|INFO|thread:21|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'commit -F "C:\Users\MyName\AppData\Local\Temp\9b6ea980-aa82-4e7b-8152-8a14b72a3a6c" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:00.0900|INFO|thread:46|AsyncReaderWriterLock|Released exclusive scheduler for operation: 237 at ICommitCreator.cs:89 after blocking 1.8534906s
+2018-03-09 12:11:00.0900|INFO|thread:47|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 238 at RepositoryModel.cs:596
+2018-03-09 12:11:00.0900|INFO|thread:25|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 238 at RepositoryModel.cs:596 after waiting 0.000148s
+2018-03-09 12:11:00.0900|INFO|thread:48|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 239 at GitClient.cs:267
+2018-03-09 12:11:00.0900|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 239 at GitClient.cs:267 after waiting 0.000212s
+2018-03-09 12:11:00.0900|WARN|thread: 1|StandardUserErrors|Showing user error Failed to create a new commit.
+GitHub.IO.ProcessException: .git/hooks/pre-commit: line 6: node: command not found
+2018-03-09 12:11:00.0900|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 238 at RepositoryModel.cs:596 after blocking 0.004272s
+2018-03-09 12:11:00.0900|INFO|thread:13|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:00.0900|INFO|thread:13|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:00.0900|INFO|thread:13|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:00.3136|INFO|thread:64|ConcurrentRepositoryConnection|Took 143ms to git status
+2018-03-09 12:11:00.3136|INFO|thread:64|ConcurrentRepositoryConnection|Took 143ms to git status and parse output
+2018-03-09 12:11:00.3136|INFO|thread:64|NewCommitViewModel|Took 227ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:11:00.3136|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 239 at GitClient.cs:267 after blocking 0.2272036s
+2018-03-09 12:11:00.3136|INFO|thread:22|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 240 at GitClient.cs:474
+2018-03-09 12:11:00.3136|INFO|thread:22|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 240 at GitClient.cs:474 after waiting 6.26E-05s
+2018-03-09 12:11:00.3136|INFO|thread:64|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 241 at GitClient.cs:474
+2018-03-09 12:11:00.3136|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 241 at GitClient.cs:474 after waiting 5.11E-05s
+2018-03-09 12:11:00.3136|INFO|thread:69|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 242 at GitClient.cs:474
+2018-03-09 12:11:00.3136|INFO|thread:69|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 242 at GitClient.cs:474 after waiting 5.33E-05s
+2018-03-09 12:11:00.3226|INFO|thread: 1|NewCommitViewModel|Took 5ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:11:00.3226|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 243 at GitClient.cs:474
+2018-03-09 12:11:00.3226|INFO|thread:40|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 243 at GitClient.cs:474 after waiting 7.95E-05s
+2018-03-09 12:11:00.3226|INFO|thread:69|AsyncReaderWriterLock|Released concurrent scheduler for operation: 242 at GitClient.cs:474 after blocking 0.010892s
+2018-03-09 12:11:00.3226|INFO|thread:64|AsyncReaderWriterLock|Released concurrent scheduler for operation: 241 at GitClient.cs:474 after blocking 0.0139013s
+2018-03-09 12:11:00.3226|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 244 at GitClient.cs:474
+2018-03-09 12:11:00.3226|INFO|thread:21|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 244 at GitClient.cs:474 after waiting 5.82E-05s
+2018-03-09 12:11:00.3226|INFO|thread:30|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 245 at GitClient.cs:474
+2018-03-09 12:11:00.3226|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 245 at GitClient.cs:474 after waiting 5.24E-05s
+2018-03-09 12:11:00.3376|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 243 at GitClient.cs:474 after blocking 0.0094346s
+2018-03-09 12:11:00.3376|INFO|thread:22|AsyncReaderWriterLock|Released concurrent scheduler for operation: 240 at GitClient.cs:474 after blocking 0.0195777s
+2018-03-09 12:11:00.3376|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 245 at GitClient.cs:474 after blocking 0.0170977s
+2018-03-09 12:11:00.3597|INFO|thread:21|AsyncReaderWriterLock|Released concurrent scheduler for operation: 244 at GitClient.cs:474 after blocking 0.0246968s
+2018-03-09 12:11:05.0860|INFO|thread: 1|AsyncReaderWriterLock|Acquiring exclusive scheduler for operation 246 at ICommitCreator.cs:89
+2018-03-09 12:11:05.0860|INFO|thread:25|AsyncReaderWriterLock|Acquired exclusive scheduler for operation: 246 at ICommitCreator.cs:89 after waiting 5.95E-05s
+2018-03-09 12:11:05.0900|INFO|thread:64|ExclusiveRepositoryConnection|Creating Commit
+2018-03-09 12:11:05.1061|INFO|thread:64|ExclusiveRepositoryConnection|Creating new commit with 6 file(s). Fixing Package.json and Husky stuff
+
+Husky wasn't actually working before. I *think* I fixed it now. Let's
+see.
+
+2018-03-09 12:11:05.1211|INFO|thread:64|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:05.1211|INFO|thread:64|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:05.1211|INFO|thread:64|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/index.html.template" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:05.3397|INFO|thread:22|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:05.3397|INFO|thread:22|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:05.3397|INFO|thread:22|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:05.5633|INFO|thread:13|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:05.5633|INFO|thread:13|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:05.5633|INFO|thread:13|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "docs/package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:05.7879|INFO|thread:22|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:05.7879|INFO|thread:22|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:05.7879|INFO|thread:22|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "GitHubLog.txt" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:05.9899|INFO|thread:13|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:05.9899|INFO|thread:13|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:05.9899|INFO|thread:13|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package-lock.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:06.2244|INFO|thread:46|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:06.2244|INFO|thread:46|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:06.2244|INFO|thread:46|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'add --all "package.json" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:06.4220|INFO|thread:69|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:06.4220|INFO|thread:69|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:06.4220|INFO|thread:69|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'commit -F "C:\Users\MyName\AppData\Local\Temp\06aefbf3-4589-4983-a5f6-5118954fb51e" ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:06.8742|INFO|thread:40|AsyncReaderWriterLock|Released exclusive scheduler for operation: 246 at ICommitCreator.cs:89 after blocking 1.787979s
+2018-03-09 12:11:06.8742|INFO|thread:47|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 247 at RepositoryModel.cs:596
+2018-03-09 12:11:06.8742|INFO|thread:25|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 247 at RepositoryModel.cs:596 after waiting 8.75E-05s
+2018-03-09 12:11:06.8742|INFO|thread:48|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 248 at GitClient.cs:267
+2018-03-09 12:11:06.8742|INFO|thread:69|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 248 at GitClient.cs:267 after waiting 0.0002444s
+2018-03-09 12:11:06.8742|WARN|thread: 1|StandardUserErrors|Showing user error Failed to create a new commit.
+GitHub.IO.ProcessException: .git/hooks/pre-commit: line 6: node: command not found
+2018-03-09 12:11:06.8742|INFO|thread:25|AsyncReaderWriterLock|Released concurrent scheduler for operation: 247 at RepositoryModel.cs:596 after blocking 0.0042662s
+2018-03-09 12:11:06.8872|INFO|thread:13|GitEnvironment|Process set up with this SSH Agent info: 11440:/tmp/ssh-DVkuMVXvrNyx/agent.15392
+2018-03-09 12:11:06.8872|INFO|thread:13|GitEnvironment|PATH is C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\bin;C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\usr\share\git-tfs;C:\Users\MyName\AppData\Local\Apps\2.0\WCAK685G.50W\PC9WOZ5O.5OO\gith..tion_317444273a93ac29_0003.0003_5794af8169eeff14;C:\Users\MyName\AppData\Local\GitHub\lfs-amd64_1.5.5;C:\WINDOWS\System32;C:\Windows\Microsoft.NET\Framework\v4.0.30319\
+2018-03-09 12:11:06.8872|INFO|thread:13|ProcessWrapper|Starting: Process - FileName: 'C:\Users\MyName\AppData\Local\GitHub\PortableGit_f02737a78695063deace08e96d5042710d3e32db\cmd\git.exe', Args: 'status --untracked-files=all --porcelain -z ', Working Directory: C:\Users\MyName\Documents\MyRepo\
+2018-03-09 12:11:07.0717|INFO|thread:76|ConcurrentRepositoryConnection|Took 148ms to git status
+2018-03-09 12:11:07.0717|INFO|thread:76|ConcurrentRepositoryConnection|Took 148ms to git status and parse output
+2018-03-09 12:11:07.0757|INFO|thread:76|NewCommitViewModel|Took 201ms to load files for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:11:07.0757|INFO|thread:76|AsyncReaderWriterLock|Released concurrent scheduler for operation: 248 at GitClient.cs:267 after blocking 0.2013005s
+2018-03-09 12:11:07.0757|INFO|thread:40|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 249 at GitClient.cs:474
+2018-03-09 12:11:07.0757|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 249 at GitClient.cs:474 after waiting 1.82E-05s
+2018-03-09 12:11:07.0893|INFO|thread:21|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 250 at GitClient.cs:474
+2018-03-09 12:11:07.0893|INFO|thread:64|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 250 at GitClient.cs:474 after waiting 2E-05s
+2018-03-09 12:11:07.0893|INFO|thread:46|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 251 at GitClient.cs:474
+2018-03-09 12:11:07.0893|INFO|thread:46|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 251 at GitClient.cs:474 after waiting 5.86E-05s
+2018-03-09 12:11:07.0893|INFO|thread: 1|NewCommitViewModel|Took 16ms to render file list for C:\Users\MyName\Documents\MyRepo
+2018-03-09 12:11:07.0893|INFO|thread:76|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 252 at GitClient.cs:474
+2018-03-09 12:11:07.0893|INFO|thread:69|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 253 at GitClient.cs:474
+2018-03-09 12:11:07.0893|INFO|thread:69|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 252 at GitClient.cs:474 after waiting 0.0004755s
+2018-03-09 12:11:07.0893|INFO|thread:40|AsyncReaderWriterLock|Released concurrent scheduler for operation: 249 at GitClient.cs:474 after blocking 0.013468s
+2018-03-09 12:11:07.0893|INFO|thread:30|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 253 at GitClient.cs:474 after waiting 0.0018226s
+2018-03-09 12:11:07.0893|INFO|thread:46|AsyncReaderWriterLock|Released concurrent scheduler for operation: 251 at GitClient.cs:474 after blocking 0.010464s
+2018-03-09 12:11:07.1034|INFO|thread:21|AsyncReaderWriterLock|Released concurrent scheduler for operation: 250 at GitClient.cs:474 after blocking 0.0138422s
+2018-03-09 12:11:07.1034|INFO|thread:25|AsyncReaderWriterLock|Acquiring concurrent scheduler for operation 254 at GitClient.cs:474
+2018-03-09 12:11:07.1034|INFO|thread:25|AsyncReaderWriterLock|Acquired concurrent scheduler for operation: 254 at GitClient.cs:474 after waiting 6.48E-05s
+2018-03-09 12:11:07.1034|INFO|thread:13|AsyncReaderWriterLock|Released concurrent scheduler for operation: 252 at GitClient.cs:474 after blocking 0.0126177s
+2018-03-09 12:11:07.1034|INFO|thread:30|AsyncReaderWriterLock|Released concurrent scheduler for operation: 253 at GitClient.cs:474 after blocking 0.0205497s
