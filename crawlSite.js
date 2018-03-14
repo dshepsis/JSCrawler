@@ -75,7 +75,7 @@ window.addEventListener("beforeunload", function (e) {
     "the crawl, losing all progress. Are you sure you want to continue?"
   );
   e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
-  return confirmationMessage;              // Gecko, WebKit, Chrome <34
+  return confirmationMessage;              // Gecko, WebKit, Chrome lt34
 });
 
 const DOMAIN = window.location.origin;
