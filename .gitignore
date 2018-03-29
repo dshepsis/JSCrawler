@@ -3,3 +3,4 @@ Data/*
 node_modules
 *.ini
 *.pdf
+*.old
