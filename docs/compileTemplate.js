@@ -1,10 +1,11 @@
 'use strict';
 
 const fs = require('fs');
-const yargs = require('yargs');
-const moment = require('moment');
+const argumentParser = require('yargs');
+const dateFormatter = require('moment');
+const fileWatcher = require('chokidar');
 
-const argv = (yargs
+const argv = (argumentParser
   .usage(
     "$0 <templatePath> [outputPath]",
     "Generate a file based on an input template file.",
@@ -41,7 +42,7 @@ const argv = (yargs
 
 /* Extra validation: */
 if (argv._.length > 0) {
-  yargs.showHelp();
+  argumentParser.showHelp();
   console.error(
     `Unknown positional arguments: [${argv._}].`+
     ` If your path contains spaces, surround it with quotation marks "".`
@@ -49,7 +50,7 @@ if (argv._.length > 0) {
   return;
 }
 if (argv.outputPath === undefined && !argv.templatePath.endsWith('.template')) {
-  yargs.showHelp();
+  argumentParser.showHelp();
   console.error(
     `If no outputPath is specified, the templatePath must end with `+
     `'.template'.\nInstead, the given templatePath was '${argv.templatePath}.'`
@@ -65,6 +66,13 @@ const argOutputPath = (
 
 const tplOuterRegex = /<template>([\s\S]+?)<\/template>/g;
 const tplInnerRegex = /^([^:]+)(?::([\s\S]+))?$/;
+
+/* If the `--watch` flag was set, start up a chokidar file watcher. The listener
+ * will be added later, after declaring the compileTemplate function.
+ * We need to have this watcher available so we can add other files to watch
+ * procedurally, so that we can cover changes in files linked to by the
+ * template via <template>file: path</template> */
+const tplWatcher = (argv.watch) ? fileWatcher.watch(argv.templatePath) : null;
 
 function lexTemplate(template) {
   const tplTokens = [];
@@ -145,28 +153,49 @@ window.addEventListener('visibilitychange', ()=>{
     if(asyncTasks <= 0) whenDone();
   };
 
-  for (let i= 0, len = tokens.length; i < len; ++i){
+  /* Loop over the token objects and replace any which correspond to a
+   * <template> tag with the corresponding replacement string: */
+  for (let i = 0, len = tokens.length; i < len; ++i){
     const token = tokens[i];
+
+    /* If the token is not a <template> tag (i.e. it is the text between
+     * <template> tags), then simply insert the text un-processed: */
     if (!token.template) {
       outputTokens[i] = token.rawString;
       continue;
     }
 
+    /* Generate a replacement string based on the <template>'s directive. The
+     * syntax is <token>directive: argument</token>. The argument may be
+     * optional for some directives. */
     switch (token.directive) {
-      case 'file':
+      case 'file': {
+        /* Include the contents of a file in place of the <template> tag: */
         startTask();
-        fs.readFile(token.argument, 'utf8', (err, fileStr)=>{
+        const includedFileName = token.argument;
+        /* If --watch is enabled, watch any included files for changes, on top
+         * of the template file itself: */
+        if (tplWatcher) {
+          tplWatcher.add(includedFileName);
+        }
+        fs.readFile(includedFileName, 'utf8', (err, fileStr)=>{
           if (err) {
-            console.log(err);
+            console.error(
+              `FAILURE: There was an issue reading the file at `+
+              `'${includedFileName}', which was included in the template.`
+            );
+            throw err;
           }
           outputTokens[i] = fileStr.replace(/[\r\n]+$/, '');
           finishTask();
         });
         break;
+      } //Close case: 'file'
       case 'date':
-        outputTokens[i] = moment().format(token.argument);
+        outputTokens[i] = dateFormatter().format(token.argument);
         break;
       case 'dev-refresh':
+      //TODO: Use a proper auto-refresher instead of this
         outputTokens[i] = TEMPLATE_STRINGS.devRefreshScript;
         break;
       case 'edit-warning':
@@ -247,7 +276,11 @@ const compileTemplate = callbackCompose(
           process.exitCode = 1; //Failure
           console.error(
             `INVALID: The file at '${argOutputPath}' failed to match the `+
-            `output of compiling the template file at '${argv.templatePath}'.`
+            `output of compiling the template file at '${argv.templatePath}'.\n`+
+            `Please check that no manual changes have been made to `+
+            `'${argOutputPath}', then run this command to compile the `+
+            `template:\n\tnode compileTemplate `+
+            `"${argv.templatePath}" "${argOutputPath}".`
           );
         }
       });
@@ -264,6 +297,12 @@ const compileTemplate = callbackCompose(
     }
   }
 );
+
+/* If the --watch flag is set, repeatedly compile the template any time the
+ * template file or any of it's included files are changed: */
+if (tplWatcher) {
+  tplWatcher.on('change', (/*path*/)=>compileTemplate(argv.templatePath));
+}
 
 /* Execute the compilation sequence: */
 compileTemplate(argv.templatePath);

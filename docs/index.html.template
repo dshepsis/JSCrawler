@@ -183,11 +183,10 @@
               a network error or a bug in the crawler script.
             </p>
             <p>
-              If the number does
-              not change for more than 20 seconds or so, please try resetting the
-              browser, checking your internet connection, and running the script
-              again. If that fails, please report the issue to a developer, and/or
-              file a bug report on
+              If the number does not change for more than 20 seconds or so,
+              please try resetting the browser, checking your internet
+              connection, and running the script again. If that fails, please
+              report the issue to a developer, and/or file a bug report on
               <a href="https://github.com/dshepsis/JSCrawler/issues" target="_blank">GitHub</a>.
             </p>
           </li>
