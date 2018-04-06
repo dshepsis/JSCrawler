@@ -110,6 +110,7 @@
   padding: 0.5em;
   border-radius: 5px;
   background-color: rgba(0,0,20,0.1);
+  align-self: flex-start;
 }
 #crlr-modal #crlr-min:hover {
   border-color: blue;
@@ -173,6 +174,7 @@
   display: flex;
   margin: 0;
   border: none;
+  background-color: transparent;
 }
 #crlr-modal.minimized {
   display: table;
@@ -180,7 +182,13 @@
   opacity: 0.2;
   transition: opacity .2s;
 }
-#crlr-modal.minimized:hover, #crlr-modal.minimized:focus-within {
+#crlr-modal.minimized:hover {
+  opacity: 1;
+}
+#crlr-modal.minimized.focus-within {
+  opacity: 1;
+}
+#crlr-modal.minimized:focus-within {
   opacity: 1;
 }
 
