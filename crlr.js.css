@@ -156,6 +156,7 @@
   overflow-x: hidden;
 }
 #crlr-modal #crlr-content > * {
+  margin-top: 0;
   margin-bottom: 10px;
 }
 #crlr-modal #crlr-content > :last-child {
@@ -189,6 +190,7 @@
 
 /* Output styling: */
 #crlr-modal #crlr-inputs * {
+  font-weight: normal;
   font-size: 1.25em;
 }
 #crlr-modal #crlr-input-clear {
@@ -270,6 +272,7 @@
 #crlr-modal .crlr-output > pre {
   max-height: 200px;
   padding: 0.5em;
+  margin: 0;
   overflow: auto;
   border: 1px dashed gray;
   background-color: #e1e1ea;
