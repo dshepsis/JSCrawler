@@ -4,6 +4,7 @@ const fs = require('fs');
 const argumentParser = require('yargs');
 const dateFormatter = require('moment');
 const fileWatcher = require('chokidar');
+const escapeHTML = require('escape-html');
 
 const argv = (argumentParser
   .usage(
@@ -191,6 +192,28 @@ window.addEventListener('visibilitychange', ()=>{
         });
         break;
       } //Close case: 'file'
+      case 'file-escape-html': {
+        /* Include the contents of a file in place of the <template> tag: */
+        startTask();
+        const includedFileName = token.argument;
+        /* If --watch is enabled, watch any included files for changes, on top
+         * of the template file itself: */
+        if (tplWatcher) {
+          tplWatcher.add(includedFileName);
+        }
+        fs.readFile(includedFileName, 'utf8', (err, fileStr)=>{
+          if (err) {
+            console.error(
+              `FAILURE: There was an issue reading the file at `+
+              `'${includedFileName}', which was included in the template.`
+            );
+            throw err;
+          }
+          outputTokens[i] = escapeHTML(fileStr).replace(/[\r\n]+$/, '');
+          finishTask();
+        });
+        break;
+      } //Close case: 'file-escape-html'
       case 'date':
         outputTokens[i] = dateFormatter().format(token.argument);
         break;

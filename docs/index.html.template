@@ -37,7 +37,7 @@
     <ol>
       <li id="running-copy-script" class="anchor-point">
         <p><span class="item-header">Copy the script</span> by <button id="copy-button" class="inline-button">clicking here</button>:</p>
-        <pre id="script-src" class="code-block"><code class="JavaScript"><template>file:../crawlSite.js</template></code></pre>
+        <pre id="script-src" class="code-block"><code class="JavaScript"><template>file-escape-html:../crawlSite.js</template></code></pre>
       </li>
       <li id="running-open-site" class="anchor-point"><p>
         <span class="item-header">Open the site</span> which you want to inspect.

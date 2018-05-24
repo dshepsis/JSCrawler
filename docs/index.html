@@ -40,13 +40,13 @@
     <ol>
       <li id="running-copy-script" class="anchor-point">
         <p><span class="item-header">Copy the script</span> by <button id="copy-button" class="inline-button">clicking here</button>:</p>
-        <pre id="script-src" class="code-block"><code class="JavaScript">'use strict';
+        <pre id="script-src" class="code-block"><code class="JavaScript">&#39;use strict&#39;;
 const startTime = performance.now();
 
 /* Polyfill iteration on HTMLCollections for Edge and other browsers: */
 (function() {
-  const getIter = (cnstr) => cnstr.prototype[Symbol.iterator];
-  const createIter = (cnstr) => {
+  const getIter = (cnstr) =&gt; cnstr.prototype[Symbol.iterator];
+  const createIter = (cnstr) =&gt; {
     if (!getIter(cnstr)) {
       cnstr.prototype[Symbol.iterator] = getIter(Array);
     }
@@ -56,11 +56,11 @@ const startTime = performance.now();
 
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */
-function validateType(ambiguousVar, desiredType, nameStr = "variable") {
+function validateType(ambiguousVar, desiredType, nameStr = &quot;variable&quot;) {
   /* Validate the type of nameStr: */
-  if (typeof nameStr !== 'string') {
+  if (typeof nameStr !== &#39;string&#39;) {
     throw new TypeError(
-      `nameStr must be a string. Instead, its type was '${typeof nameStr}'.`
+      `nameStr must be a string. Instead, its type was &#39;${typeof nameStr}&#39;.`
     );
   }
 
@@ -70,11 +70,11 @@ function validateType(ambiguousVar, desiredType, nameStr = "variable") {
 
   /* Check whether we are validating the type against a string (with typeof) or
    * a constructor function (with instanceof): */
-  if (validationStyle === 'string') {
+  if (validationStyle === &#39;string&#39;) {
     isCorrectType = (typeof ambiguousVar === desiredType);
     desiredTypeStr = desiredType;
   } else if (
-    validationStyle === 'function' &&
+    validationStyle === &#39;function&#39; &amp;&amp;
     desiredType.prototype !== undefined
   ) {
     desiredTypeStr = desiredType.name;
@@ -94,27 +94,27 @@ function validateType(ambiguousVar, desiredType, nameStr = "variable") {
   /* Type is invalid, so throw an error: */
   let wrongType = typeof ambiguousVar;
 
-  /* Special case for null, which has type 'object' for legacy reasons: */
-  if (ambiguousVar === null) wrongType = "null pointer";
+  /* Special case for null, which has type &#39;object&#39; for legacy reasons: */
+  if (ambiguousVar === null) wrongType = &quot;null pointer&quot;;
 
   /* If ambiguousVar is an object, report its constructor name for better
    * clarity in the error message: */
-  else if (wrongType === 'object') wrongType = ambiguousVar.constructor.name;
+  else if (wrongType === &#39;object&#39;) wrongType = ambiguousVar.constructor.name;
 
   /* Actually throw the meaningful error: */
   throw new TypeError(
-    `${nameStr} must be of type "${desiredTypeStr}"! `+
-    `Instead, it was of type "${wrongType}".`
+    `${nameStr} must be of type &quot;${desiredTypeStr}&quot;! `+
+    `Instead, it was of type &quot;${wrongType}&quot;.`
   );
 }
 
 /* Warn the user about navigating away during crawl: */
-window.addEventListener("beforeunload", function (e) {
+window.addEventListener(&quot;beforeunload&quot;, function (e) {
   /* Note: In modern browsers, these messages are ignored as a security feature,
    * and a default message is displayed instead. */
   const confirmationMessage = (
-    "Warning: Navigating away from the page during a site-crawl will cancel "+
-    "the crawl, losing all progress. Are you sure you want to continue?"
+    &quot;Warning: Navigating away from the page during a site-crawl will cancel &quot;+
+    &quot;the crawl, losing all progress. Are you sure you want to continue?&quot;
   );
   e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
   return confirmationMessage;              // Gecko, WebKit, Chrome lt34
@@ -127,20 +127,20 @@ const PROTOCOL = window.location.protocol;
 
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = [
-  "doc", "docx", "gif", "jpeg", "jpg", "pdf",
-  "png", "ppt", "pptx", "xls", "xlsm", "xlsx"
+  &quot;doc&quot;, &quot;docx&quot;, &quot;gif&quot;, &quot;jpeg&quot;, &quot;jpg&quot;, &quot;pdf&quot;,
+  &quot;png&quot;, &quot;ppt&quot;, &quot;pptx&quot;, &quot;xls&quot;, &quot;xlsm&quot;, &quot;xlsx&quot;
 ];
-const RECOGNIZED_SCHEMES = ["mailto:", "file:", "tel:", "javascript:"];
+const RECOGNIZED_SCHEMES = [&quot;mailto:&quot;, &quot;file:&quot;, &quot;tel:&quot;, &quot;javascript:&quot;];
 
 const BANNED_STRINGS = {
-  list: ["drupaldev"],
+  list: [&quot;drupaldev&quot;],
   forceBanned: null,
   isStringBanned(str) {
     if (this.forceBanned !== null) {
-      validateType(this.forceBanned, 'boolean', "Banned string forced value");
+      validateType(this.forceBanned, &#39;boolean&#39;, &quot;Banned string forced value&quot;);
       return this.forceBanned;
     }
-    for (let i = 0, len = this.list.length; i < len; ++i) {
+    for (let i = 0, len = this.list.length; i &lt; len; ++i) {
       const bannedStr = this.list[i];
       if (str.toLowerCase().indexOf(bannedStr.toLowerCase()) !== -1) {
         return bannedStr;
@@ -155,12 +155,12 @@ let crawlTerminatedBeforeCompletion = false;
 const allRequests = [];
 
 /* A function which aborts any live requests at the time of execution: */
-const QUIT = (noisy)=>{
+const QUIT = (noisy)=&gt;{
   crawlTerminatedBeforeCompletion = true;
-  for (let r = 0, len = allRequests.length; r < len; ++r) {
+  for (let r = 0, len = allRequests.length; r &lt; len; ++r) {
     const request = allRequests[r];
 
-    /* If the request has already completed, don't abort it */
+    /* If the request has already completed, don&#39;t abort it */
     if (request.readyState === 4) continue;
     request.abortedDueToTimeout = true;
     request.abort();
@@ -174,16 +174,16 @@ const QUIT = (noisy)=>{
 // const EXIT = QUIT; const Exit = QUIT; const exit = QUIT;
 
 /* Set a timer to end all live requests when the timer is reached. */
-const TIMEOUT_TIMER = window.setTimeout(()=>QUIT(true), MAX_TIMEOUT);
+const TIMEOUT_TIMER = window.setTimeout(()=&gt;QUIT(true), MAX_TIMEOUT);
 
 function urlRemoveAnchor(locationObj) {
-  if (typeof locationObj === 'string') {
+  if (typeof locationObj === &#39;string&#39;) {
     /* For some reason, creating a link with an empty string for an href makes
      * that link think it refers to the current page. In other words, an empty
-     * href behaves like "/". So we have to manually avoid this behavior to
+     * href behaves like &quot;/&quot;. So we have to manually avoid this behavior to
      * avoid associating a null link with a refresh link. */
-    if (locationObj === "") return "";
-    return urlRemoveAnchor(makeElement("a", undefined, {href: locationObj}));
+    if (locationObj === &quot;&quot;) return &quot;&quot;;
+    return urlRemoveAnchor(makeElement(&quot;a&quot;, undefined, {href: locationObj}));
   }
   let origin = locationObj.origin;
 
@@ -195,7 +195,7 @@ function urlRemoveAnchor(locationObj) {
     origin = `${locationObj.protocol}//${locationObj.host}`;
 
     /* For null links: */
-    if (origin === '//') origin = '';
+    if (origin === &#39;//&#39;) origin = &#39;&#39;;
   }
   return origin + locationObj.pathname + locationObj.search;
 }
@@ -205,27 +205,27 @@ function urlRemoveAnchor(locationObj) {
  * manually override the mutator functions to throw errors: */
 function freezeSet(mySet) {
   mySet.add = function() {
-    throw new Error("Cannot add to read only Set.");
+    throw new Error(&quot;Cannot add to read only Set.&quot;);
   };
   mySet.clear = function () {
-    throw new Error("Cannot clear read only Set.");
+    throw new Error(&quot;Cannot clear read only Set.&quot;);
   };
   mySet.delete = function () {
-    throw new Error("Cannot delete from read only Set.");
+    throw new Error(&quot;Cannot delete from read only Set.&quot;);
   };
   Object.freeze(mySet);
   return mySet;
 }
 
 /* Defines an unwritable, unconfigurable property on classConstructor, but only
- * if that property doesn't already exist. Returns true on success (the property
+ * if that property doesn&#39;t already exist. Returns true on success (the property
  * was created) and false on failure (the property already existed): */
 function staticConst(classConstructor, varName, value) {
   if (classConstructor[varName]) {
     return false;
   }
   Object.defineProperty(classConstructor, varName, {
-    value: (typeof value === "function") ? value() : value,
+    value: (typeof value === &quot;function&quot;) ? value() : value,
     writable: false,
     enumerable: true,
     configurable: false
@@ -235,14 +235,14 @@ function staticConst(classConstructor, varName, value) {
 
 /* Checks if obj has a defined property for the key prop. If it does, the
  * the optional onExistence function, if it is defined, is called on that
- * property's value. Then, the value is returned. If there is not a defined
+ * property&#39;s value. Then, the value is returned. If there is not a defined
  * value for the given key, the key is assigned the value given by val. If val
  * is a function, it is executed with no parameters, and its return value is
  * used instead. */
 const makeIfUndef = function (obj, prop, val, onExistence) {
   const existingVal = obj[prop];
   if (existingVal === undefined) {
-    const newVal = (typeof val === "function") ? val() : val;
+    const newVal = (typeof val === &quot;function&quot;) ? val() : val;
     obj[prop] = newVal;
     return newVal;
   }
@@ -253,15 +253,15 @@ const makeIfUndef = function (obj, prop, val, onExistence) {
 /* Add the value val to the array specified by obj[arrName]. If there is not a
  * array defined there already, an empty one is made and val is added to it: */
 const maybeArrayPush = function (obj, arrName, val) {
-  makeIfUndef(obj, arrName, ()=>[]).push(val);
+  makeIfUndef(obj, arrName, ()=&gt;[]).push(val);
 };
 
-/* Returns either an element's href property, or its src property, whichever is
- * isn't undefined. Throws an error if both or neither of them are defined.
+/* Returns either an element&#39;s href property, or its src property, whichever is
+ * isn&#39;t undefined. Throws an error if both or neither of them are defined.
  * Note hrefs are returned without an anchor (the part after the #, if present).*/
 function getHrefOrSrcProp(ele, retainAnchor) {
-  validateType(ele, HTMLElement, "element");
-  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
+  validateType(ele, HTMLElement, &quot;element&quot;);
+  if ((ele.href !== undefined) &amp;&amp; (ele.src  !== undefined)) throw new Error(&quot;Element with href AND src!?!&quot;); //@debug
   if (ele.href !== undefined) {
     return (retainAnchor ? ele.href : urlRemoveAnchor(ele));
   }
@@ -272,13 +272,13 @@ function getHrefOrSrcProp(ele, retainAnchor) {
 }
 /* Similar to above, except returns the attribute instead of the property: */
 function getHrefOrSrcAttr(ele) {
-  validateType(ele, HTMLElement, "element");
-  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
-  for (const attrName of ["href", "src"]) {
+  validateType(ele, HTMLElement, &quot;element&quot;);
+  if ((ele.href !== undefined) &amp;&amp; (ele.src  !== undefined)) throw new Error(&quot;Element with href AND src!?!&quot;); //@debug
+  for (const attrName of [&quot;href&quot;, &quot;src&quot;]) {
     const attrVal = ele.getAttribute(attrName);
     if (attrVal !== null) return attrVal;
   }
-  /* Null links may very well have a null href, so there's no reason to throw an
+  /* Null links may very well have a null href, so there&#39;s no reason to throw an
    * error. */
   return null;
 }
@@ -288,24 +288,24 @@ function getHrefOrSrcAttr(ele) {
  * same page while having different HREFs (e.g. one absolute and one relative),
  * so if one of them 404s (notFound), all of the others will too. */
 const GROUP_LABELS = freezeSet(new Set([
-  "internal",
-  "external",
-  "null",
-  "Email",
-  "localFile",
-  "javascriptLink",
-  "http-httpsError",
-  "unusualScheme",
-  "visited",
-  "unknownContentType",
-  "redirects",
-  "accessDenied",
-  "forbidden",
-  "notFound",
-  "internalServiceError",
-  "robotsDisallowed",
-  "unloaded",
-  "file"
+  &quot;internal&quot;,
+  &quot;external&quot;,
+  &quot;null&quot;,
+  &quot;Email&quot;,
+  &quot;localFile&quot;,
+  &quot;javascriptLink&quot;,
+  &quot;http-httpsError&quot;,
+  &quot;unusualScheme&quot;,
+  &quot;visited&quot;,
+  &quot;unknownContentType&quot;,
+  &quot;redirects&quot;,
+  &quot;accessDenied&quot;,
+  &quot;forbidden&quot;,
+  &quot;notFound&quot;,
+  &quot;internalServiceError&quot;,
+  &quot;robotsDisallowed&quot;,
+  &quot;unloaded&quot;,
+  &quot;file&quot;
 ]));
 
 /* Groups together element records. This is used for grouping links/images with
@@ -315,13 +315,13 @@ class RecordGroup {
     this.name = name;
     this.records = elementRecords;
     this.labels = new Set();
-    staticConst(this.constructor, "LabelTable", ()=>Object.create(null));
+    staticConst(this.constructor, &quot;LabelTable&quot;, ()=&gt;Object.create(null));
   }
   static validateLabel (label) {
     if (GROUP_LABELS.has(label)) {
       return label;
     }
-    throw new Error(`"${label}" is not a valid record-group label!`);
+    throw new Error(`&quot;${label}&quot; is not a valid record-group label!`);
   }
   addRecord(record) {
     this.records.push(record);
@@ -342,16 +342,16 @@ class RecordGroup {
 /* Labels which only apply to particular elements, and may differ between
  * elements within the same group: */
 const ELEMENT_LABELS = freezeSet(new Set([
-  "link",
-  "image",
-  "iframe",
-  "startPage",
-  "bannedString",
-  "absoluteInternal",
-  "anchor",
-  "improperSize",
-  "noAltText",
-  "emptyTitle"
+  &quot;link&quot;,
+  &quot;image&quot;,
+  &quot;iframe&quot;,
+  &quot;startPage&quot;,
+  &quot;bannedString&quot;,
+  &quot;absoluteInternal&quot;,
+  &quot;anchor&quot;,
+  &quot;improperSize&quot;,
+  &quot;noAltText&quot;,
+  &quot;emptyTitle&quot;
 ]));
 
 /* Associates a document, set of labels, and a group with a given HTML Element: */
@@ -363,21 +363,21 @@ class ElementRecord {
     }
     /* These two tables are class variables used for retrieving records or
      * groups based on labels or group-names, respectively: */
-    staticConst(this.constructor, "GroupTable", ()=>Object.create(null));
-    staticConst(this.constructor, "LabelTable", ()=>Object.create(null));
+    staticConst(this.constructor, &quot;GroupTable&quot;, ()=&gt;Object.create(null));
+    staticConst(this.constructor, &quot;LabelTable&quot;, ()=&gt;Object.create(null));
 
     /* Properties: */
     this.document = documentID;
 
-    /* Clone the element so that we don't have ot hold a reference to the
+    /* Clone the element so that we don&#39;t have ot hold a reference to the
      * entire document in memory, thus allowing documents to be garbage-
-     * collected when they're done being processed: */
-    this.element = elementInDocument.cloneNode("Deep");
+     * collected when they&#39;re done being processed: */
+    this.element = elementInDocument.cloneNode(&quot;Deep&quot;);
     const groupName = eleToGroupName(elementInDocument);
     this.group = makeIfUndef(
       this.constructor.GroupTable,
       groupName,
-      ()=>new RecordGroup(groupName)
+      ()=&gt;new RecordGroup(groupName)
     );
     this.group.addRecord(this);
 
@@ -387,7 +387,7 @@ class ElementRecord {
     if (ELEMENT_LABELS.has(label)) {
       return label;
     }
-    throw new Error(`"${label}" is not a valid element-record label.`);
+    throw new Error(`&quot;${label}&quot; is not a valid element-record label.`);
   }
   label(...newLabels) {
     for (const label of newLabels) {
@@ -405,7 +405,7 @@ class ElementRecord {
 /* Returns an array of all records matching a label, regardless of whether that
  * label is an element or group label. For group labels, each matching group
  * has all of its member records appended to the returned list. */
-const getAllRecordsLabelled = (label)=>{
+const getAllRecordsLabelled = (label)=&gt;{
   let recordList;
   if (ELEMENT_LABELS.has(label)) {
     const tableEntry = ElementRecord.LabelTable[label];
@@ -420,7 +420,7 @@ const getAllRecordsLabelled = (label)=>{
     const groups = RecordGroup.LabelTable[label];
     if (groups === undefined) return null;
 
-    /* Take each matching group, and then append each group's list of records
+    /* Take each matching group, and then append each group&#39;s list of records
      * to recordList. This gives us every record in a group matching a given
      * group label: */
     for (const group of groups) {
@@ -451,7 +451,7 @@ function appendChildren(parent, children) {
     }
   }
   if (Array.isArray(children)) {
-    for (let i = 0, len = children.length; i < len; ++i) {
+    for (let i = 0, len = children.length; i &lt; len; ++i) {
       appendItem(children[i]);
     }
   } else {
@@ -470,14 +470,14 @@ function makeElement(type, content, attrObj) {
     appendChildren(newEle, content);
   }
   if (attrObj !== undefined) {
-    validateType(attrObj, 'object', "Attribute Object");
+    validateType(attrObj, &#39;object&#39;, &quot;Attribute Object&quot;);
     for (const attribute of Object.keys(attrObj)) {
       newEle.setAttribute(attribute, attrObj[attribute]);
     }
   }
   return newEle;
 }
-/* Removes all of an element's immediate children: */
+/* Removes all of an element&#39;s immediate children: */
 function clearChildren(parent) {
   while (parent.firstChild !== null) {
     parent.removeChild(parent.firstChild);
@@ -489,30 +489,30 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{margin-right:.25em;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:2px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-textbox-suggestions-container{display:inline;position:relative;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
-const styleEle = makeElement("style", CRAWLER_CSS, {id: "crlr.js.css"});
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row&gt;*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row&gt;:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content&gt;*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content&gt;:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{margin-right:.25em;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:2px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-textbox-suggestions-container{display:inline;position:relative;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions&gt;.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions&gt;.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions&gt;.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:&quot;✓&quot;;font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output&gt;pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
+const styleEle = makeElement(&quot;style&quot;, CRAWLER_CSS, {id: &quot;crlr.js.css&quot;});
 document.head.appendChild(styleEle);
 
 /* Make modal element: */
-const MODAL = makeElement("div", undefined, {id: "crlr-modal"});
+const MODAL = makeElement(&quot;div&quot;, undefined, {id: &quot;crlr-modal&quot;});
 /* For browsers without support for :focus-within: */
 MODAL.addEventListener(
-  "focusin",
+  &quot;focusin&quot;,
   function addFocus(e) {
     let parent = e.target;
     while (parent !== null) {
-      parent.classList.add("focus-within");
+      parent.classList.add(&quot;focus-within&quot;);
       if (parent === MODAL) return;
       parent = parent.parentElement;
     }
   }
 );
 MODAL.addEventListener(
-  "focusout",
+  &quot;focusout&quot;,
   function remFocus(e) {
     let parent = e.target;
     while (parent !== null) {
-      parent.classList.remove("focus-within");
+      parent.classList.remove(&quot;focus-within&quot;);
       if (parent === MODAL) return;
       parent = parent.parentElement;
     }
@@ -522,24 +522,24 @@ MODAL.addEventListener(
 document.body.insertBefore(MODAL, document.body.childNodes[0]);
 
 /* Prevent click events on the modal triggering events on the rest of the page: */
-const cancelBubble = (e)=>{
+const cancelBubble = (e)=&gt;{
   if (!e) e = window.event;
   e.cancelBubble = true;
   if (e.stopPropagation) e.stopPropagation();
 };
-MODAL.addEventListener("click", cancelBubble);
-MODAL.addEventListener("keydown", cancelBubble);
-MODAL.addEventListener("keypress", cancelBubble);
+MODAL.addEventListener(&quot;click&quot;, cancelBubble);
+MODAL.addEventListener(&quot;keydown&quot;, cancelBubble);
+MODAL.addEventListener(&quot;keypress&quot;, cancelBubble);
 
 /* Adds a counter to the modal, showing the number of live (unresolved) http
  * requests currently waiting: */
 const requestCounter = (function() {
   /* Create display: */
-  const disp = makeElement("p", undefined, {
-    id: "request-counter",
-    title: "Number of page requests currently loading"
+  const disp = makeElement(&quot;p&quot;, undefined, {
+    id: &quot;request-counter&quot;,
+    title: &quot;Number of page requests currently loading&quot;
   });
-  const waitingClassString = "waiting-for-results";
+  const waitingClassString = &quot;waiting-for-results&quot;;
   let initialized = false;
   /* Methods to allow other code to affect the counter: */
   const API = {
@@ -547,11 +547,11 @@ const requestCounter = (function() {
     count: 0,
     update() {
       /* To avoid repainting more often than necessary: */
-      window.requestAnimationFrame(()=>{
+      window.requestAnimationFrame(()=&gt;{
         disp.innerHTML = `Requests: ${this.count}`;
       });
-      if (initialized && this.count === 0) {
-        this.setText("All requests complete!");
+      if (initialized &amp;&amp; this.count === 0) {
+        this.setText(&quot;All requests complete!&quot;);
         window.clearTimeout(TIMEOUT_TIMER);
         presentResults();
       }
@@ -560,8 +560,8 @@ const requestCounter = (function() {
       ++this.count; this.update();
     },
     decrement() {
-      if (this.count <= 0) {
-        throw new Error("DECREMENTED COUNTER BELOW ZERO");
+      if (this.count &lt;= 0) {
+        throw new Error(&quot;DECREMENTED COUNTER BELOW ZERO&quot;);
       }
       --this.count; this.update();
     },
@@ -587,7 +587,7 @@ const requestCounter = (function() {
 /* Finds all of the links in a document and classifies them
  * based on the contents of their hrefs: */
 function classifyLinks(doc, curPageURL) {
-  const LINKS = doc.getElementsByTagName("a");
+  const LINKS = doc.getElementsByTagName(&quot;a&quot;);
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
@@ -596,33 +596,33 @@ function classifyLinks(doc, curPageURL) {
   /* A quick function for visibly labelling certain types of elements: */
   function markElement(ele, color, text) {
     ele.style.outline = `2px solid ${color}`;
-    if (ele.title) ele.title += "\n";
+    if (ele.title) ele.title += &quot;\n&quot;;
     ele.title += text;
   }
 
   /* Loop over links: */
   for (const link of LINKS) {
-    const hrefAttr = link.getAttribute("href");
+    const hrefAttr = link.getAttribute(&quot;href&quot;);
     const linkRecord = new ElementRecord(curPageURL, link);
-    linkRecord.label("link");
+    linkRecord.label(&quot;link&quot;);
 
     /* Handle links with no HREF attribute, such as anchors or those used as
     * buttons: */
     if (hrefAttr === null) {
-      linkRecord.group.label("null");
-      markElement(link, "orange", "Null link");
+      linkRecord.group.label(&quot;null&quot;);
+      markElement(link, &quot;orange&quot;, &quot;Null link&quot;);
       continue;
     }
     const bannedStr = BANNED_STRINGS.isStringBanned(link.href);
     if (bannedStr) {
-      linkRecord.label("bannedString");
+      linkRecord.label(&quot;bannedString&quot;);
       console.error(
         `Found link ${hrefAttr} containing a banned string: ${bannedStr}.\n\t`+
         `Linked-to from: ${curPageURL}`
       );
-      markElement(link, "red", "BANNED STRING LINK");
+      markElement(link, &quot;red&quot;, &quot;BANNED STRING LINK&quot;);
 
-      /* Don't parse the link further. Banned-string links will not be crawled. */
+      /* Don&#39;t parse the link further. Banned-string links will not be crawled. */
       continue;
     }
 
@@ -630,53 +630,53 @@ function classifyLinks(doc, curPageURL) {
     const linkProtocol = link.protocol.toLowerCase();
     const linkIsToWebsite = /^https?:$/i.test(linkProtocol);
     const linkIsInternal =
-        (linkIsToWebsite && (link.hostname.toLowerCase() === HOSTNAME));
+        (linkIsToWebsite &amp;&amp; (link.hostname.toLowerCase() === HOSTNAME));
 
     /* Anchor link: */
-    if (link.hash !== "") {
-      linkRecord.label("anchor");
-      markElement(link, "pink", "Anchor link");
+    if (link.hash !== &quot;&quot;) {
+      linkRecord.label(&quot;anchor&quot;);
+      markElement(link, &quot;pink&quot;, &quot;Anchor link&quot;);
     }
     if (linkIsInternal) {
-      linkRecord.group.label("internal");
+      linkRecord.group.label(&quot;internal&quot;);
       if (linkProtocol === PROTOCOL) {
         /* Store this record for return, because it is internal with a matching
          * protocol, so its page should be checked in visitLinks: */
         internalLinksFromThisPage.push(linkRecord);
       } else {
-        linkRecord.group.label("http-httpsError");
+        linkRecord.group.label(&quot;http-httpsError&quot;);
       }
       if (linkIsAbsolute) {
-        if (link.matches(".field-name-field-related-links a")) {
-          console.warn("absint link in related links", link);
+        if (link.matches(&quot;.field-name-field-related-links a&quot;)) {
+          console.warn(&quot;absint link in related links&quot;, link);
           continue; //@debug
         }
-        linkRecord.label("absoluteInternal");
+        linkRecord.label(&quot;absoluteInternal&quot;);
       }
     } else if (linkIsToWebsite) {
-      linkRecord.group.label("external");
+      linkRecord.group.label(&quot;external&quot;);
     } else {
       if (RECOGNIZED_SCHEMES.indexOf(linkProtocol) === -1) {
-        linkRecord.group.label("unusualScheme");
-        markElement(link, "gray", "Unusual Scheme");
+        linkRecord.group.label(&quot;unusualScheme&quot;);
+        markElement(link, &quot;gray&quot;, &quot;Unusual Scheme&quot;);
       }
       switch (linkProtocol) {
-        case "mailto:":
-          linkRecord.group.label("Email");
-          markElement(link, "yellow", "Email link");
+        case &quot;mailto:&quot;:
+          linkRecord.group.label(&quot;Email&quot;);
+          markElement(link, &quot;yellow&quot;, &quot;Email link&quot;);
           break;
-        case "file:":
-          linkRecord.group.label("localFile");
-          markElement(link, "blue", "File link");
+        case &quot;file:&quot;:
+          linkRecord.group.label(&quot;localFile&quot;);
+          markElement(link, &quot;blue&quot;, &quot;File link&quot;);
           break;
-        case "javascript:":
-          linkRecord.group.label("javascriptLink");
+        case &quot;javascript:&quot;:
+          linkRecord.group.label(&quot;javascriptLink&quot;);
           break;
-        case "tel:":
-          markElement(link, "darkBlue", "Telephone Link");
+        case &quot;tel:&quot;:
+          markElement(link, &quot;darkBlue&quot;, &quot;Telephone Link&quot;);
           break;
         default:
-          markElement(link, "darkGray", "Unusual Scheme");
+          markElement(link, &quot;darkGray&quot;, &quot;Unusual Scheme&quot;);
       }
     }
   } //Close for loop iterating over link elements
@@ -685,7 +685,7 @@ function classifyLinks(doc, curPageURL) {
 
 class ImageLoader {
   constructor(src) {
-    staticConst(this.constructor, "SrcTable", ()=>Object.create(null));
+    staticConst(this.constructor, &quot;SrcTable&quot;, ()=&gt;Object.create(null));
 
     /* If another ImageLoader has been created for the given src, reuse it: */
     const existingLoader = this.constructor.SrcTable[src];
@@ -693,7 +693,7 @@ class ImageLoader {
       return existingLoader;
     }
     this.constructor.SrcTable[src] = this;
-    this.element = makeElement("img");
+    this.element = makeElement(&quot;img&quot;);
     this.loaded = this.errored = false;
 
     /* For the timeout and quit function, so that ImageLoaders can be
@@ -701,31 +701,31 @@ class ImageLoader {
     this.readyState = 0;
     requestCounter.increment();
     allRequests.push(this);
-    this.element.onload = ()=>{
+    this.element.onload = ()=&gt;{
       this.loaded  = true;
       this.readyState = 4;
       requestCounter.decrement();
     };
-    this.element.onerror = ()=>{
+    this.element.onerror = ()=&gt;{
       this.errored = true;
       this.readyState = 4;
       requestCounter.decrement();
     };
-    /* Set the src attribute last to guarantee loading doesn't begin until the
+    /* Set the src attribute last to guarantee loading doesn&#39;t begin until the
      * onload/error event handlers have been set: */
-    this.element.setAttribute("src", src);
+    this.element.setAttribute(&quot;src&quot;, src);
   }
   whenReady(normCallback, errCallback) {
     /* If the image has already loaded or errored, we still want the callbacks
-     * to be executed asynchronously (for consistency). However, we don't want
+     * to be executed asynchronously (for consistency). However, we don&#39;t want
      * the resultsModal to show up while one of these callbacks is waiting to
      * fire, so we treat each such callback as a tiny little request. This
      * function automatically increments the requestCounter synchronously, to
      * block the modal, and decrements it after the callback has fired: */
-    const wrapAsRequest = (func)=>{
+    const wrapAsRequest = (func)=&gt;{
       requestCounter.increment();
       const reqObj = {readyState: 0};
-      const timer = window.setTimeout(()=>{
+      const timer = window.setTimeout(()=&gt;{
         func();
         reqObj.readyState = 4;
         requestCounter.decrement();
@@ -743,11 +743,11 @@ class ImageLoader {
     else {
       /* When multiple events are queued using addEventListener, they are
        * executed **synchronously** in the order of attachment. Since control
-       * flow can't be yielded between event handlers, we don't have to worry
+       * flow can&#39;t be yielded between event handlers, we don&#39;t have to worry
        * about incrementing and decrementing the requestCounter for each one. */
-      this.element.addEventListener("load", normCallback);
+      this.element.addEventListener(&quot;load&quot;, normCallback);
       if (errCallback !== undefined) {
-        this.element.addEventListener("error", errCallback);
+        this.element.addEventListener(&quot;error&quot;, errCallback);
       }
     }
   }
@@ -755,24 +755,24 @@ class ImageLoader {
     if (!(this.loaded || this.errored)) {
       /* Removing the src attribute does not fire the onerror event, so we must
        * manually decrement the requestCounter: */
-      this.element.removeAttribute("src");
+      this.element.removeAttribute(&quot;src&quot;);
       requestCounter.decrement();
     }
   }
 }
 
 function classifyImages(doc, curPageURL) {
-  const IMAGES = doc.getElementsByTagName("img");
+  const IMAGES = doc.getElementsByTagName(&quot;img&quot;);
   for (const image of IMAGES) {
     const imageRecord = new ElementRecord(curPageURL, image);
-    imageRecord.label("image");
+    imageRecord.label(&quot;image&quot;);
     const srcProp = image.src;
-    const srcAttr = image.getAttribute("src");
+    const srcAttr = image.getAttribute(&quot;src&quot;);
     if (srcAttr === null) {
-      imageRecord.group.label("null");
+      imageRecord.group.label(&quot;null&quot;);
       continue;
     }
-    /* Images don't naturally have location properties, so use the URL api: */
+    /* Images don&#39;t naturally have location properties, so use the URL api: */
     const imgLocation = new URL(srcProp);
     const imgSrcHostname = imgLocation.hostname.toLowerCase();
     const isInternal = (imgSrcHostname === HOSTNAME);
@@ -780,21 +780,21 @@ function classifyImages(doc, curPageURL) {
     /* Unfortunately, whether an image is available or broken must be determined
      * asynchronously: */
     const imgLoader = new ImageLoader(image.src);
-    if (!imageRecord.group.isLabelled("visited")) {
-      const onload = ()=>{
-        imageRecord.group.label("visited");
+    if (!imageRecord.group.isLabelled(&quot;visited&quot;)) {
+      const onload = ()=&gt;{
+        imageRecord.group.label(&quot;visited&quot;);
       };
-      const onerror = ()=>{
-        imageRecord.group.label("unloaded", "visited");
+      const onerror = ()=&gt;{
+        imageRecord.group.label(&quot;unloaded&quot;, &quot;visited&quot;);
       };
       imgLoader.whenReady(onload, onerror);
     }
     /* Check whether the displayed size of this particular img element matches
     * the native size of this image: */
-    const widthAttr =  image.getAttribute("width");
-    const heightAttr = image.getAttribute("height");
+    const widthAttr =  image.getAttribute(&quot;width&quot;);
+    const heightAttr = image.getAttribute(&quot;height&quot;);
     const anyDimensionsSpecified = (widthAttr !== null || heightAttr !== null);
-    const compareImageSize = ()=>{
+    const compareImageSize = ()=&gt;{
       const loadEle = imgLoader.element;
       const widthMatches = (
         widthAttr === null ||
@@ -804,50 +804,50 @@ function classifyImages(doc, curPageURL) {
         heightAttr === null ||
         Number(heightAttr) === loadEle.naturalHeight
       );
-      if (!(widthMatches && heightMatches)) {
-        imageRecord.label("improperSize");
+      if (!(widthMatches &amp;&amp; heightMatches)) {
+        imageRecord.label(&quot;improperSize&quot;);
       }
     };
     if (anyDimensionsSpecified) {
-      imgLoader.whenReady(compareImageSize, ()=>{
-        imageRecord.group.label("unloaded");
+      imgLoader.whenReady(compareImageSize, ()=&gt;{
+        imageRecord.group.label(&quot;unloaded&quot;);
       });
     }
 
     if (!image.alt) {
-    //if (image.getAttribute("alt") === null) {
-      imageRecord.label("noAltText");
+    //if (image.getAttribute(&quot;alt&quot;) === null) {
+      imageRecord.label(&quot;noAltText&quot;);
     }
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
-      imageRecord.label("bannedString");
+      imageRecord.label(&quot;bannedString&quot;);
     }
     if (isInternal) {
-      imageRecord.group.label("internal");
+      imageRecord.group.label(&quot;internal&quot;);
       if (srcProp === srcAttr) {
-        imageRecord.label("absoluteInternal");
+        imageRecord.label(&quot;absoluteInternal&quot;);
       }
     } else {
-      imageRecord.group.label("external");
+      imageRecord.group.label(&quot;external&quot;);
     }
 
-    if (imgLocation.protocol === 'file:') {
-      imageRecord.group.label("localFile");
+    if (imgLocation.protocol === &#39;file:&#39;) {
+      imageRecord.group.label(&quot;localFile&quot;);
     } else if (imgLocation.protocol !== PROTOCOL){
-      imageRecord.group.label("http-httpsError");
+      imageRecord.group.label(&quot;http-httpsError&quot;);
     }
   }//Close for loop iterating over images
 }//Close function classifyImages
 
 function classifyOther(doc, curPageURL) {
-  const IFRAMES = doc.getElementsByTagName("iframe");
+  const IFRAMES = doc.getElementsByTagName(&quot;iframe&quot;);
   for (const iframe of IFRAMES) {
     const eleRecord = new ElementRecord(curPageURL, iframe);
-    eleRecord.label("iframe");
+    eleRecord.label(&quot;iframe&quot;);
 
     const srcProp = iframe.src;
-    const srcAttr = iframe.getAttribute("src");
+    const srcAttr = iframe.getAttribute(&quot;src&quot;);
     if (srcAttr === null) {
-      eleRecord.group.label("null");
+      eleRecord.group.label(&quot;null&quot;);
       continue;
     }
     const iframeLocation = new URL(srcProp);
@@ -855,24 +855,24 @@ function classifyOther(doc, curPageURL) {
     const isInternal = (iframeSrcHostname === HOSTNAME);
 
     if (!iframe.title) {
-      eleRecord.label("emptyTitle");
+      eleRecord.label(&quot;emptyTitle&quot;);
     }
     if (BANNED_STRINGS.isStringBanned(srcProp)) {
-      eleRecord.label("bannedString");
+      eleRecord.label(&quot;bannedString&quot;);
     }
     if (isInternal) {
-      eleRecord.group.label("internal");
+      eleRecord.group.label(&quot;internal&quot;);
       if (srcProp === srcAttr) {
-        eleRecord.label("absoluteInternal");
+        eleRecord.label(&quot;absoluteInternal&quot;);
       }
     } else {
-      eleRecord.group.label("external");
+      eleRecord.group.label(&quot;external&quot;);
     }
 
-    if (iframeLocation.protocol === 'file:') {
-      eleRecord.group.label("localFile");
+    if (iframeLocation.protocol === &#39;file:&#39;) {
+      eleRecord.group.label(&quot;localFile&quot;);
     } else if (iframeLocation.protocol !== PROTOCOL){
-      eleRecord.group.label("http-httpsError");
+      eleRecord.group.label(&quot;http-httpsError&quot;);
     }
   }//Close for loop iterating over iframes
 }//Close function classifyOther
@@ -904,26 +904,26 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
    * header for information such as the data type of the resource
    * (e.g. text/html vs application/pdf) and use that information to make
    * decisions on how to proceed w/o having to let the entire file be loaded. */
-  const checkRequestHeaders = (pageRecordGroup, request)=>{
+  const checkRequestHeaders = (pageRecordGroup, request)=&gt;{
     /* Checks if the request resolved to a file rather than an HTML document: */
     function findURLExtension(url) {
-      for (let i = url.length - 1; i >= 0; --i) {
-        if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
+      for (let i = url.length - 1; i &gt;= 0; --i) {
+        if (url.charAt(i) === &quot;.&quot;) return url.substring(i+1).toLowerCase();
       }
       return undefined;
     }
-    /* First, check the request's file extension: */
+    /* First, check the request&#39;s file extension: */
     const extension = findURLExtension(request.responseURL);
     const isRecognizedFile = (RECOGNIZED_FILE_TYPES.indexOf(extension) !== -1);
     if (isRecognizedFile) {
-      pageRecordGroup.label("file");
+      pageRecordGroup.label(&quot;file&quot;);
     }
-    /* Then, check the request's content-type: */
-    const contentType = request.getResponseHeader("Content-Type");
-    const validContentType = "text/html";
+    /* Then, check the request&#39;s content-type: */
+    const contentType = request.getResponseHeader(&quot;Content-Type&quot;);
+    const validContentType = &quot;text/html&quot;;
     if (!contentType.startsWith(validContentType)) {
       if (!isRecognizedFile) {
-        pageRecordGroup.label("unknownContentType");
+        pageRecordGroup.label(&quot;unknownContentType&quot;);
       }
       request.resolvedToFile = true;
       request.abort();
@@ -931,12 +931,12 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   };
 
   /* Handle normal, valid page responses: */
-  const normalResponseHandler = (pageRecordGroup, pageURL, pageDOM, request)=>{
+  const normalResponseHandler = (pageRecordGroup, pageURL, pageDOM, request)=&gt;{
     if (!pageDOM) {
       console.error(
-        "Null response from " + pageURL +
-        ". It may be an unrecognized file type." +
-        "\n\tIt was linked-to from " + curPage
+        &quot;Null response from &quot; + pageURL +
+        &quot;. It may be an unrecognized file type.&quot; +
+        &quot;\n\tIt was linked-to from &quot; + curPage
       );
       console.error(request);
       return;
@@ -953,75 +953,75 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   };
 
   /* Handle responses that are errors (e.g. Not Found, Forbidden, etc.): */
-  const errorHandler = (pageRecordGroup, pageURL, request)=>{
+  const errorHandler = (pageRecordGroup, pageURL, request)=&gt;{
     /* If we aborted the request early due to the header telling us the
-     * resource is a file, we shouldn't log another error, as everything
-     * should've already been handled by checkRequestHeaders. */
+     * resource is a file, we shouldn&#39;t log another error, as everything
+     * should&#39;ve already been handled by checkRequestHeaders. */
     if (request.resolvedToFile) return;
     if (request.abortedDueToTimeout) return;
 
     /* Otherwise, something went wrong with the request: */
     if (request.readyState !== 4) {
-      console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", request);
+      console.error(&quot;AN UNIDENTIFIED READYSTATE ERROR OCURRED!&quot;, request);
       throw new Error(
-        "AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(request)
+        &quot;AN UNIDENTIFIED READYSTATE ERROR OCURRED!&quot; + JSON.stringify(request)
       );
     }
 
     const errType = request.status;
     const msgHead =
       `A ${errType} Error occurred when requesting ${pageURL}. `;
-    let msg = "";
+    let msg = &quot;&quot;;
     switch (request.status) {
       case 0:
-        pageRecordGroup.label("redirects");
+        pageRecordGroup.label(&quot;redirects&quot;);
         msg =  `The request to ${pageURL} caused an undefined error. `;
-        msg += "The url probably either redirects to an external site, or is ";
-        msg += "invalid. There may also be a networking issue, or another ";
-        msg += "problem entirely.\nUnfortunately, this script cannot ";
-        msg += "distinguish between those possibilities.";
+        msg += &quot;The url probably either redirects to an external site, or is &quot;;
+        msg += &quot;invalid. There may also be a networking issue, or another &quot;;
+        msg += &quot;problem entirely.\nUnfortunately, this script cannot &quot;;
+        msg += &quot;distinguish between those possibilities.&quot;;
         break;
       case 400:
-        pageRecordGroup.label("badRequest");
+        pageRecordGroup.label(&quot;badRequest&quot;);
         msg =  `${msgHead}That means the request sent to the server was `;
-        msg += "malformed or corrupted.";
+        msg += &quot;malformed or corrupted.&quot;;
         break;
       case 401:
-        pageRecordGroup.label("accessDenied");
+        pageRecordGroup.label(&quot;accessDenied&quot;);
         msg =  `${msgHead}That means access was denied to the client by the `;
-        msg += "server.";
+        msg += &quot;server.&quot;;
         break;
       case 403:
-        pageRecordGroup.label("forbidden");
+        pageRecordGroup.label(&quot;forbidden&quot;);
         msg =  `${msgHead}That means the server considers access to the `;
-        msg += "resource to be absolutely forbidden.";
+        msg += &quot;resource to be absolutely forbidden.&quot;;
         break;
       case 404:
-        pageRecordGroup.label("notFound");
+        pageRecordGroup.label(&quot;notFound&quot;);
         msg = `${msgHead}That means the server could not find the given page.`;
         break;
       case 500:
-        pageRecordGroup.label("internalServiceError");
+        pageRecordGroup.label(&quot;internalServiceError&quot;);
         msg =  `${msgHead}That means that the server encountered some unexpected `;
         msg += `condition which prevented it from fulfilling the request.`;
         break;
       default:
-        console.error("AN UNIDENTIFIED ERROR OCURRED!", request);
+        console.error(&quot;AN UNIDENTIFIED ERROR OCURRED!&quot;, request);
         return;
     }
-    console.error(msg + "\n\tLinked-to from: " + curPage);
+    console.error(msg + &quot;\n\tLinked-to from: &quot; + curPage);
   };
 
   /* When the request resolves, regardless of whether the response was an error,
    * mark the request as complete and decrement the request counter: */
-  const onComplete = (request)=>{
+  const onComplete = (request)=&gt;{
     request.callbackComplete = true;
     requestCounter.decrement();
   };
 
   console.log(`Checking links found on: ${curPage}`);
   for (const linkRecord of RecordList) {
-    validateType(linkRecord, ElementRecord, "Items in RecordList");
+    validateType(linkRecord, ElementRecord, &quot;Items in RecordList&quot;);
     const URLOfPageToVisit = urlRemoveAnchor(linkRecord.element);
 
     /* The RecordGroup for linkRecord: */
@@ -1029,14 +1029,14 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
 
     /* Check if visiting this link is allowed by the robots.txt handler: */
     if (!robotsTxt.isUrlAllowed(URLOfPageToVisit)) {
-      pageData.label("robotsDisallowed");
+      pageData.label(&quot;robotsDisallowed&quot;);
       continue;
     }
     /* Do not re-analyze a page we have already visited: */
-    if (pageData.isLabelled("visited")) {
+    if (pageData.isLabelled(&quot;visited&quot;)) {
       continue;
     }
-    pageData.label("visited");
+    pageData.label(&quot;visited&quot;);
 
     /**
      * Making the HTTP Request:
@@ -1055,7 +1055,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
       if (httpRequest.readyState !== XMLHttpRequest.DONE) {
         return;
       }
-      if (httpRequest.status === 200) { //Code for "Good"
+      if (httpRequest.status === 200) { //Code for &quot;Good&quot;
         normalResponseHandler(
           pageData, URLOfPageToVisit,          //Loop Parameters
           httpRequest.responseXML, httpRequest //Request Parameters
@@ -1068,8 +1068,8 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
       }
       onComplete(httpRequest);
     };
-    httpRequest.open("GET", URLOfPageToVisit);
-    httpRequest.responseType = "document";
+    httpRequest.open(&quot;GET&quot;, URLOfPageToVisit);
+    httpRequest.responseType = &quot;document&quot;;
 
     httpRequest.send();
     httpRequest.sent = true;
@@ -1097,15 +1097,15 @@ function cutOff(str, maxLen, breakStr) {
   let cutOffPoint = maxLen;
 
   /* If the string is already shorter than maxLen: */
-  if (cutOffPoint > str.length) return str;
+  if (cutOffPoint &gt; str.length) return str;
 
   /* If no break-string is given, cutOffPoint right on the character: */
   if (breakStr === undefined) return str.substring(0, cutOffPoint);
 
   cutOffPoint = str.lastIndexOf(breakStr, cutOffPoint);
 
-  /* If the breakStr character can't be found, return an empty string: */
-  if (cutOffPoint === -1) return "";
+  /* If the breakStr character can&#39;t be found, return an empty string: */
+  if (cutOffPoint === -1) return &quot;&quot;;
   return str.substring(0, cutOffPoint);
 }
 
@@ -1134,71 +1134,71 @@ function nullDefault(possiblyNullVal, defaultValue) {
 function makeAutoCompleteList(
   inputEle,
   suggestions,
-  sugToEleMap = 'li',
-  listEle = 'ul'
+  sugToEleMap = &#39;li&#39;,
+  listEle = &#39;ul&#39;
 ) {
   if (!(inputEle instanceof HTMLInputElement)) {
-    throw new TypeError("inputEle must be an HTMLInputElement.");
+    throw new TypeError(&quot;inputEle must be an HTMLInputElement.&quot;);
   }
-  const getSugEle = (sugStr, extraMetadata = {})=>{
+  const getSugEle = (sugStr, extraMetadata = {})=&gt;{
     const defaultMetadata = Object.freeze({
       defaultContents() {
         if (this.showingAll) {
           return sugStr;
         }
         return this.tokens.map(
-          tok => tok.match ? makeElement('strong', tok.str) : tok.str
+          tok =&gt; tok.match ? makeElement(&#39;strong&#39;, tok.str) : tok.str
         );
       },
     });
     const metadata = Object.assign({}, defaultMetadata, extraMetadata);
-    if (typeof sugToEleMap === 'string') {
-      /* By default, just return a <li> showing the suggestion with any matching
+    if (typeof sugToEleMap === &#39;string&#39;) {
+      /* By default, just return a &lt;li&gt; showing the suggestion with any matching
        * characters bolded: */
       return makeElement(sugToEleMap, metadata.defaultContents(), {
-        tabIndex: '0', //Allow tab navigation to this element in normal order
-        'data-value': sugStr
+        tabIndex: &#39;0&#39;, //Allow tab navigation to this element in normal order
+        &#39;data-value&#39;: sugStr
       });
     }
     if (sugToEleMap instanceof Map) {
       return sugToEleMap.get(sugStr);
     }
-    if (typeof sugToEleMap === 'function') {
+    if (typeof sugToEleMap === &#39;function&#39;) {
       return sugToEleMap(sugStr, metadata);
     }
-    if (typeof sugToEleMap === 'object' && sugToEleMap !== null) {
+    if (typeof sugToEleMap === &#39;object&#39; &amp;&amp; sugToEleMap !== null) {
       return sugToEleMap[sugStr];
     }
-    throw new TypeError("sugToEleMap must be a Map, function, object, or string.");
+    throw new TypeError(&quot;sugToEleMap must be a Map, function, object, or string.&quot;);
   };
-  const allSuggestionEles = ()=> {
-    return suggestions.map(sug => getSugEle(sug, {showingAll: true}));
+  const allSuggestionEles = ()=&gt; {
+    return suggestions.map(sug =&gt; getSugEle(sug, {showingAll: true}));
   };
 
   /* The outer container element for the list of suggestions: */
-  const sugList = (()=>{
-    if (typeof listEle === 'string') {
-      return makeElement(listEle, undefined, {class: 'hidden'});
+  const sugList = (()=&gt;{
+    if (typeof listEle === &#39;string&#39;) {
+      return makeElement(listEle, undefined, {class: &#39;hidden&#39;});
     }
     if (!(listEle instanceof HTMLElement)) {
-      throw new TypeError("listEle must be undefined, a string or an HTMLElement!");
+      throw new TypeError(&quot;listEle must be undefined, a string or an HTMLElement!&quot;);
     }
     return listEle;
   })();
   appendChildren(sugList, allSuggestionEles());
   if (inputEle.id) {
-    sugList.setAttribute('data-for', inputEle.id);
+    sugList.setAttribute(&#39;data-for&#39;, inputEle.id);
   }
 
   /* Shorthand function for hiding the suggestion list: */
-  const hideSugListFocusInput = (detail)=>{
+  const hideSugListFocusInput = (detail)=&gt;{
     inputEle.focus();
-    sugList.classList.add('hidden');
-    sugList.dispatchEvent(new CustomEvent('hide', {detail}));
+    sugList.classList.add(&#39;hidden&#39;);
+    sugList.dispatchEvent(new CustomEvent(&#39;hide&#39;, {detail}));
   };
-  const showSugList = (detail)=>{
-    sugList.classList.remove('hidden');
-    sugList.dispatchEvent(new CustomEvent('show', {detail}));
+  const showSugList = (detail)=&gt;{
+    sugList.classList.remove(&#39;hidden&#39;);
+    sugList.dispatchEvent(new CustomEvent(&#39;show&#39;, {detail}));
   };
 
   /* Callback for updating the suggestion list: */
@@ -1206,14 +1206,14 @@ function makeAutoCompleteList(
     clearChildren(sugList);
     const userPattern = inputEle.value;
 
-    const [matchingSugEles, results] = (()=> {
+    const [matchingSugEles, results] = (()=&gt; {
       if (userPattern.length === 0) {
         return [allSuggestionEles(), suggestions];
       }
       /* Show a list of matching suggestions, with matching characters bolded: */
       const fuzzySearchResults = (suggestions
-        .map(sug => fuzzySearchLex(userPattern, sug))
-        .filter(fuzzyRes => !fuzzyRes.hasOwnProperty('error'))
+        .map(sug =&gt; fuzzySearchLex(userPattern, sug))
+        .filter(fuzzyRes =&gt; !fuzzyRes.hasOwnProperty(&#39;error&#39;))
       );
       /* If there are no matches, show a list of all suggestions: */
       if (fuzzySearchResults.length === 0) {
@@ -1221,34 +1221,34 @@ function makeAutoCompleteList(
       }
       /* If there are matches, sort them so the closest matches are on top: */
       return [(fuzzySearchResults
-        .sort((res1, res2) => res1.insertions - res2.insertions)
-        .map(fuzzyRes => getSugEle(fuzzyRes.refStr, fuzzyRes))
-      ), fuzzySearchResults.map(res => res.refStr)];
+        .sort((res1, res2) =&gt; res1.insertions - res2.insertions)
+        .map(fuzzyRes =&gt; getSugEle(fuzzyRes.refStr, fuzzyRes))
+      ), fuzzySearchResults.map(res =&gt; res.refStr)];
     })();
     appendChildren(sugList, matchingSugEles);
     showSugList({
-      reason: 'update',
+      reason: &#39;update&#39;,
       results
     });
   }
 
   /* Events for navigating and selecting items off of the suggestion list: */
-  sugList.addEventListener("click", (e)=> {
+  sugList.addEventListener(&quot;click&quot;, (e)=&gt; {
     /* If the user clicked on the list but not a selection (e.g. by clicking the
      * border of the list element), do nothing: */
     if (e.target === sugList) return;
 
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     const eleValue = nullDefault(
-      targetSuggestion.getAttribute('data-value'),
+      targetSuggestion.getAttribute(&#39;data-value&#39;),
       targetSuggestion.innerText
     );
 
     /* If the element has no set data-value attribute (e.g. a custom element was
-     * given via the sugToEleMap parameter), use the element's innerText: */
+     * given via the sugToEleMap parameter), use the element&#39;s innerText: */
     inputEle.value = eleValue;
     hideSugListFocusInput({
-      reason: 'click',
+      reason: &#39;click&#39;,
       selectionMade: true,
       selectionText: eleValue,
       selectionElement: targetSuggestion,
@@ -1256,7 +1256,7 @@ function makeAutoCompleteList(
     });
   });
   /* Follow the cursor with the focused suggestion: */
-  sugList.addEventListener('mousemove', (e)=>{
+  sugList.addEventListener(&#39;mousemove&#39;, (e)=&gt;{
     /* If the pointed-to element is already focused, do nothing: */
     if (
       e.target === sugList
@@ -1266,26 +1266,26 @@ function makeAutoCompleteList(
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     targetSuggestion.focus();
   });
-  sugList.addEventListener("keydown", (e)=> {
+  sugList.addEventListener(&quot;keydown&quot;, (e)=&gt; {
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
-    if (e.key === "Enter")  {
+    if (e.key === &quot;Enter&quot;)  {
       const eleValue = nullDefault(
-        targetSuggestion.getAttribute('data-value'),
+        targetSuggestion.getAttribute(&#39;data-value&#39;),
         targetSuggestion.innerText
       );
       inputEle.value = eleValue;
       hideSugListFocusInput({
-        reason: 'enter-in-list',
+        reason: &#39;enter-in-list&#39;,
         selectionMade: true,
         selectionText: eleValue,
         selectionElement: targetSuggestion,
         sourceEvent: e
       });
-    } else if (e.key === "ArrowUp") {
+    } else if (e.key === &quot;ArrowUp&quot;) {
       const prevSug = targetSuggestion.previousSibling;
       if (prevSug === null) {
         hideSugListFocusInput({
-          reason: 'close-up',
+          reason: &#39;close-up&#39;,
           selectionMade: false,
           sourceEvent: e
         });
@@ -1293,15 +1293,15 @@ function makeAutoCompleteList(
         prevSug.focus();
       }
       e.preventDefault();
-    } else if (e.key === "ArrowDown") {
+    } else if (e.key === &quot;ArrowDown&quot;) {
       const nextSug = targetSuggestion.nextSibling;
       if (nextSug !== null) {
         nextSug.focus();
         e.preventDefault();
       }
-    } else if (e.key === "Escape") {
+    } else if (e.key === &quot;Escape&quot;) {
       hideSugListFocusInput({
-        reason: 'close-escape',
+        reason: &#39;close-escape&#39;,
         selectionMade: false,
         sourceEvent: e
       });
@@ -1309,24 +1309,24 @@ function makeAutoCompleteList(
   });
   /* Events for populating the suggetsion list and navigating to and from it via
    * the input element: */
-  inputEle.addEventListener('input', updateSuggestions);
-  inputEle.addEventListener('mousedown', (e)=>{
+  inputEle.addEventListener(&#39;input&#39;, updateSuggestions);
+  inputEle.addEventListener(&#39;mousedown&#39;, (e)=&gt;{
     /* If the input is clicked while already focused, show the list: */
     if (
       inputEle === document.activeElement
-      && sugList.classList.contains('hidden')
+      &amp;&amp; sugList.classList.contains(&#39;hidden&#39;)
     ) {
       showSugList({
-        reason: 'open-click',
+        reason: &#39;open-click&#39;,
         sourceEvent: e
       });
     }
   });
-  inputEle.addEventListener('keydown', (e)=>{
-    if (sugList.classList.contains('hidden')) {
-      if (e.key === 'ArrowDown') {
+  inputEle.addEventListener(&#39;keydown&#39;, (e)=&gt;{
+    if (sugList.classList.contains(&#39;hidden&#39;)) {
+      if (e.key === &#39;ArrowDown&#39;) {
         showSugList({
-          reason: 'open-down',
+          reason: &#39;open-down&#39;,
           sourceEvent: e
         });
         sugList.firstChild.focus();
@@ -1335,15 +1335,15 @@ function makeAutoCompleteList(
     } else {
       if (sugList.firstChild === null) return;
       switch (e.key) {
-        case 'Enter': {
+        case &#39;Enter&#39;: {
           const targetSuggestion = sugList.firstChild;
           const eleValue = nullDefault(
-            targetSuggestion.getAttribute('data-value'),
+            targetSuggestion.getAttribute(&#39;data-value&#39;),
             targetSuggestion.innerText
           );
           inputEle.value = eleValue;
           hideSugListFocusInput({
-            reason: 'enter-in-input',
+            reason: &#39;enter-in-input&#39;,
             selectionMade: true,
             selectionText: eleValue,
             selectionElement: targetSuggestion,
@@ -1351,22 +1351,22 @@ function makeAutoCompleteList(
           });
           break;
         }
-        case 'ArrowDown':
+        case &#39;ArrowDown&#39;:
           sugList.firstChild.focus();
           e.preventDefault();
           break;
-        case 'Backspace':
+        case &#39;Backspace&#39;:
           if (inputEle.value.length === 0) {
             hideSugListFocusInput({
-              reason: 'close-backspace',
+              reason: &#39;close-backspace&#39;,
               selectionMade: false,
               sourceEvent: e
             });
           }
           break;
-        case 'Escape':
+        case &#39;Escape&#39;:
           hideSugListFocusInput({
-            reason: 'close-escape-in-input',
+            reason: &#39;close-escape-in-input&#39;,
             selectionMade: false,
             sourceEvent: e
           });
@@ -1377,16 +1377,16 @@ function makeAutoCompleteList(
     }
   });
   /* Allow for the dropdown to be closed by clicking off of it: */
-  document.addEventListener('mousedown', (e)=>{
+  document.addEventListener(&#39;mousedown&#39;, (e)=&gt;{
     const selection = getAncestorWithParent(e.target, sugList);
-    if (selection === null && e.target !== inputEle) sugList.hide('click-off');
+    if (selection === null &amp;&amp; e.target !== inputEle) sugList.hide(&#39;click-off&#39;);
   });
   /* Add utility functions for programmatically manipulating the list: */
   Object.assign(sugList, {
-    show(reason = 'function-call') {
+    show(reason = &#39;function-call&#39;) {
       showSugList({reason});
     },
-    hide(reason = 'function-call') {
+    hide(reason = &#39;function-call&#39;) {
       hideSugListFocusInput({
         reason,
         selectionMade: false,
@@ -1409,23 +1409,23 @@ function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
   const opts = Object.assign({}, defaultOptions, extraOpts);
 
   /* Case-(in)sensitive string comparison: */
-  const strComp = (()=>{
-    const sensitivity = (opts.caseSensitive) ? "case" : "base";
-    const compOpts = {usage: 'search', sensitivity};
-    return (s1, s2) => s1.localeCompare(s2, undefined, compOpts);
+  const strComp = (()=&gt;{
+    const sensitivity = (opts.caseSensitive) ? &quot;case&quot; : &quot;base&quot;;
+    const compOpts = {usage: &#39;search&#39;, sensitivity};
+    return (s1, s2) =&gt; s1.localeCompare(s2, undefined, compOpts);
   })();
 
   const ptrnLen = ptrn.length;
   const refLen = refStr.length;
 
-  const makeErrorObj = (errorMessage, errorCode)=>{
+  const makeErrorObj = (errorMessage, errorCode)=&gt;{
     return {error: true, errorMessage, errorCode};
   };
   if (ptrnLen === 0) {
-    return makeErrorObj("Empty Pattern", -1);
+    return makeErrorObj(&quot;Empty Pattern&quot;, -1);
   }
-  if (ptrnLen > refLen) {
-    return makeErrorObj("Pattern is longer than reference string.", -2);
+  if (ptrnLen &gt; refLen) {
+    return makeErrorObj(&quot;Pattern is longer than reference string.&quot;, -2);
   }
   const tokens = [];
   let currentTokenStartIndex = 0;
@@ -1433,7 +1433,7 @@ function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
   let refIndex = 1;
   let ptrnIndex = (currentTokenIsMatch) ? 1 : 0;
   let insertions = (currentTokenIsMatch) ? 0 : 1;
-  const breakToken = ()=>{
+  const breakToken = ()=&gt;{
     tokens.push({
       str: refStr.substring(currentTokenStartIndex, refIndex),
       match: currentTokenIsMatch
@@ -1441,13 +1441,13 @@ function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
     currentTokenStartIndex = refIndex;
     currentTokenIsMatch = !currentTokenIsMatch;
   };
-  while (ptrnIndex < ptrnLen) {
+  while (ptrnIndex &lt; ptrnLen) {
     if (strComp(ptrn.charAt(ptrnIndex), refStr.charAt(refIndex)) === 0) {
       ++ptrnIndex;
       if (!currentTokenIsMatch) breakToken();
     } else {
-      if (refIndex >= refLen) {
-        return makeErrorObj("Pattern doesn't match reference string.", -3);
+      if (refIndex &gt;= refLen) {
+        return makeErrorObj(&quot;Pattern doesn&#39;t match reference string.&quot;, -3);
       }
       insertions += 1;
       if (currentTokenIsMatch) breakToken();
@@ -1472,49 +1472,49 @@ function presentResults() {
   const ModalBuffer = document.createDocumentFragment();
 
   /* Create button for minimizing modal so that the site can be used normally:
-   * (The text is a minimize symbol, resembling "_")*/
-  const minimizeButton = makeElement("button", "🗕", {id: "crlr-min"});
-  minimizeButton.type = "button";
-  minimizeButton.onclick = () => MODAL.classList.toggle("minimized");
+   * (The text is a minimize symbol, resembling &quot;_&quot;)*/
+  const minimizeButton = makeElement(&quot;button&quot;, &quot;🗕&quot;, {id: &quot;crlr-min&quot;});
+  minimizeButton.type = &quot;button&quot;;
+  minimizeButton.onclick = () =&gt; MODAL.classList.toggle(&quot;minimized&quot;);
 
   /* Make the modal header, containing the minimize button, the title, etc.: */
-  let headerStr = "Results";
-  headerStr += (crawlTerminatedBeforeCompletion) ? " (incomplete):" : ":";
-  const modalTitle = makeElement("h1", headerStr, {id: "crlr-title"});
-  const modalHeaderMsg = makeElement("div", modalTitle,
+  let headerStr = &quot;Results&quot;;
+  headerStr += (crawlTerminatedBeforeCompletion) ? &quot; (incomplete):&quot; : &quot;:&quot;;
+  const modalTitle = makeElement(&quot;h1&quot;, headerStr, {id: &quot;crlr-title&quot;});
+  const modalHeaderMsg = makeElement(&quot;div&quot;, modalTitle,
     {
-      id: "crlr-header-msg",
-      class: "flex-row"
+      id: &quot;crlr-header-msg&quot;,
+      class: &quot;flex-row&quot;
     }
   );
-  const modalHeader = makeElement("header", [minimizeButton, modalHeaderMsg],
+  const modalHeader = makeElement(&quot;header&quot;, [minimizeButton, modalHeaderMsg],
     {
-      id: "crlr-header",
-      class: "flex-row"
+      id: &quot;crlr-header&quot;,
+      class: &quot;flex-row&quot;
     }
   );
   ModalBuffer.appendChild(modalHeader);
 
   /* Make the modal content, for presenting crawl data and controls for viewing
    * that data: */
-  const modalContent = makeElement("div", undefined, {id: "crlr-content"});
+  const modalContent = makeElement(&quot;div&quot;, undefined, {id: &quot;crlr-content&quot;});
   ModalBuffer.appendChild(modalContent);
 
   /* Make textbox and suggestion-list for specifying which label to show data
    * for in the modal: */
-  const inputTextBox = makeElement("input", undefined, {
-    id: "crlr-input-textbox",
-    type: "text",
-    value: "link"
+  const inputTextBox = makeElement(&quot;input&quot;, undefined, {
+    id: &quot;crlr-input-textbox&quot;,
+    type: &quot;text&quot;,
+    value: &quot;link&quot;
   });
 
-  const [suggestions, emptySugs] = (()=>{
+  const [suggestions, emptySugs] = (()=&gt;{
     const keys = [];
     const emptySet = new Set();
     /* Iterate over Group labels, then iterate over Element labels:
-     * (The order doesn't actually matter.) */
+     * (The order doesn&#39;t actually matter.) */
     let labelTable = RecordGroup.LabelTable;
-    const checkLabel = (label)=>{
+    const checkLabel = (label)=&gt;{
       keys.push(label);
       if (labelTable[label] === undefined) emptySet.add(label);
     };
@@ -1524,85 +1524,85 @@ function presentResults() {
     return [keys, emptySet];
   })();
 
-  const rowElementFromLabel = (sugStr, metadata)=>{
-    const sugColumn = makeElement('td', metadata.defaultContents(), {
-      class: 'crlr-suggestion'
+  const rowElementFromLabel = (sugStr, metadata)=&gt;{
+    const sugColumn = makeElement(&#39;td&#39;, metadata.defaultContents(), {
+      class: &#39;crlr-suggestion&#39;
     });
     const isEmpty = emptySugs.has(sugStr);
-    const emptyColumn = makeElement('td', isEmpty ? "(empty)" : "", {
-      class: 'crlr-suggestion-info'
+    const emptyColumn = makeElement(&#39;td&#39;, isEmpty ? &quot;(empty)&quot; : &quot;&quot;, {
+      class: &#39;crlr-suggestion-info&#39;
     });
-    const row = makeElement('tr', [sugColumn, emptyColumn], {
-      tabIndex: '0', //Allow tab navigation to this element in normal order
-      'data-value': sugStr
+    const row = makeElement(&#39;tr&#39;, [sugColumn, emptyColumn], {
+      tabIndex: &#39;0&#39;, //Allow tab navigation to this element in normal order
+      &#39;data-value&#39;: sugStr
     });
-    row.classList.add('crlr-suggestion-row');
-    if (isEmpty) row.classList.add('empty-suggestion');
+    row.classList.add(&#39;crlr-suggestion-row&#39;);
+    if (isEmpty) row.classList.add(&#39;empty-suggestion&#39;);
     return row;
   };
   const sugList = makeAutoCompleteList(
     inputTextBox,
     suggestions,
     rowElementFromLabel, //Function mapping a suggestion to an element
-    'table' //The tagname of the outer, container element
+    &#39;table&#39; //The tagname of the outer, container element
   );
-  sugList.id = 'crlr-suggestions';
+  sugList.id = &#39;crlr-suggestions&#39;;
 
   /* A container for the textbox and suggestion list, for styling purposes: */
-  const sugContainer = makeElement('div', [inputTextBox, sugList], {
-    id: 'crlr-textbox-suggestions-container' //oof
+  const sugContainer = makeElement(&#39;div&#39;, [inputTextBox, sugList], {
+    id: &#39;crlr-textbox-suggestions-container&#39; //oof
   });
 
   const clearInputButton = makeElement(
-    "button",
-    "✕", //"x" cross symbol
+    &quot;button&quot;,
+    &quot;✕&quot;, //&quot;x&quot; cross symbol
     {
-      id: "crlr-input-clear",
-      "data-for": "crlr-input-textbox"
+      id: &quot;crlr-input-clear&quot;,
+      &quot;data-for&quot;: &quot;crlr-input-textbox&quot;
     }
   );
   clearInputButton.addEventListener(
-    'click',
+    &#39;click&#39;,
     function clearInput() {
-      inputTextBox.value = "";
+      inputTextBox.value = &quot;&quot;;
       sugList.update();
       inputTextBox.focus();
     }
   );
   const logObjInputContainer = makeElement(
-    "div",
+    &quot;div&quot;,
     [clearInputButton, sugContainer],
-    {id: "crlr-textbox-controls"}
+    {id: &quot;crlr-textbox-controls&quot;}
   );
 
   const altFormatCheckBox = makeElement(
-    "input",
+    &quot;input&quot;,
     undefined,
     {
-      id: "crlr-data-alt-format-checkbox",
-      type: "checkbox",
+      id: &quot;crlr-data-alt-format-checkbox&quot;,
+      type: &quot;checkbox&quot;,
     }
   );
   const checkBoxLabel = makeElement(
-    "label",
-    "Invert output mapping?",
+    &quot;label&quot;,
+    &quot;Invert output mapping?&quot;,
     {
-      for: "crlr-data-alt-format-checkbox"
+      for: &quot;crlr-data-alt-format-checkbox&quot;
     }
   );
   const inputRow = makeElement(
-    "div",
+    &quot;div&quot;,
     [logObjInputContainer, altFormatCheckBox, checkBoxLabel],
     {
-      id: "crlr-inputs",
-      class: "flex-row"
+      id: &quot;crlr-inputs&quot;,
+      class: &quot;flex-row&quot;
     }
   );
 
   /* Use as a mouse-down event on any element to prevent higlighting via
    * double- or triple-clicking. */
   function preventClickToHighlight(event) {
-    if (event.detail > 1) {
+    if (event.detail &gt; 1) {
       event.preventDefault();
     }
   }
@@ -1610,19 +1610,19 @@ function presentResults() {
   checkBoxLabel    .onmousedown = preventClickToHighlight;
 
   /* Create containers for output: */
-  const pre = makeElement("pre");
-  const preCont = makeElement("div", pre, {class: "crlr-output"});
-  const dlLinkPara = makeElement("p");
+  const pre = makeElement(&quot;pre&quot;);
+  const preCont = makeElement(&quot;div&quot;, pre, {class: &quot;crlr-output&quot;});
+  const dlLinkPara = makeElement(&quot;p&quot;);
   appendChildren(
     modalContent,
     [inputRow, preCont, dlLinkPara]
   );
 
-  /* Returns an object which maps a page's href to an array of hrefs/srcs of
+  /* Returns an object which maps a page&#39;s href to an array of hrefs/srcs of
    * elements on that page which match the given label. If the invertMapping
-   * parameter is truthy, that mapping is inverted, so that an element's href/
+   * parameter is truthy, that mapping is inverted, so that an element&#39;s href/
    * src maps to an array of documents containing that element: */
-  const collectDataForLabel = (label, invertMapping)=>{
+  const collectDataForLabel = (label, invertMapping)=&gt;{
     const recordList = getAllRecordsLabelled(label);
     const labelData = Object.create(null);
     if (recordList !== null) {
@@ -1630,17 +1630,17 @@ function presentResults() {
         let key, val;
 
         /* Map from from a given URL to URLs of pages which contain a link whose
-         * HREF matches the given URL (i.e. link -> [pages]): */
+         * HREF matches the given URL (i.e. link -&gt; [pages]): */
         if (invertMapping) {
           /* Use the property here, so that absolute and relative elements
-           * correspond to the same key. If the label is anchor, don't remove
+           * correspond to the same key. If the label is anchor, don&#39;t remove
            * the anchor from hrefs of links: */
-          const retainAnchor = (label === "anchor");
+          const retainAnchor = (label === &quot;anchor&quot;);
           key = getHrefOrSrcProp(record.element, retainAnchor);
           val = record.document;
         }
         /* Map from page URL to HREFs of links on that page
-         * (i.e. page -> [links]): */
+         * (i.e. page -&gt; [links]): */
         else {
           key = record.document;
 
@@ -1664,43 +1664,43 @@ function presentResults() {
       /* Main JSON Preview output: */
       const objForLabel = collectDataForLabel(label, usingAltFormat);
       const objJSON = JSON.stringify(objForLabel, null, 2);
-      const previewTooLong = (objJSON.length > MAX_OUTPUT_LENGTH);
+      const previewTooLong = (objJSON.length &gt; MAX_OUTPUT_LENGTH);
       let objJSONPreview = objJSON;
       if (previewTooLong) {
-        objJSONPreview = cutOff(objJSON, MAX_OUTPUT_LENGTH, "\n");
-        objJSONPreview += "\n...";
+        objJSONPreview = cutOff(objJSON, MAX_OUTPUT_LENGTH, &quot;\n&quot;);
+        objJSONPreview += &quot;\n...&quot;;
       }
       pre.innerHTML = objJSONPreview;
 
       /* Prepare data for the download link and the text around it: */
-      let beforeLinkText = "";
+      let beforeLinkText = &quot;&quot;;
       let linkText;
-      let afterLinkText = "";
+      let afterLinkText = &quot;&quot;;
       if (previewTooLong) {
-        beforeLinkText =  "Note that the data shown above is only a preview, ";
-        beforeLinkText += "as the full data was too long. ";
-        linkText = "Click here";
-        afterLinkText = " to download the full JSON file.";
+        beforeLinkText =  &quot;Note that the data shown above is only a preview, &quot;;
+        beforeLinkText += &quot;as the full data was too long. &quot;;
+        linkText = &quot;Click here&quot;;
+        afterLinkText = &quot; to download the full JSON file.&quot;;
       }
       else {
-        linkText = "Download JSON";
+        linkText = &quot;Download JSON&quot;;
       }
 
-      const blob = new Blob([objJSON], {type: 'application/json'});
+      const blob = new Blob([objJSON], {type: &#39;application/json&#39;});
       const url = URL.createObjectURL(blob);
 
-      let downloadName = window.location.hostname.replace(/^www\./i, "");
-      downloadName += "_" + label;
-      if (crawlTerminatedBeforeCompletion) downloadName += "_(INCOMPLETE)";
-      downloadName +=".json";
+      let downloadName = window.location.hostname.replace(/^www\./i, &quot;&quot;);
+      downloadName += &quot;_&quot; + label;
+      if (crawlTerminatedBeforeCompletion) downloadName += &quot;_(INCOMPLETE)&quot;;
+      downloadName +=&quot;.json&quot;;
 
       const dlLink = makeElement(
-        "a",
+        &quot;a&quot;,
         linkText,
         {
           href: url,
           download: downloadName,
-          class: "crlr-download"
+          class: &quot;crlr-download&quot;
         }
       );
       clearChildren(dlLinkPara);
@@ -1711,9 +1711,9 @@ function presentResults() {
     return function updateOutput() {
       const wantedLabel = inputTextBox.value;
 
-      /* If the user has not inputted a valid label, don't change the currently
+      /* If the user has not inputted a valid label, don&#39;t change the currently
        * displayed data (they may be in the middle of typing): */
-      if (!ELEMENT_LABELS.has(wantedLabel) && !GROUP_LABELS.has(wantedLabel)) {
+      if (!ELEMENT_LABELS.has(wantedLabel) &amp;&amp; !GROUP_LABELS.has(wantedLabel)) {
         return;
       }
       usingAltFormat = altFormatCheckBox.checked;
@@ -1724,19 +1724,19 @@ function presentResults() {
   /* Call the function immediately so that the data for the default label
    * is displayed immediately: */
   updateOutput();
-  inputTextBox.addEventListener("input", updateOutput);
-  sugList.addEventListener('hide', (e)=>{
+  inputTextBox.addEventListener(&quot;input&quot;, updateOutput);
+  sugList.addEventListener(&#39;hide&#39;, (e)=&gt;{
     if (e.detail.selectionMade) updateOutput();
   });
-  altFormatCheckBox.addEventListener("change", updateOutput);
+  altFormatCheckBox.addEventListener(&quot;change&quot;, updateOutput);
 
   /* Add how long the crawler took to the header: */
   const endTime = performance.now();
   const runningTime = Math.round((endTime - startTime)/10)/100;
   const timeInfoEle = makeElement(
-    "p",
+    &quot;p&quot;,
     `(Crawling took ${runningTime} seconds)`,
-    {id: "crlr-time"}
+    {id: &quot;crlr-time&quot;}
   );
   modalHeaderMsg.appendChild(timeInfoEle);
 
@@ -1772,15 +1772,15 @@ function RobotsTxt() {
     /* Do allow and disallow statements in this block apply to us? I.e. are they
      * preceded by a user-agent statement which matches us? */
     let validUserAgentSection = true;
-    for (let i = 0, len = lines.length; i < len; ++i) {
+    for (let i = 0, len = lines.length; i &lt; len; ++i) {
       const line = lines[i].trim();
 
       /* Skip empty and comment lines: */
-      if (line.length === 0 || line.charAt(0) === "#") continue;
+      if (line.length === 0 || line.charAt(0) === &quot;#&quot;) continue;
 
-      /* Split the line by the first colon ":": */
+      /* Split the line by the first colon &quot;:&quot;: */
       const parsedLine = (function() {
-        const splitPoint = line.indexOf(":");
+        const splitPoint = line.indexOf(&quot;:&quot;);
         if (splitPoint === -1) {
           return undefined;
         }
@@ -1789,19 +1789,19 @@ function RobotsTxt() {
         return [firstHalf, secondHalf];
       }());
       if (parsedLine === undefined) {
-        console.warn(`Don't understand: "${line}"`);
+        console.warn(`Don&#39;t understand: &quot;${line}&quot;`);
       }
       const clauseType = parsedLine[0].trim().toLowerCase();
       const clauseValue = parsedLine[1].trim();
 
       /* Check for sitemaps before checking the user agent so that they are always
        * visible to us: */
-      if (clauseType === "sitemap") {
+      if (clauseType === &quot;sitemap&quot;) {
         sitemap.push(clauseValue);
       }
       /* Make sure the user agent matches this crawler: */
-      else if (clauseType === "user-agent") {
-        validUserAgentSection = (clauseValue === "*");
+      else if (clauseType === &quot;user-agent&quot;) {
+        validUserAgentSection = (clauseValue === &quot;*&quot;);
       }
       /* Skip the remaining section until a matching user-agent directive is
        * found: */
@@ -1810,20 +1810,20 @@ function RobotsTxt() {
       }
       /* If the line is a disallow clause, add the pattern to the array of
        * disallowed patterns: */
-      else if (clauseType === "disallow") {
+      else if (clauseType === &quot;disallow&quot;) {
         /* An empty disallow string is considered equal to a global allow. */
-        if (clauseValue === "") {
-          allowed.push("/");
+        if (clauseValue === &quot;&quot;) {
+          allowed.push(&quot;/&quot;);
         } else {
           disallowed.push(clauseValue);
         }
       }
       /* If the line is an allow clause, add the pattern to the array of
        * allowed patterns: */
-      else if (clauseType === "allow") {
+      else if (clauseType === &quot;allow&quot;) {
         allowed.push(clauseValue);
       } else {
-        console.warn(`Unknown clause: "${line}"`);
+        console.warn(`Unknown clause: &quot;${line}&quot;`);
       }
     }
     return {
@@ -1836,12 +1836,12 @@ function RobotsTxt() {
   /* @Static */
   this.matchesPattern = function (str, basePattern) {
     let parsedPattern = basePattern;
-    /* If a pattern ends in "$", the string must end with the pattern to match:
+    /* If a pattern ends in &quot;$&quot;, the string must end with the pattern to match:
      *
-     * E.G. "/*.php$" will match "/files/documents/letter.php" but
-     * won't match "/files/my.php.data/settings.txt". */
+     * E.G. &quot;/*.php$&quot; will match &quot;/files/documents/letter.php&quot; but
+     * won&#39;t match &quot;/files/my.php.data/settings.txt&quot;. */
     const REQUIRE_END_WITH_PATTERN =
-        (parsedPattern.charAt(parsedPattern.length-1) === "$");
+        (parsedPattern.charAt(parsedPattern.length-1) === &quot;$&quot;);
     if (REQUIRE_END_WITH_PATTERN) {
       /* Remove the $ character from the pattern: */
       parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
@@ -1850,21 +1850,21 @@ function RobotsTxt() {
     /* Removing trailing asterisks, which are extraneous: */
     for (let i = parsedPattern.length-1; /*@noConditional*/; --i) {
       /* If the entire pattern is asterisks, then anything will match: */
-      if (i <= 0) return true;
+      if (i &lt;= 0) return true;
 
-      if (parsedPattern.charAt(i) !== "*") {
+      if (parsedPattern.charAt(i) !== &quot;*&quot;) {
         parsedPattern = parsedPattern.substr(0, i+1);
         break;
       }
     }
 
-    const patternSections = parsedPattern.split("*");
+    const patternSections = parsedPattern.split(&quot;*&quot;);
     let patternIndex = 0;
-    for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
+    for (let strIndex = 0, len = str.length; strIndex &lt; len; /*@noIncrement*/) {
       const subPat = patternSections[patternIndex];
 
       /*Skip empty patterns: */
-      if (subPat === "") {
+      if (subPat === &quot;&quot;) {
         ++patternIndex;
         continue;
       }
@@ -1872,7 +1872,7 @@ function RobotsTxt() {
         ++patternIndex;
         strIndex += subPat.length;
 
-        /* If we've reached the end of the pattern: */
+        /* If we&#39;ve reached the end of the pattern: */
         if (patternIndex === patternSections.length) {
           if (REQUIRE_END_WITH_PATTERN) {
             return (strIndex === len);
@@ -1881,41 +1881,41 @@ function RobotsTxt() {
           return true;
         }
       }
-      /* If this sub-pattern didn't match at this point, move 1 character over: */
+      /* If this sub-pattern didn&#39;t match at this point, move 1 character over: */
       else {
         ++strIndex;
       }
     }
-    /* If we reached the end of the string without finishing the pattern, it's
+    /* If we reached the end of the string without finishing the pattern, it&#39;s
      * not a match: */
     return false;
   };
   this.isUrlAllowed = function (fullUrl) {
     if (HOSTNAME !== (new URL(fullUrl)).hostname.toLowerCase()) {
-      throw new Error("URL " + fullUrl + " is not within the same domain!");
+      throw new Error(&quot;URL &quot; + fullUrl + &quot; is not within the same domain!&quot;);
     }
     if (this.ignoreFile) return true;
 
     /* The path portion of the fullURL. That is, the part
-     * following the ".com" or ".net" or ".edu" or whatever.
+     * following the &quot;.com&quot; or &quot;.net&quot; or &quot;.edu&quot; or whatever.
      *
-     * For example, on a site's homepage, the path is "/", and
-     * on an faq page, it might be "/faq.html" */
+     * For example, on a site&#39;s homepage, the path is &quot;/&quot;, and
+     * on an faq page, it might be &quot;/faq.html&quot; */
     const pagePath = fullUrl.substr(DOMAIN.length); //@Refactor use location api?
 
     /* Allow statements supersede disallow statements, so we can
      * check the allowed list first and shortcut to true if we
      * find a match: */
-    for (let i = 0, len = this.patterns.allow.length; i < len; ++i) {
+    for (let i = 0, len = this.patterns.allow.length; i &lt; len; ++i) {
       const pattern = this.patterns.allow[i];
       if (this.matchesPattern(pagePath, pattern)) return true;
     }
-    for (let i = 0, len = this.patterns.disallow.length; i < len; ++i) {
+    for (let i = 0, len = this.patterns.disallow.length; i &lt; len; ++i) {
       const pattern = this.patterns.disallow[i];
       if (this.matchesPattern(pagePath, pattern)) return false;
     }
     /* If this page is on neither the allowed nor disallowed
-     * list, then we can assume it's allowed: */
+     * list, then we can assume it&#39;s allowed: */
     return true;
   };
 
@@ -1927,9 +1927,9 @@ function RobotsTxt() {
     }
 
     const httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = () => {
+    httpRequest.onreadystatechange = () =&gt; {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
-        if (httpRequest.status === 200) { //Code for "Good"
+        if (httpRequest.status === 200) { //Code for &quot;Good&quot;
           this.rawText = httpRequest.responseText;
           this.patterns = this.parseText(this.rawText);
         } else {
@@ -1939,7 +1939,7 @@ function RobotsTxt() {
         onComplete(this);
       }
     };
-    httpRequest.open("GET", "/robots.txt");
+    httpRequest.open(&quot;GET&quot;, &quot;/robots.txt&quot;);
     httpRequest.send();
   };
 }
@@ -1974,7 +1974,7 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
    *
    * NOTE: This flag is handled in the requestAndParse callback, because
    * the requestAndParse function completely overwrites the patterns property. */
-  const disallowMatch = /-disallow(["'`])([^"\n]+)\1/i.exec(flagStr);
+  const disallowMatch = /-disallow([&quot;&#39;`])([^&quot;\n]+)\1/i.exec(flagStr);
   let userDisallowed;
   if (disallowMatch === null) {
     userDisallowed = [];
@@ -1996,21 +1996,21 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
 
     /* A spoof link to mark the page where the crawl started as visited, so that
      * it will not be crawled a second time: */
-    const initLabel = "(Initial page for crawler script)";
+    const initLabel = &quot;(Initial page for crawler script)&quot;;
     const startPageSpoofLink = makeElement(
-      "a",
+      &quot;a&quot;,
       initLabel,
       {href: anchorlessURL}
     );
     const spoofLinkRecord = new ElementRecord(anchorlessURL, startPageSpoofLink);
-    spoofLinkRecord.group.label("visited");
-    spoofLinkRecord.label("startPage");
+    spoofLinkRecord.group.label(&quot;visited&quot;);
+    spoofLinkRecord.label(&quot;startPage&quot;);
 
     visitLinks(initialPageLinks, anchorlessURL, robotsTxt, recursiveCrawl);
   });
 }
 
-startCrawl("");</code></pre>
+startCrawl(&quot;&quot;);</code></pre>
       </li>
       <li id="running-open-site" class="anchor-point"><p>
         <span class="item-header">Open the site</span> which you want to inspect.

@@ -3,6 +3,7 @@
     "postinstall": "cd .. && npm install"
   },
   "devDependencies": {
+    "escape-html": "^1.0.3",
     "moment": "^2.21.0"
   }
 }
