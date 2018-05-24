@@ -91,7 +91,7 @@ const RECOGNIZED_FILE_TYPES = [
 const RECOGNIZED_SCHEMES = ["mailto:", "file:", "tel:", "javascript:"];
 
 const BANNED_STRINGS = {
-  list: ["drupaldev", "promet"],
+  list: ["drupaldev"],
   forceBanned: null,
   isStringBanned(str) {
     if (this.forceBanned !== null) {
@@ -447,12 +447,36 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;box-sizing:border-box}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;font-weight:700;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2,#crlr-modal h3{font-size:1.5em;font-weight:700;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{font-weight:700;margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5,#crlr-modal h6{font-size:.83em;font-weight:700;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:2px dotted #a6c7ff}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted gray;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:0;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized:focus-within{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-weight:400;font-size:1.25em}#crlr-modal #crlr-input-clear{background-color:#ededf2;margin-right:.25em;padding:0 .25em;border:0;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:2px solid #a6c7ff}#crlr-modal #crlr-textbox-controls{border:2px solid transparent;border-bottom:2px solid #b0b0b0;background-color:#ededf2;transition:border .2s}#crlr-modal #crlr-textbox-controls.focus-within,#crlr-modal #crlr-textbox-controls:focus-within{border:2px solid #a6c7ff}#crlr-input-textbox{background-color:transparent;border:0}#crlr-modal #crlr-autocomplete-list{display:none}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:200px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}#crlr-modal.browser-gecko .crlr-output>pre{overflow-y:scroll}`;
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{margin-right:.25em;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:2px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-textbox-suggestions-container{display:inline;position:relative;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
 const styleEle = makeElement("style", CRAWLER_CSS, {id: "crlr.js.css"});
 document.head.appendChild(styleEle);
 
 /* Make modal element: */
 const MODAL = makeElement("div", undefined, {id: "crlr-modal"});
+/* For browsers without support for :focus-within: */
+MODAL.addEventListener(
+  "focusin",
+  function addFocus(e) {
+    let parent = e.target;
+    while (parent !== null) {
+      parent.classList.add("focus-within");
+      if (parent === MODAL) return;
+      parent = parent.parentElement;
+    }
+  }
+);
+MODAL.addEventListener(
+  "focusout",
+  function remFocus(e) {
+    let parent = e.target;
+    while (parent !== null) {
+      parent.classList.remove("focus-within");
+      if (parent === MODAL) return;
+      parent = parent.parentElement;
+    }
+  }
+);
+
 document.body.insertBefore(MODAL, document.body.childNodes[0]);
 
 /* Prevent click events on the modal triggering events on the rest of the page: */
@@ -464,10 +488,6 @@ const cancelBubble = (e)=>{
 MODAL.addEventListener("click", cancelBubble);
 MODAL.addEventListener("keydown", cancelBubble);
 MODAL.addEventListener("keypress", cancelBubble);
-
-/* For browser-specific CSS and formatting: */
-const isBrowserWebkit = /webkit/i.test(navigator.userAgent);
-MODAL.classList.add(isBrowserWebkit ? "browser-webkit" : "browser-gecko");
 
 /* Adds a counter to the modal, showing the number of live (unresolved) http
  * requests currently waiting: */
@@ -746,7 +766,11 @@ function classifyImages(doc, curPageURL) {
         imageRecord.label("improperSize");
       }
     };
-    if (anyDimensionsSpecified) imgLoader.whenReady(compareImageSize);
+    if (anyDimensionsSpecified) {
+      imgLoader.whenReady(compareImageSize, ()=>{
+        imageRecord.group.label("unloaded");
+      });
+    }
 
     if (!image.alt) {
     //if (image.getAttribute("alt") === null) {
@@ -1015,6 +1039,9 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   requestCounter.update();
 } //Close function visitLinks
 
+/*****
+ *** PRESENTING RESULTS:
+ *****/
 
 /* Cuts the parameter string off at the given number of characters. If the
  * parameter string is already shorter than maxLen, it is returned  without
@@ -1038,6 +1065,360 @@ function cutOff(str, maxLen, breakStr) {
   /* If the breakStr character can't be found, return an empty string: */
   if (cutOffPoint === -1) return "";
   return str.substring(0, cutOffPoint);
+}
+
+/* Returns the ancestor of descendent (or descendent itself) which has a
+ * given parent element, or null if parent is not an ancestor of descendent */
+function getAncestorWithParent(descendent, parent) {
+  let ancestor = descendent;
+  let ancParent = ancestor.parentElement;
+  while (ancParent !== parent) {
+    if (ancParent === null) return null;
+    ancestor = ancParent;
+    ancParent = ancestor.parentElement;
+  }
+  return ancestor;
+}
+
+/* If the first parameter is null, return the second. Else, return the first: */
+function nullDefault(possiblyNullVal, defaultValue) {
+  return (possiblyNullVal === null) ? defaultValue : possiblyNullVal;
+}
+
+/**
+ * Creates an auto-complete/suggestion-list element for a given input element
+ * using a given array of suggestions.
+ */
+function makeAutoCompleteList(
+  inputEle,
+  suggestions,
+  sugToEleMap = 'li',
+  listEle = 'ul'
+) {
+  if (!(inputEle instanceof HTMLInputElement)) {
+    throw new TypeError("inputEle must be an HTMLInputElement.");
+  }
+  const getSugEle = (sugStr, extraMetadata = {})=>{
+    const defaultMetadata = Object.freeze({
+      defaultContents() {
+        if (this.showingAll) {
+          return sugStr;
+        }
+        return this.tokens.map(
+          tok => tok.match ? makeElement('strong', tok.str) : tok.str
+        );
+      },
+    });
+    const metadata = Object.assign({}, defaultMetadata, extraMetadata);
+    if (typeof sugToEleMap === 'string') {
+      /* By default, just return a <li> showing the suggestion with any matching
+       * characters bolded: */
+      return makeElement(sugToEleMap, metadata.defaultContents(), {
+        tabIndex: '0', //Allow tab navigation to this element in normal order
+        'data-value': sugStr
+      });
+    }
+    if (sugToEleMap instanceof Map) {
+      return sugToEleMap.get(sugStr);
+    }
+    if (typeof sugToEleMap === 'function') {
+      return sugToEleMap(sugStr, metadata);
+    }
+    if (typeof sugToEleMap === 'object' && sugToEleMap !== null) {
+      return sugToEleMap[sugStr];
+    }
+    throw new TypeError("sugToEleMap must be a Map, function, object, or string.");
+  };
+  const allSuggestionEles = ()=> {
+    return suggestions.map(sug => getSugEle(sug, {showingAll: true}));
+  };
+
+  /* The outer container element for the list of suggestions: */
+  const sugList = (()=>{
+    if (typeof listEle === 'string') {
+      return makeElement(listEle, undefined, {class: 'hidden'});
+    }
+    if (!(listEle instanceof HTMLElement)) {
+      throw new TypeError("listEle must be undefined, a string or an HTMLElement!");
+    }
+    return listEle;
+  })();
+  appendChildren(sugList, allSuggestionEles());
+  if (inputEle.id) {
+    sugList.setAttribute('data-for', inputEle.id);
+  }
+
+  /* Shorthand function for hiding the suggestion list: */
+  const hideSugListFocusInput = (detail)=>{
+    inputEle.focus();
+    sugList.classList.add('hidden');
+    sugList.dispatchEvent(new CustomEvent('hide', {detail}));
+  };
+  const showSugList = (detail)=>{
+    sugList.classList.remove('hidden');
+    sugList.dispatchEvent(new CustomEvent('show', {detail}));
+  };
+
+  /* Callback for updating the suggestion list: */
+  function updateSuggestions() {
+    clearChildren(sugList);
+    const userPattern = inputEle.value;
+
+    const [matchingSugEles, results] = (()=> {
+      if (userPattern.length === 0) {
+        return [allSuggestionEles(), suggestions];
+      }
+      /* Show a list of matching suggestions, with matching characters bolded: */
+      const fuzzySearchResults = (suggestions
+        .map(sug => fuzzySearchLex(userPattern, sug))
+        .filter(fuzzyRes => !fuzzyRes.hasOwnProperty('error'))
+      );
+      /* If there are no matches, show a list of all suggestions: */
+      if (fuzzySearchResults.length === 0) {
+        return [allSuggestionEles(), suggestions];
+      }
+      /* If there are matches, sort them so the closest matches are on top: */
+      return [(fuzzySearchResults
+        .sort((res1, res2) => res1.insertions - res2.insertions)
+        .map(fuzzyRes => getSugEle(fuzzyRes.refStr, fuzzyRes))
+      ), fuzzySearchResults.map(res => res.refStr)];
+    })();
+    appendChildren(sugList, matchingSugEles);
+    showSugList({
+      reason: 'update',
+      results
+    });
+  }
+
+  /* Events for navigating and selecting items off of the suggestion list: */
+  sugList.addEventListener("click", (e)=> {
+    /* If the user clicked on the list but not a selection (e.g. by clicking the
+     * border of the list element), do nothing: */
+    if (e.target === sugList) return;
+
+    const targetSuggestion = getAncestorWithParent(e.target, sugList);
+    const eleValue = nullDefault(
+      targetSuggestion.getAttribute('data-value'),
+      targetSuggestion.innerText
+    );
+
+    /* If the element has no set data-value attribute (e.g. a custom element was
+     * given via the sugToEleMap parameter), use the element's innerText: */
+    inputEle.value = eleValue;
+    hideSugListFocusInput({
+      reason: 'click',
+      selectionMade: true,
+      selectionText: eleValue,
+      selectionElement: targetSuggestion,
+      sourceEvent: e
+    });
+  });
+  /* Follow the cursor with the focused suggestion: */
+  sugList.addEventListener('mousemove', (e)=>{
+    /* If the pointed-to element is already focused, do nothing: */
+    if (
+      e.target === sugList
+      || e.target === document.activeElement
+      || getAncestorWithParent(e.target, document.activeElement) !== null
+    ) return;
+    const targetSuggestion = getAncestorWithParent(e.target, sugList);
+    targetSuggestion.focus();
+  });
+  sugList.addEventListener("keydown", (e)=> {
+    const targetSuggestion = getAncestorWithParent(e.target, sugList);
+    if (e.key === "Enter")  {
+      const eleValue = nullDefault(
+        targetSuggestion.getAttribute('data-value'),
+        targetSuggestion.innerText
+      );
+      inputEle.value = eleValue;
+      hideSugListFocusInput({
+        reason: 'enter-in-list',
+        selectionMade: true,
+        selectionText: eleValue,
+        selectionElement: targetSuggestion,
+        sourceEvent: e
+      });
+    } else if (e.key === "ArrowUp") {
+      const prevSug = targetSuggestion.previousSibling;
+      if (prevSug === null) {
+        hideSugListFocusInput({
+          reason: 'close-up',
+          selectionMade: false,
+          sourceEvent: e
+        });
+      } else {
+        prevSug.focus();
+      }
+      e.preventDefault();
+    } else if (e.key === "ArrowDown") {
+      const nextSug = targetSuggestion.nextSibling;
+      if (nextSug !== null) {
+        nextSug.focus();
+        e.preventDefault();
+      }
+    } else if (e.key === "Escape") {
+      hideSugListFocusInput({
+        reason: 'close-escape',
+        selectionMade: false,
+        sourceEvent: e
+      });
+    }
+  });
+  /* Events for populating the suggetsion list and navigating to and from it via
+   * the input element: */
+  inputEle.addEventListener('input', updateSuggestions);
+  inputEle.addEventListener('mousedown', (e)=>{
+    /* If the input is clicked while already focused, show the list: */
+    if (
+      inputEle === document.activeElement
+      && sugList.classList.contains('hidden')
+    ) {
+      showSugList({
+        reason: 'open-click',
+        sourceEvent: e
+      });
+    }
+  });
+  inputEle.addEventListener('keydown', (e)=>{
+    if (sugList.classList.contains('hidden')) {
+      if (e.key === 'ArrowDown') {
+        showSugList({
+          reason: 'open-down',
+          sourceEvent: e
+        });
+        sugList.firstChild.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (sugList.firstChild === null) return;
+      switch (e.key) {
+        case 'Enter': {
+          const targetSuggestion = sugList.firstChild;
+          const eleValue = nullDefault(
+            targetSuggestion.getAttribute('data-value'),
+            targetSuggestion.innerText
+          );
+          inputEle.value = eleValue;
+          hideSugListFocusInput({
+            reason: 'enter-in-input',
+            selectionMade: true,
+            selectionText: eleValue,
+            selectionElement: targetSuggestion,
+            sourceEvent: e
+          });
+          break;
+        }
+        case 'ArrowDown':
+          sugList.firstChild.focus();
+          e.preventDefault();
+          break;
+        case 'Backspace':
+          if (inputEle.value.length === 0) {
+            hideSugListFocusInput({
+              reason: 'close-backspace',
+              selectionMade: false,
+              sourceEvent: e
+            });
+          }
+          break;
+        case 'Escape':
+          hideSugListFocusInput({
+            reason: 'close-escape-in-input',
+            selectionMade: false,
+            sourceEvent: e
+          });
+          break;
+        default:
+          return;
+      }
+    }
+  });
+  /* Allow for the dropdown to be closed by clicking off of it: */
+  document.addEventListener('mousedown', (e)=>{
+    const selection = getAncestorWithParent(e.target, sugList);
+    if (selection === null && e.target !== inputEle) sugList.hide('click-off');
+  });
+  /* Add utility functions for programmatically manipulating the list: */
+  Object.assign(sugList, {
+    show(reason = 'function-call') {
+      showSugList({reason});
+    },
+    hide(reason = 'function-call') {
+      hideSugListFocusInput({
+        reason,
+        selectionMade: false,
+      });
+    },
+    update: updateSuggestions
+  });
+  return sugList;
+}
+
+/* Checks if the given pattern matches the given reference string. Returns an
+ * array of token objects which correspond the the substrings of the reference
+ * which match and do not match the pattern (determined by their .match
+ * property).
+ *
+ * This is used by the makeAutoCompleteList function to produce a
+ * suggestion list where the matching characters are bolded. */
+function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
+  const defaultOptions = {caseSensitive: false};
+  const opts = Object.assign({}, defaultOptions, extraOpts);
+
+  /* Case-(in)sensitive string comparison: */
+  const strComp = (()=>{
+    const sensitivity = (opts.caseSensitive) ? "case" : "base";
+    const compOpts = {usage: 'search', sensitivity};
+    return (s1, s2) => s1.localeCompare(s2, undefined, compOpts);
+  })();
+
+  const ptrnLen = ptrn.length;
+  const refLen = refStr.length;
+
+  const makeErrorObj = (errorMessage, errorCode)=>{
+    return {error: true, errorMessage, errorCode};
+  };
+  if (ptrnLen === 0) {
+    return makeErrorObj("Empty Pattern", -1);
+  }
+  if (ptrnLen > refLen) {
+    return makeErrorObj("Pattern is longer than reference string.", -2);
+  }
+  const tokens = [];
+  let currentTokenStartIndex = 0;
+  let currentTokenIsMatch = (0 === strComp(ptrn.charAt(0), refStr.charAt(0)));
+  let refIndex = 1;
+  let ptrnIndex = (currentTokenIsMatch) ? 1 : 0;
+  let insertions = (currentTokenIsMatch) ? 0 : 1;
+  const breakToken = ()=>{
+    tokens.push({
+      str: refStr.substring(currentTokenStartIndex, refIndex),
+      match: currentTokenIsMatch
+    });
+    currentTokenStartIndex = refIndex;
+    currentTokenIsMatch = !currentTokenIsMatch;
+  };
+  while (ptrnIndex < ptrnLen) {
+    if (strComp(ptrn.charAt(ptrnIndex), refStr.charAt(refIndex)) === 0) {
+      ++ptrnIndex;
+      if (!currentTokenIsMatch) breakToken();
+    } else {
+      if (refIndex >= refLen) {
+        return makeErrorObj("Pattern doesn't match reference string.", -3);
+      }
+      insertions += 1;
+      if (currentTokenIsMatch) breakToken();
+    }
+    ++refIndex;
+  }
+  breakToken();
+  if (refIndex !== refLen) {
+    insertions += refLen - refIndex;
+    refIndex = refLen;
+    breakToken();
+  }
+  return {pattern: ptrn, refStr, tokens, insertions};
 }
 
 /* This is called when the crawling is fully complete. it is the last
@@ -1077,50 +1458,59 @@ function presentResults() {
   const modalContent = makeElement("div", undefined, {id: "crlr-content"});
   ModalBuffer.appendChild(modalContent);
 
-  /* Create textbox for specifying desired output: */
-  const autoCompleteItems = [];
-  let requiredLength = 0;
+  /* Make textbox and suggestion-list for specifying which label to show data
+   * for in the modal: */
+  const inputTextBox = makeElement("input", undefined, {
+    id: "crlr-input-textbox",
+    type: "text",
+    value: "link"
+  });
 
-  const optionElementFromLabel = (label, labelTable)=>{
-    const labelHasMembers = (labelTable[label] !== undefined);
+  const [suggestions, emptySugs] = (()=>{
+    const keys = [];
+    const emptySet = new Set();
+    /* Iterate over Group labels, then iterate over Element labels:
+     * (The order doesn't actually matter.) */
+    let labelTable = RecordGroup.LabelTable;
+    const checkLabel = (label)=>{
+      keys.push(label);
+      if (labelTable[label] === undefined) emptySet.add(label);
+    };
+    for (const label of GROUP_LABELS) checkLabel(label);
+    labelTable = ElementRecord.LabelTable;
+    for (const label of ELEMENT_LABELS) checkLabel(label);
+    return [keys, emptySet];
+  })();
 
-    /* Gecko browsers (Firefox, Edge, etc.) will display the label rather than
-     * the value in the drop-down list if both are present, whereas webkit
-     * browsers (Chrome and Safari) will display both, with the label to the
-     * right and slightly faded. To ensure all users see the same info, We use
-     * different labels for the different browser engines: */
-    let optionEleLabelProp;
-    if (labelHasMembers) {
-      optionEleLabelProp = "";
-    } else {
-      optionEleLabelProp = (isBrowserWebkit) ? "Empty" : `${label} (Empty)`;
-    }
-    const optionEle = makeElement(
-      "option",
-      undefined,
-      {
-        value: label,
-        label: optionEleLabelProp
-      }
-    );
-    return optionEle;
+  const rowElementFromLabel = (sugStr, metadata)=>{
+    const sugColumn = makeElement('td', metadata.defaultContents(), {
+      class: 'crlr-suggestion'
+    });
+    const isEmpty = emptySugs.has(sugStr);
+    const emptyColumn = makeElement('td', isEmpty ? "(empty)" : "", {
+      class: 'crlr-suggestion-info'
+    });
+    const row = makeElement('tr', [sugColumn, emptyColumn], {
+      tabIndex: '0', //Allow tab navigation to this element in normal order
+      'data-value': sugStr
+    });
+    row.classList.add('crlr-suggestion-row');
+    if (isEmpty) row.classList.add('empty-suggestion');
+    return row;
   };
+  const sugList = makeAutoCompleteList(
+    inputTextBox,
+    suggestions,
+    rowElementFromLabel, //Function mapping a suggestion to an element
+    'table' //The tagname of the outer, container element
+  );
+  sugList.id = 'crlr-suggestions';
 
-  /* Iterate over Group labels, then iterate over Element labels:
-   * (The order doesn't actually matter.) */
-  for (const label of GROUP_LABELS) {
-    requiredLength = Math.max(requiredLength, label.length);
-    autoCompleteItems.push(
-      optionElementFromLabel(label, RecordGroup.LabelTable)
-    );
-  }
-  for (const label of ELEMENT_LABELS) {
-    requiredLength = Math.max(requiredLength, label.length);
-    autoCompleteItems.push(
-      optionElementFromLabel(label, ElementRecord.LabelTable)
-    );
-  }
-  /* Make the textbox for inputting the name of the object you want to view: */
+  /* A container for the textbox and suggestion list, for styling purposes: */
+  const sugContainer = makeElement('div', [inputTextBox, sugList], {
+    id: 'crlr-textbox-suggestions-container' //oof
+  });
+
   const clearInputButton = makeElement(
     "button",
     "✕", //"x" cross symbol
@@ -1129,52 +1519,18 @@ function presentResults() {
       "data-for": "crlr-input-textbox"
     }
   );
-  const autoCompleteList = makeElement(
-    "datalist",
-    autoCompleteItems,
-    {
-      id: "crlr-autocomplete-list"
-    }
-  );
-  const inputTextBox = makeElement(
-    "input",
-    undefined,
-    {
-      id: "crlr-input-textbox",
-      type: "text",
-      value: "link",
-      list: "crlr-autocomplete-list",
-      size: requiredLength
+  clearInputButton.addEventListener(
+    'click',
+    function clearInput() {
+      inputTextBox.value = "";
+      sugList.update();
+      inputTextBox.focus();
     }
   );
   const logObjInputContainer = makeElement(
     "div",
-    [clearInputButton, autoCompleteList, inputTextBox],
-    {
-      id: "crlr-textbox-controls",
-    }
-  );
-  clearInputButton.addEventListener(
-    "click",
-    function clearInput() {
-      inputTextBox.value = "";
-      inputTextBox.focus();
-    }
-  );
-
-  /* For browsers without support for :focus-within: */
-  logObjInputContainer.addEventListener(
-    "focusin",
-    function addFocus() {
-      logObjInputContainer.classList.add("focus-within");
-    }
-
-  );
-  logObjInputContainer.addEventListener(
-    "focusout",
-    function remFocus() {
-      logObjInputContainer.classList.remove("focus-within");
-    }
+    [clearInputButton, sugContainer],
+    {id: "crlr-textbox-controls"}
   );
 
   const altFormatCheckBox = makeElement(
@@ -1327,6 +1683,9 @@ function presentResults() {
    * is displayed immediately: */
   updateOutput();
   inputTextBox.addEventListener("input", updateOutput);
+  sugList.addEventListener('hide', (e)=>{
+    if (e.detail.selectionMade) updateOutput();
+  });
   altFormatCheckBox.addEventListener("change", updateOutput);
 
   /* Add how long the crawler took to the header: */
