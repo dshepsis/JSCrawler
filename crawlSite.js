@@ -1463,7 +1463,8 @@ function presentResults() {
   const inputTextBox = makeElement("input", undefined, {
     id: "crlr-input-textbox",
     type: "text",
-    value: "link"
+    value: "link",
+    spellcheck: "false"
   });
 
   const [suggestions, emptySugs] = (()=>{
