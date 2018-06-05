@@ -3,12 +3,39 @@
 /* Reset style on modal elements: */
 #crlr-modal, #crlr-modal * {
   all: initial;
+  /* For Edge, which doesn't support all: */
+  margin: initial;
+  padding: initial;
+  border: initial;
+  border-radius: initial;
+  display: initial;
+  position: initial;
+  height: initial;
+  width: initial;
+  background: initial;
+  float: initial;
+  clear: initial;
+  font: initial;
+  line-height: initial;
+  letter-spacing: initial;
+  overflow: initial;
+  text-align: initial;
+  vertical-align: initial;
+  text-decoration: initial;
+  visibility: initial;
+  z-index: initial;
+  box-shadow: initial;
+
   box-sizing: border-box;
 }
 /* all: initial sets everything to display: inline, so reset block elements to
  * display: block (yes this has to be this verbose, sadly): */
 #crlr-modal p, #crlr-modal h1, #crlr-modal h2, #crlr-modal h3, #crlr-modal h4, #crlr-modal h5, #crlr-modal h6, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
   display: block;
+}
+
+#crlr-modal strong {
+  font-weight: bold;
 }
 
 /* Gives headers proper size: */
@@ -50,6 +77,7 @@
 
 #crlr-modal * {
   font-family: sans-serif;
+  color: inherit;
 }
 #crlr-modal pre, #crlr-modal pre * {
   font-family: monospace;
@@ -188,21 +216,22 @@
 #crlr-modal.minimized.focus-within {
   opacity: 1;
 }
-#crlr-modal.minimized:focus-within {
+/* #crlr-modal.minimized:focus-within {
   opacity: 1;
-}
+} */
 
 #crlr-modal.minimized #crlr-min {
   margin: 0;
 }
 
 /* Output styling: */
+#crlr-modal #crlr-inputs {
+  align-items: baseline;
+}
 #crlr-modal #crlr-inputs * {
-  font-weight: normal;
-  font-size: 1.25em;
+  font-size: 25px;
 }
 #crlr-modal #crlr-input-clear {
-  background-color: #ededf2;
   margin-right: 0.25em;
   padding: 0px 0.25em;
   border: none;
@@ -218,20 +247,67 @@
 }
 
 #crlr-modal #crlr-textbox-controls {
-  border: 2px solid transparent;
-  border-bottom: 2px solid #b0b0b0;
   background-color: #ededf2;
-  transition: border 0.2s;
+  /* The following achieves a similar effect to border-bottom, but without
+   * the beveled corners: */
+  padding: 2px;
+  box-shadow: inset 0 -2px 0 0 #b0b0b0;
+  transition: box-shadow 0.2s;
 }
-#crlr-modal #crlr-textbox-controls.focus-within, #crlr-modal #crlr-textbox-controls:focus-within {
-  border: 2px solid #a6c7ff; /* Light blue */
+#crlr-modal #crlr-textbox-controls.focus-within/*, #crlr-modal #crlr-textbox-controls:focus-within*/ {
+  box-shadow: inset 0 0 0 2px #a6c7ff; /* Light blue */
 }
-#crlr-input-textbox {
+#crlr-modal #crlr-input-textbox {
   background-color: transparent;
+  width: 300px;
   border: none;
 }
-#crlr-modal #crlr-autocomplete-list {
+
+/* Autocomplete/suggestion list styling: */
+#crlr-modal #crlr-textbox-suggestions-container {
+  display: inline;
+  position: relative;
+  font-size: 1em;
+}
+#crlr-modal #crlr-textbox-suggestions-container * {
+  font-size: 1em;
+}
+#crlr-modal #crlr-suggestions {
+  margin: 0;
+  padding: 5px;
+  font-size: 0.8em;
+  border: 1px solid gray;
+  position: absolute;
+  background-color: white;
+  z-index: 1;
+  width: 100%;
+  margin-left: -2px; /* To align with the edge of the textbox control div's border */
+  display: table;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+#crlr-modal #crlr-suggestions tr {
+  display: table-row;
+}
+#crlr-modal #crlr-suggestions td {
+  padding: 5px;
+  display: table-cell;
+  text-overflow: ellipsis;
+}
+#crlr-modal #crlr-suggestions .crlr-suggestion-info {
+  font-size: 0.7em;
+  text-align: right;
+  vertical-align: middle;
+}
+#crlr-modal #crlr-suggestions.hidden {
   display: none;
+}
+#crlr-modal #crlr-input-textbox:focus ~ #crlr-suggestions > .crlr-suggestion-row:first-child,
+#crlr-modal #crlr-suggestions > .crlr-suggestion-row:focus {
+  background-color: lightBlue;
+}
+#crlr-suggestions > .crlr-suggestion-row.empty-suggestion {
+  color: gray;
 }
 
 /* For checkboxes: */
@@ -278,13 +354,13 @@
   max-width: 100%;
 }
 #crlr-modal .crlr-output > pre {
-  max-height: 200px;
+  max-height: 400px;
   padding: 0.5em;
   margin: 0;
   overflow: auto;
   border: 1px dashed gray;
   background-color: #e1e1ea;
 }
-#crlr-modal.browser-gecko .crlr-output > pre {
+/* #crlr-modal.browser-gecko .crlr-output > pre {
   overflow-y: scroll;
-}
+} */

@@ -245,26 +245,46 @@ function getHrefOrSrcAttr(ele) {
  * are grouped by the page they point to. Two or more links may point to the
  * same page while having different HREFs (e.g. one absolute and one relative),
  * so if one of them 404s (notFound), all of the others will too. */
-const GROUP_LABELS = freezeSet(new Set([
-  "internal",
-  "external",
-  "null",
-  "Email",
-  "localFile",
-  "javascriptLink",
-  "http-httpsError",
-  "unusualScheme",
-  "visited",
-  "unknownContentType",
-  "redirects",
-  "accessDenied",
-  "forbidden",
-  "notFound",
-  "internalServiceError",
-  "robotsDisallowed",
-  "unloaded",
-  "file"
-]));
+const GROUP_LABELS = (()=>{
+  const gLabels = [
+    "internal",
+    "external",
+    "null",
+    "Email",
+    "localFile",
+    "javascriptLink",
+    "http-httpsError",
+    "unusualScheme",
+    "visited",
+    "unknownContentType",
+    "redirects",
+    "accessDenied",
+    "forbidden",
+    "notFound",
+    "internalServiceError",
+    "robotsDisallowed",
+    "unloaded",
+    "file"
+  ];
+  const labelSet = freezeSet(new Set(gLabels));
+
+  /* For altering the presentation of data in the results modal: */
+  const labelData = {};
+
+  /* Default values: */
+  for (const label of gLabels) {
+    labelData[label] = {
+      getInstancesName: getHrefOrSrcAttr, //For output display
+      getLocationsName: getHrefOrSrcProp, //For inverted output display
+    };
+  }
+
+  return {
+    list: gLabels,
+    has(label) { return labelSet.has(label); },
+    metadata: labelData
+  };
+})();
 
 /* Groups together element records. This is used for grouping links/images with
  * the same href/src. */
@@ -299,25 +319,69 @@ class RecordGroup {
 
 /* Labels which only apply to particular elements, and may differ between
  * elements within the same group: */
-const ELEMENT_LABELS = freezeSet(new Set([
-  "link",
-  "image",
-  "iframe",
-  "startPage",
-  "bannedString",
-  "absoluteInternal",
-  "anchor",
-  "improperSize",
-  "noAltText",
-  "emptyTitle"
-]));
+const ELEMENT_LABELS = (()=>{
+  const eLabels = [
+    "link",
+    "image",
+    "iframe",
+    "startPage",
+    "bannedString",
+    "absoluteInternal",
+    "anchor",
+    "improperSize",
+    "noAltText",
+    "emptyTitle",
+    "user-selected"
+  ];
+  const labelSet = freezeSet(new Set(eLabels));
+
+  /* For altering the presentation of data in the results modal: */
+  const labelData = {};
+
+  /* Default values: */
+  for (const label of eLabels) {
+    labelData[label] = {
+      getInstancesName: getHrefOrSrcAttr, //For output display
+      getLocationsName: getHrefOrSrcProp, //For inverted output display
+    };
+  }
+
+  /* Custom behavior on a per-label basis: */
+  {
+    /* For the anchor label, when displaying results in inverted mode (showing
+     * a list of pages where each anchor link is located), retain the anchor
+     * so that different anchors on the same page have separate lists for pages
+     * that link to them: */
+    labelData["anchor"].getLocationsName = ele => getHrefOrSrcProp(ele, true);
+
+    /* For user-selected elements (See the CSS-Select flag), display them as
+     * truncated HTML, since they may not have an href or src: */
+    const getTruncatedOuterHTML = (ele, maxLen = 80) => {
+      let trunc = ele.outerHTML;
+      if (trunc.length > maxLen) trunc = trunc.substring(0, maxLen) + '...'; //@magic
+      return trunc;
+    };
+    const userSelData = labelData["user-selected"];
+    userSelData.getInstancesName = getTruncatedOuterHTML;
+    userSelData.getLocationsName = getTruncatedOuterHTML;
+  }
+
+
+  return {
+    list: eLabels,
+    has(label) { return labelSet.has(label); },
+    metadata: labelData
+  };
+})();
 
 /* Associates a document, set of labels, and a group with a given HTML Element: */
 class ElementRecord {
-  constructor(documentID, elementInDocument, eleToGroupName) {
+  constructor(documentID, elementInDocument, groupName) {
     /* Default function for converting an element into a string ID: */
-    if (eleToGroupName === undefined) {
-      eleToGroupName = getHrefOrSrcProp;
+    if (groupName === undefined) {
+      groupName = getHrefOrSrcProp(elementInDocument);
+    } else {//@debug
+      console.log("custom groupname: " + groupName);
     }
     /* These two tables are class variables used for retrieving records or
      * groups based on labels or group-names, respectively: */
@@ -331,7 +395,7 @@ class ElementRecord {
      * entire document in memory, thus allowing documents to be garbage-
      * collected when they're done being processed: */
     this.element = elementInDocument.cloneNode("Deep");
-    const groupName = eleToGroupName(elementInDocument);
+    // const groupName = eleToGroupName(elementInDocument);
     this.group = makeIfUndef(
       this.constructor.GroupTable,
       groupName,
@@ -447,33 +511,100 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{margin-right:.25em;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:2px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;border:none}#crlr-modal #crlr-textbox-suggestions-container{display:inline;position:relative;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{margin-right:.25em;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:2px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:300px;border:none}#crlr-modal #crlr-textbox-suggestions-container{display:inline;position:relative;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 0 -2px;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
 const styleEle = makeElement("style", CRAWLER_CSS, {id: "crlr.js.css"});
 document.head.appendChild(styleEle);
 
 /* Make modal element: */
 const MODAL = makeElement("div", undefined, {id: "crlr-modal"});
-/* For browsers without support for :focus-within: */
+
+/* Pseudo-polyfill for browsers without support for :focus-within: */
+const getDOMDepthInModal = (ele)=>{
+  let depth = 0;
+  let isInModal = false;
+  for (let anc = ele; anc !== null; anc = anc.parentElement) {
+    isInModal = isInModal || (anc === MODAL);
+    ++depth;
+  }
+  return [depth, isInModal];
+};
+const getPathToMutualAncestorInModal = (a, b)=>{
+  const [depthA, aInModal] = getDOMDepthInModal(a);
+  const [depthB, bInModal] = getDOMDepthInModal(b);
+
+  const fromA = [];
+  const fromB = [];
+  if (aInModal) {
+    if (!bInModal) {
+      for (let aAnc = a; aAnc !== MODAL; aAnc = aAnc.parentElement) {
+        fromA.push(aAnc);
+      }
+      return [fromA, fromB];
+    }
+    const depthDiff = depthA - depthB;
+    let aAnc = a;
+    let bAnc = b;
+    if (depthDiff > 0) {
+      for (let i = depthDiff; i > 0; --i) {
+        fromA.push(aAnc);
+        aAnc = aAnc.parentElement;
+      }
+    } else {
+      for (let i = depthDiff; i < 0; ++i) {
+        fromB.push(bAnc);
+        bAnc = bAnc.parentElement;
+      }
+    }
+    while (aAnc !== bAnc) {
+      fromA.push(aAnc);
+      fromB.push(bAnc);
+      aAnc = aAnc.parentElement;
+      bAnc = bAnc.parentElement;
+    }
+    return [fromA, fromB];
+  } else if (bInModal) {
+    for (let bAnc = b; bAnc !== MODAL; bAnc = bAnc.parentElement) {
+      fromB.push(bAnc);
+    }
+  }
+  return [fromA, fromB];
+};
 MODAL.addEventListener(
   "focusin",
   function addFocus(e) {
-    let parent = e.target;
-    while (parent !== null) {
-      parent.classList.add("focus-within");
-      if (parent === MODAL) return;
-      parent = parent.parentElement;
-    }
+    const [gettingFocus, losingFocus] = getPathToMutualAncestorInModal(
+      e.target,
+      e.relatedTarget
+    );
+    window.requestAnimationFrame(()=>{
+      MODAL.classList.add('focus-within');
+      for (const ele of gettingFocus) {
+        ele.classList.add('focus-within');
+      }
+      for (const ele of losingFocus) {
+        ele.classList.remove('focus-within');
+      }
+    });
   }
 );
 MODAL.addEventListener(
   "focusout",
+  /* Most stuff is already handled by the focusin listener above. The only case
+   * left is focus being taken away from an element in the modal to an element
+   * outside it, which is handled here: */
   function remFocus(e) {
-    let parent = e.target;
-    while (parent !== null) {
-      parent.classList.remove("focus-within");
-      if (parent === MODAL) return;
-      parent = parent.parentElement;
-    }
+    const [, focusWithinModal] = getDOMDepthInModal(e.relatedTarget);
+    if (focusWithinModal) return;
+
+    let anc = e.target;
+    window.requestAnimationFrame(()=>{
+      MODAL.classList.remove('focus-within');
+      while (anc !== MODAL) {
+        anc.classList.remove("focus-within");
+        anc = anc.parentElement;
+      }
+      MODAL.classList.remove("focus-within");
+    });
   }
 );
 
@@ -796,6 +927,9 @@ function classifyImages(doc, curPageURL) {
   }//Close for loop iterating over images
 }//Close function classifyImages
 
+const USER_SELECTOR = {
+  selector: null,
+};
 function classifyOther(doc, curPageURL) {
   const IFRAMES = doc.getElementsByTagName("iframe");
   for (const iframe of IFRAMES) {
@@ -833,6 +967,15 @@ function classifyOther(doc, curPageURL) {
       eleRecord.group.label("http-httpsError");
     }
   }//Close for loop iterating over iframes
+
+  /* See the CSS-Select flag: */
+  if (USER_SELECTOR === null) return;
+  const USER_SELECTED = doc.querySelectorAll(USER_SELECTOR.selector);
+  for (const userEle of USER_SELECTED) {
+    /* The groupname should not matter, but we'll use the tagName for fun: */
+    const eleRecord = new ElementRecord(curPageURL, userEle, userEle.tagName);
+    eleRecord.label("user-selected");
+  }
 }//Close function classifyOther
 
 /* Makes requests to the HREFs of links in LinkElementList, and handles the
@@ -1082,7 +1225,8 @@ function getAncestorWithParent(descendent, parent) {
 
 /* If the first parameter is null, return the second. Else, return the first: */
 function nullDefault(possiblyNullVal, defaultValue) {
-  return (possiblyNullVal === null) ? defaultValue : possiblyNullVal;
+  const maybeLazy = (possiblyNullVal === null) ? defaultValue : possiblyNullVal;
+  return (typeof maybeLazy === 'function') ? maybeLazy() : maybeLazy;
 }
 
 /**
@@ -1149,14 +1293,27 @@ function makeAutoCompleteList(
   }
 
   /* Shorthand function for hiding the suggestion list: */
-  const hideSugListFocusInput = (detail)=>{
-    inputEle.focus();
-    sugList.classList.add('hidden');
-    sugList.dispatchEvent(new CustomEvent('hide', {detail}));
+  const hideSugList = (detail, after)=>{
+    window.requestAnimationFrame(()=>{
+      sugList.classList.add('hidden');
+      if (after) after();
+      sugList.dispatchEvent(new CustomEvent('hide', {detail}));
+    });
   };
-  const showSugList = (detail)=>{
-    sugList.classList.remove('hidden');
-    sugList.dispatchEvent(new CustomEvent('show', {detail}));
+  const hideSugListFocusInput = (detail, after)=>{
+    window.requestAnimationFrame(()=>{
+      inputEle.focus();
+      sugList.classList.add('hidden');
+      if (after) after();
+      sugList.dispatchEvent(new CustomEvent('hide', {detail}));
+    });
+  };
+  const showSugList = (detail, after)=>{
+    window.requestAnimationFrame(()=>{
+      sugList.classList.remove('hidden');
+      if (after) after();
+      sugList.dispatchEvent(new CustomEvent('show', {detail}));
+    });
   };
 
   /* Callback for updating the suggestion list: */
@@ -1199,7 +1356,7 @@ function makeAutoCompleteList(
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     const eleValue = nullDefault(
       targetSuggestion.getAttribute('data-value'),
-      targetSuggestion.innerText
+      ()=>targetSuggestion.innerText
     );
 
     /* If the element has no set data-value attribute (e.g. a custom element was
@@ -1211,7 +1368,7 @@ function makeAutoCompleteList(
       selectionText: eleValue,
       selectionElement: targetSuggestion,
       sourceEvent: e
-    });
+    }, ()=>{ inputEle.value = eleValue; }); //After closing, set input value
   });
   /* Follow the cursor with the focused suggestion: */
   sugList.addEventListener('mousemove', (e)=>{
@@ -1222,23 +1379,22 @@ function makeAutoCompleteList(
       || getAncestorWithParent(e.target, document.activeElement) !== null
     ) return;
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
-    targetSuggestion.focus();
+    window.requestAnimationFrame(()=>targetSuggestion.focus());
   });
-  sugList.addEventListener("keydown", (e)=> {
+  sugList.addEventListener("keydown", (e)=>{
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     if (e.key === "Enter")  {
       const eleValue = nullDefault(
         targetSuggestion.getAttribute('data-value'),
-        targetSuggestion.innerText
+        ()=>targetSuggestion.innerText
       );
-      inputEle.value = eleValue;
       hideSugListFocusInput({
         reason: 'enter-in-list',
         selectionMade: true,
         selectionText: eleValue,
         selectionElement: targetSuggestion,
         sourceEvent: e
-      });
+      }, ()=>{ inputEle.value = eleValue; }); //After closing, set input value
     } else if (e.key === "ArrowUp") {
       const prevSug = targetSuggestion.previousSibling;
       if (prevSug === null) {
@@ -1248,13 +1404,13 @@ function makeAutoCompleteList(
           sourceEvent: e
         });
       } else {
-        prevSug.focus();
+        window.requestAnimationFrame(()=>prevSug.focus());
       }
       e.preventDefault();
     } else if (e.key === "ArrowDown") {
       const nextSug = targetSuggestion.nextSibling;
       if (nextSug !== null) {
-        nextSug.focus();
+        window.requestAnimationFrame(()=>nextSug.focus());
         e.preventDefault();
       }
     } else if (e.key === "Escape") {
@@ -1265,7 +1421,7 @@ function makeAutoCompleteList(
       });
     }
   });
-  /* Events for populating the suggetsion list and navigating to and from it via
+  /* Events for populating the suggestion list and navigating to and from it via
    * the input element: */
   inputEle.addEventListener('input', updateSuggestions);
   inputEle.addEventListener('mousedown', (e)=>{
@@ -1286,8 +1442,11 @@ function makeAutoCompleteList(
         showSugList({
           reason: 'open-down',
           sourceEvent: e
-        });
-        sugList.firstChild.focus();
+        }, ()=>{
+          console.time('menu-open-down');
+          sugList.firstChild.focus();
+          console.timeEnd('menu-open-down');
+        }); //After opening, focus first child
         e.preventDefault();
       }
     } else {
@@ -1297,20 +1456,19 @@ function makeAutoCompleteList(
           const targetSuggestion = sugList.firstChild;
           const eleValue = nullDefault(
             targetSuggestion.getAttribute('data-value'),
-            targetSuggestion.innerText
+            ()=>targetSuggestion.innerText
           );
-          inputEle.value = eleValue;
           hideSugListFocusInput({
             reason: 'enter-in-input',
             selectionMade: true,
             selectionText: eleValue,
             selectionElement: targetSuggestion,
             sourceEvent: e
-          });
+          }, ()=>{ inputEle.value = eleValue; }); //After closing, set input value
           break;
         }
         case 'ArrowDown':
-          sugList.firstChild.focus();
+          window.requestAnimationFrame(()=>sugList.firstChild.focus());
           e.preventDefault();
           break;
         case 'Backspace':
@@ -1345,7 +1503,7 @@ function makeAutoCompleteList(
       showSugList({reason});
     },
     hide(reason = 'function-call') {
-      hideSugListFocusInput({
+      hideSugList({
         reason,
         selectionMade: false,
       });
@@ -1477,9 +1635,9 @@ function presentResults() {
       keys.push(label);
       if (labelTable[label] === undefined) emptySet.add(label);
     };
-    for (const label of GROUP_LABELS) checkLabel(label);
+    for (const label of GROUP_LABELS.list) checkLabel(label);
     labelTable = ElementRecord.LabelTable;
-    for (const label of ELEMENT_LABELS) checkLabel(label);
+    for (const label of ELEMENT_LABELS.list) checkLabel(label);
     return [keys, emptySet];
   })();
 
@@ -1582,30 +1740,30 @@ function presentResults() {
    * parameter is truthy, that mapping is inverted, so that an element's href/
    * src maps to an array of documents containing that element: */
   const collectDataForLabel = (label, invertMapping)=>{
+    const labelType = (GROUP_LABELS.has(label)) ? GROUP_LABELS : ELEMENT_LABELS;
     const recordList = getAllRecordsLabelled(label);
     const labelData = Object.create(null);
     if (recordList !== null) {
       for (const record of recordList) {
         let key, val;
 
-        /* Map from from a given URL to URLs of pages which contain a link whose
-         * HREF matches the given URL (i.e. link -> [pages]): */
+        /* Map from from a given element to URLs of pages which contain a
+         * matching element. E.g. URL => list of pages containing links to that
+         * URL: */
         if (invertMapping) {
-          /* Use the property here, so that absolute and relative elements
-           * correspond to the same key. If the label is anchor, don't remove
-           * the anchor from hrefs of links: */
-          const retainAnchor = (label === "anchor");
-          key = getHrefOrSrcProp(record.element, retainAnchor);
+          /* Use the appropriate name for displaying the list of locations of
+           * each element (i.e. pages containing that element): */
+          key = labelType.metadata[label].getLocationsName(record.element);
           val = record.document;
         }
-        /* Map from page URL to HREFs of links on that page
-         * (i.e. page -> [links]): */
+        /* Map from page URL to elements on that page
+         * (i.e. page -> [elements]): */
         else {
           key = record.document;
 
-          /* Use the attribute here, so that relative elements can be founded by
-           * using ctrl + f on the DOM: */
-          val = getHrefOrSrcAttr(record.element);
+          /* Use the appropriate name for displaying the list of instances of
+           * elements matching the given element on each page. */
+          val = labelType.metadata[label].getInstancesName(record.element);
         }
         maybeArrayPush(labelData, key, val);
       }
@@ -1629,7 +1787,6 @@ function presentResults() {
         objJSONPreview = cutOff(objJSON, MAX_OUTPUT_LENGTH, "\n");
         objJSONPreview += "\n...";
       }
-      pre.innerHTML = objJSONPreview;
 
       /* Prepare data for the download link and the text around it: */
       let beforeLinkText = "";
@@ -1662,8 +1819,11 @@ function presentResults() {
           class: "crlr-download"
         }
       );
-      clearChildren(dlLinkPara);
-      appendChildren(dlLinkPara, [beforeLinkText, dlLink, afterLinkText]);
+      window.requestAnimationFrame(()=>{
+        pre.innerText = objJSONPreview;
+        clearChildren(dlLinkPara);
+        appendChildren(dlLinkPara, [beforeLinkText, dlLink, afterLinkText]);
+      });
     }
     /* Reads which log object to output, what format to use, and calls
      * outputLogObjToModal to actually change what is shown to the user: */
@@ -1941,6 +2101,28 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
     userDisallowed = disallowMatch[2].split(/\s*[,]\s*/);
   }
 
+  /* Specify a CSS selector which will group any matching elements into the
+   * "user-selected" label. Useful for finding particular elements not otherwise
+   * captured by the script: */
+  const userSelectorMatch = (
+    /-(?:CSS)?[-_]?Select(?:[oe]r)?(["'`])([^"\n]+)\1/i.exec(flagStr)
+  );
+  if (userSelectorMatch !== null) {
+    const selector = userSelectorMatch[2];
+    USER_SELECTOR.selector = selector;
+    /* To prevent silent failure, try a match right away to see if the selector
+     * is valid: */
+    try {
+      document.querySelector(selector);
+    } catch (e) {
+      if (e.name === 'SyntaxError') {
+        throw new Error(`"${selector}" is not a valid CSS selector!`);
+      } else {
+        throw e;
+      }
+    }
+  }
+
   /* Setup robotsTxt handler and start the crawl: */
   robotsTxt.requestAndParse(function afterRobotsTxtParse() {
     /* Handle disallowMatchFlag AFTER parsing, because parsing overwrites the
@@ -1969,4 +2151,4 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
   });
 }
 
-startCrawl("");
+startCrawl("-select'h2'");

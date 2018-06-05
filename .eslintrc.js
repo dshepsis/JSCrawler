@@ -26,7 +26,6 @@ module.exports = {
     "class-methods-use-this": "error",
     "consistent-return": "error",
     "default-case": "warn",
-    "dot-notation": "error",
     "guard-for-in": "error",
     "eqeqeq": "warn",
     "no-else-return": "error",
