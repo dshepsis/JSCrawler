@@ -380,8 +380,6 @@ class ElementRecord {
     /* Default function for converting an element into a string ID: */
     if (groupName === undefined) {
       groupName = getHrefOrSrcProp(elementInDocument);
-    } else {//@debug
-      console.log("custom groupname: " + groupName);
     }
     /* These two tables are class variables used for retrieving records or
      * groups based on labels or group-names, respectively: */
@@ -1443,9 +1441,7 @@ function makeAutoCompleteList(
           reason: 'open-down',
           sourceEvent: e
         }, ()=>{
-          console.time('menu-open-down');
           sugList.firstChild.focus();
-          console.timeEnd('menu-open-down');
         }); //After opening, focus first child
         e.preventDefault();
       }
@@ -1773,13 +1769,14 @@ function presentResults() {
 
   /* For handling the output of logging objects to the user: */
   const updateOutput = (function() {
+    let currentlyDisplayedLabel;
     let usingAltFormat;
 
-    function outputDataToModal(label) {
+    function outputDataToModal(label, useInvertedFormat) {
       const MAX_OUTPUT_LENGTH = 5000;
 
       /* Main JSON Preview output: */
-      const objForLabel = collectDataForLabel(label, usingAltFormat);
+      const objForLabel = collectDataForLabel(label, useInvertedFormat);
       const objJSON = JSON.stringify(objForLabel, null, 2);
       const previewTooLong = (objJSON.length > MAX_OUTPUT_LENGTH);
       let objJSONPreview = objJSON;
@@ -1829,14 +1826,23 @@ function presentResults() {
      * outputLogObjToModal to actually change what is shown to the user: */
     return function updateOutput() {
       const wantedLabel = inputTextBox.value;
+      const altFormatWanted = altFormatCheckBox.checked;
 
-      /* If the user has not inputted a valid label, don't change the currently
-       * displayed data (they may be in the middle of typing): */
-      if (!ELEMENT_LABELS.has(wantedLabel) && !GROUP_LABELS.has(wantedLabel)) {
-        return;
+      let anyInvalidation = false;
+      if (currentlyDisplayedLabel !== wantedLabel) {
+        /* If the label changed, check if it's valid: */
+        if (ELEMENT_LABELS.has(wantedLabel) || GROUP_LABELS.has(wantedLabel)) {
+          currentlyDisplayedLabel = wantedLabel;
+          anyInvalidation = true;
+        }
       }
-      usingAltFormat = altFormatCheckBox.checked;
-      outputDataToModal(wantedLabel);
+      if (usingAltFormat !== altFormatWanted) {
+        usingAltFormat = altFormatWanted;
+        anyInvalidation = true;
+      }
+      if (anyInvalidation) {
+        outputDataToModal(currentlyDisplayedLabel, usingAltFormat);
+      }
     };
   }());//Close closure
 
