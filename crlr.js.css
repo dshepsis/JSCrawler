@@ -315,8 +315,9 @@
   flex: 0 0 auto;
   align-self: center;
 }
-#crlr-modal #crlr-input-open:hover,
-#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open {
+#crlr-modal #crlr-textbox-controls:hover #crlr-input-open,
+#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open
+ {
   opacity: 1;
 }
 #crlr-modal #crlr-input-open:hover {

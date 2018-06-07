@@ -41,7 +41,7 @@
       </li>
       <li id="running-open-site" class="anchor-point"><p>
         <span class="item-header">Open the site</span> which you want to inspect.
-        Make sure you're using an up-to-date version of Chrome or Firefox.
+        Make sure you're using an up-to-date version of a modern browser, such as Chrome, Firefox, or Edge.
       </p></li>
       <li id="running-open-console" class="anchor-point">
         <p>
@@ -245,14 +245,19 @@
         </p>
         <p>
           You can empty the textbox by clicking on the large "✖" button
-          at the left of the textbox. Double-clicking on the textbox, or pressing
-          the down-arrow key, while it is empty will bring up a complete list of
+          at the left of the textbox. While the textbox is tempty, double-clicking on it, clicking on the black triangle icon, or pressing
+          the down-arrow key while the textbox is selected will bring up a complete list of
           labels:
         </p>
         <img src="img/modal_label_options.png" alt="Part of the drop-down list of options for labels." class="click-to-open figure" />
         <p>
           Labels which have no corresponding results are marked as "(Empty)".
           Clicking on one of the drop-down options will auto-fill the textbox.
+        </p>
+        <p>
+          As you type into the textbox, the list will narrow down to only the options with matching characters. For example, typing "alt" will bring up "no<strong>Alt</strong>Text" and "<strong>a</strong>bso<strong>l</strong>u<strong>t</strong>eInternal".
+          The shortest matching suggestion will be listed on top. Pressing <kbd>Enter</kbd>
+          while typing in the textbox will fill it with the top suggestion. This means you can quickly select a label by typing a few characters and hitting enter.
         </p>
       </li>
       <li id="modal-invert" class="anchor-point">
@@ -289,7 +294,7 @@
           You can tell whether the output is truncated by either
           reading the paragraph below the preview box, or by checking the last
           line of output in the box. If the output is truncated, the last line
-          will contain an ellipses "<strong><code>...</code></strong>". If the
+          will contain an ellipsis "<strong><code>...</code></strong>". If the
           output is complete, it will contain a closing curly brace
           "<strong><code>}</code></strong>".
         </p>
@@ -339,23 +344,6 @@
       the site:
     </p>
     <ul>
-      <li id="labels-link" class="anchor-point"><p>
-      	<strong class="item-header">link</strong>: Refers to all elements found during the crawl
-        which are <code>&lt;a&gt;</code> tags. These are regular hyper-links that you can
-        click on to go to another page, <a href="#labels-link">like this</a>.
-        This label includes both internal and external links found on the site.
-        Note that this tag doesn't refer to <code>&lt;link&gt;</code> elements,
-        which serve a separate function and aren't normally visible on a page.
-      </p></li>
-      <li id="labels-image" class="anchor-point"><p>
-      	<strong class="item-header">image</strong>: Refers to all <code>img</code> elements found.
-      </p></li>
-      <li id="labels-iframe" class="anchor-point"><p>
-      	<strong class="item-header">iframe</strong>: Refers to all <code>iframe</code> elements
-        found. These elements are used for embedding another page's or site's
-        contents within a page. These are often used for embedding video or
-        social-media streams.
-      </p></li>
       <li id="labels-internal" class="anchor-point">
         <p>
         	<strong class="item-header">internal</strong>: Refers to all links and iframes which point
@@ -369,7 +357,6 @@
         <pre class="code-block"><code>https://nbchancellor.rutgers.edu/
 https://nbchancellor.rutgers.edu/news-announcements/news-and-communications
 https://nbchancellor.rutgers.edu/about-office/about-office</code></pre>
-
         <p>
           ...That domain being "https://nbchancellor.rutgers.edu". However,
           these pages are all on separate domains:
@@ -471,7 +458,7 @@ https://newbrunswick.rutgers.edu/</code></pre>
           but they do cause issues for the crawler, as these dialogue boxes can't
           be closed by the crawler itself, but can halt its progress. If these
           appear during a crawl, please close them promptly by pressing
-          <kbd>space</kbd> or <kbd>enter</kbd>.
+          <kbd>space</kbd>, <kbd>enter</kbd>, or <kbd>escape</kbd>.
         </p>
       </li>
       <li id="labels-forbidden" class="issue-label anchor-point"><p>
@@ -532,6 +519,31 @@ https://newbrunswick.rutgers.edu/</code></pre>
 					<li>xlsm</li>
 					<li>xlsx</li>
         </ul>
+      </p></li>
+      <li id="labels-badRequest" class="issue-label anchor-point"><p>
+      	<strong class="item-header">badRequest</strong>: Refers to links which
+        cause a malformed request when followed by the crawler. This category
+        will virtually always be empty. If it is not, try following the link
+        yourself to get a better idea of the underlying issue. If the link works
+        normally for you, the label was most likely caused by a bug in the
+        crawler. If you notice this, please report the issue to a developer.
+      </p></li>
+      <li id="labels-link" class="anchor-point"><p>
+      	<strong class="item-header">link</strong>: Refers to all elements found during the crawl
+        which are <code>&lt;a&gt;</code> tags. These are regular hyper-links that you can
+        click on to go to another page, <a href="#labels-link">like this</a>.
+        This label includes both internal and external links found on the site.
+        Note that this tag doesn't refer to <code>&lt;link&gt;</code> elements,
+        which serve a separate function and aren't normally visible on a page.
+      </p></li>
+      <li id="labels-image" class="anchor-point"><p>
+      	<strong class="item-header">image</strong>: Refers to all <code>img</code> elements found.
+      </p></li>
+      <li id="labels-iframe" class="anchor-point"><p>
+      	<strong class="item-header">iframe</strong>: Refers to all <code>iframe</code> elements
+        found. These elements are used for embedding another page's or site's
+        contents within a page. These are often used for embedding video or
+        social-media streams.
       </p></li>
       <li id="labels-startPage" class="anchor-point"><p>
       	<strong class="item-header">startPage</strong>: Refers to the page on which the crawl was
@@ -613,6 +625,10 @@ https://newbrunswick.rutgers.edu/</code></pre>
           asking for appropriate title text, and applying it to the iframe.
         </p>
       </li>
+      <li id="labels-userSelected" class="anchor-point"><p>
+      	<strong class="item-header">userSelected</strong>: Refers to elements
+        selected by the user using the <a href="#flags-select"><code>-select</code></a> flag. If the flag isn't set, this label will always be empty.
+      </p></li>
     </ul>
 
     <h2 id="flags" class="anchor-point">Script Flags:</h2>
@@ -676,6 +692,20 @@ https://newbrunswick.rutgers.edu/</code></pre>
           the crawler will not crawl/check any pages located in the "about" or
           "academics" folders/groups. This flag is useful for excluding folders
           that contain large amounts of uninteresting content, such as event-calendars.
+        </p>
+      </li>
+      <li id="flags-select" class="anchor-point">
+        <p>
+          <strong class="item-header"><code>-select'css-selector'</code></strong>:
+          This flag allows you to specify a CSS selector against which all pages
+          will be queried. Any matches will be added to the
+          <a href="#labels-userSelected">userSelected</a> label. For example,
+          to find all tables with the 'collapsible' class on the site, use this flag:
+        </p>
+        <pre class="code-block"><code>startCrawl("-select'table.collapsible'");</code></pre>
+        <p>
+          You can find more information on how to write and compose CSS selectors
+          <a href="https://www.w3schools.com/cssref/css_selectors.asp">here</a>.
         </p>
       </li>
     </ul>
