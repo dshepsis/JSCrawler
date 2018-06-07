@@ -67,7 +67,7 @@ function validateType(ambiguousVar, desiredType, nameStr = "variable") {
 }
 
 /* Warn the user about navigating away during crawl: */
-window.addEventListener("beforeunload", function (e) {
+window.addEventListener('beforeunload', function (e) {
   /* Note: In modern browsers, these messages are ignored as a security feature,
    * and a default message is displayed instead. */
   const confirmationMessage = (
@@ -85,10 +85,10 @@ const PROTOCOL = window.location.protocol;
 
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = [
-  "doc", "docx", "gif", "jpeg", "jpg", "pdf",
-  "png", "ppt", "pptx", "xls", "xlsm", "xlsx"
+  'doc', 'docx', 'gif', 'jpeg', 'jpg', 'pdf',
+  'png', 'ppt', 'pptx', 'xls', 'xlsm', 'xlsx'
 ];
-const RECOGNIZED_SCHEMES = ["mailto:", "file:", "tel:", "javascript:"];
+const RECOGNIZED_SCHEMES = ['mailto:', 'file:', 'tel:', 'javascript:'];
 
 const BANNED_STRINGS = {
   list: ["drupaldev"],
@@ -140,8 +140,8 @@ function urlRemoveAnchor(locationObj) {
      * that link think it refers to the current page. In other words, an empty
      * href behaves like "/". So we have to manually avoid this behavior to
      * avoid associating a null link with a refresh link. */
-    if (locationObj === "") return "";
-    return urlRemoveAnchor(makeElement("a", undefined, {href: locationObj}));
+    if (locationObj === '') return '';
+    return urlRemoveAnchor(makeElement('a', undefined, {href: locationObj}));
   }
   let origin = locationObj.origin;
 
@@ -183,7 +183,7 @@ function staticConst(classConstructor, varName, value) {
     return false;
   }
   Object.defineProperty(classConstructor, varName, {
-    value: (typeof value === "function") ? value() : value,
+    value: (typeof value === 'function') ? value() : value,
     writable: false,
     enumerable: true,
     configurable: false
@@ -200,7 +200,7 @@ function staticConst(classConstructor, varName, value) {
 const makeIfUndef = function (obj, prop, val, onExistence) {
   const existingVal = obj[prop];
   if (existingVal === undefined) {
-    const newVal = (typeof val === "function") ? val() : val;
+    const newVal = (typeof val === 'function') ? val() : val;
     obj[prop] = newVal;
     return newVal;
   }
@@ -232,7 +232,7 @@ function getHrefOrSrcProp(ele, retainAnchor) {
 function getHrefOrSrcAttr(ele) {
   validateType(ele, HTMLElement, "element");
   if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
-  for (const attrName of ["href", "src"]) {
+  for (const attrName of ['href', 'src']) {
     const attrVal = ele.getAttribute(attrName);
     if (attrVal !== null) return attrVal;
   }
@@ -264,7 +264,8 @@ const GROUP_LABELS = (()=>{
     "internalServiceError",
     "robotsDisallowed",
     "unloaded",
-    "file"
+    "file",
+    "badRequest"
   ];
   const labelSet = freezeSet(new Set(gLabels));
 
@@ -293,7 +294,7 @@ class RecordGroup {
     this.name = name;
     this.records = elementRecords;
     this.labels = new Set();
-    staticConst(this.constructor, "LabelTable", ()=>Object.create(null));
+    staticConst(this.constructor, 'LabelTable', ()=>Object.create(null));
   }
   static validateLabel (label) {
     if (GROUP_LABELS.has(label)) {
@@ -383,8 +384,8 @@ class ElementRecord {
     }
     /* These two tables are class variables used for retrieving records or
      * groups based on labels or group-names, respectively: */
-    staticConst(this.constructor, "GroupTable", ()=>Object.create(null));
-    staticConst(this.constructor, "LabelTable", ()=>Object.create(null));
+    staticConst(this.constructor, 'GroupTable', ()=>Object.create(null));
+    staticConst(this.constructor, 'LabelTable', ()=>Object.create(null));
 
     /* Properties: */
     this.document = documentID;
@@ -392,7 +393,7 @@ class ElementRecord {
     /* Clone the element so that we don't have ot hold a reference to the
      * entire document in memory, thus allowing documents to be garbage-
      * collected when they're done being processed: */
-    this.element = elementInDocument.cloneNode("Deep");
+    this.element = elementInDocument.cloneNode('Deep');
     // const groupName = eleToGroupName(elementInDocument);
     this.group = makeIfUndef(
       this.constructor.GroupTable,
@@ -509,12 +510,12 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;padding:.5em;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:table;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{margin-right:.25em;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4)}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:2px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:300px;border:none}#crlr-modal #crlr-textbox-suggestions-container{display:inline;position:relative;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 0 -2px;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
-const styleEle = makeElement("style", CRAWLER_CSS, {id: "crlr.js.css"});
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;width:320px}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-input-open:hover,#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
+const styleEle = makeElement('style', CRAWLER_CSS, {id: 'crlr.js.css'});
 document.head.appendChild(styleEle);
 
 /* Make modal element: */
-const MODAL = makeElement("div", undefined, {id: "crlr-modal"});
+const MODAL = makeElement('div', undefined, {id: 'crlr-modal'});
 
 /* Pseudo-polyfill for browsers without support for :focus-within: */
 const getDOMDepthInModal = (ele)=>{
@@ -568,7 +569,7 @@ const getPathToMutualAncestorInModal = (a, b)=>{
   return [fromA, fromB];
 };
 MODAL.addEventListener(
-  "focusin",
+  'focusin',
   function addFocus(e) {
     const [gettingFocus, losingFocus] = getPathToMutualAncestorInModal(
       e.target,
@@ -586,7 +587,7 @@ MODAL.addEventListener(
   }
 );
 MODAL.addEventListener(
-  "focusout",
+  'focusout',
   /* Most stuff is already handled by the focusin listener above. The only case
    * left is focus being taken away from an element in the modal to an element
    * outside it, which is handled here: */
@@ -598,10 +599,10 @@ MODAL.addEventListener(
     window.requestAnimationFrame(()=>{
       MODAL.classList.remove('focus-within');
       while (anc !== MODAL) {
-        anc.classList.remove("focus-within");
+        anc.classList.remove('focus-within');
         anc = anc.parentElement;
       }
-      MODAL.classList.remove("focus-within");
+      MODAL.classList.remove('focus-within');
     });
   }
 );
@@ -614,19 +615,19 @@ const cancelBubble = (e)=>{
   e.cancelBubble = true;
   if (e.stopPropagation) e.stopPropagation();
 };
-MODAL.addEventListener("click", cancelBubble);
-MODAL.addEventListener("keydown", cancelBubble);
-MODAL.addEventListener("keypress", cancelBubble);
+MODAL.addEventListener('click', cancelBubble);
+MODAL.addEventListener('keydown', cancelBubble);
+MODAL.addEventListener('keypress', cancelBubble);
 
 /* Adds a counter to the modal, showing the number of live (unresolved) http
  * requests currently waiting: */
 const requestCounter = (function() {
   /* Create display: */
-  const disp = makeElement("p", undefined, {
-    id: "request-counter",
+  const disp = makeElement('p', undefined, {
+    id: 'request-counter',
     title: "Number of page requests currently loading"
   });
-  const waitingClassString = "waiting-for-results";
+  const waitingClassString = 'waiting-for-results';
   let initialized = false;
   /* Methods to allow other code to affect the counter: */
   const API = {
@@ -674,7 +675,7 @@ const requestCounter = (function() {
 /* Finds all of the links in a document and classifies them
  * based on the contents of their hrefs: */
 function classifyLinks(doc, curPageURL) {
-  const LINKS = doc.getElementsByTagName("a");
+  const LINKS = doc.getElementsByTagName('a');
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
    * this page: */
@@ -689,7 +690,7 @@ function classifyLinks(doc, curPageURL) {
 
   /* Loop over links: */
   for (const link of LINKS) {
-    const hrefAttr = link.getAttribute("href");
+    const hrefAttr = link.getAttribute('href');
     const linkRecord = new ElementRecord(curPageURL, link);
     linkRecord.label("link");
 
@@ -720,7 +721,7 @@ function classifyLinks(doc, curPageURL) {
         (linkIsToWebsite && (link.hostname.toLowerCase() === HOSTNAME));
 
     /* Anchor link: */
-    if (link.hash !== "") {
+    if (link.hash !== '') {
       linkRecord.label("anchor");
       markElement(link, "pink", "Anchor link");
     }
@@ -734,7 +735,7 @@ function classifyLinks(doc, curPageURL) {
         linkRecord.group.label("http-httpsError");
       }
       if (linkIsAbsolute) {
-        if (link.matches(".field-name-field-related-links a")) {
+        if (link.matches('.field-name-field-related-links a')) {
           console.warn("absint link in related links", link);
           continue; //@debug
         }
@@ -748,18 +749,18 @@ function classifyLinks(doc, curPageURL) {
         markElement(link, "gray", "Unusual Scheme");
       }
       switch (linkProtocol) {
-        case "mailto:":
+        case 'mailto:':
           linkRecord.group.label("Email");
           markElement(link, "yellow", "Email link");
           break;
-        case "file:":
+        case 'file:':
           linkRecord.group.label("localFile");
           markElement(link, "blue", "File link");
           break;
-        case "javascript:":
+        case 'javascript:':
           linkRecord.group.label("javascriptLink");
           break;
-        case "tel:":
+        case 'tel:':
           markElement(link, "darkBlue", "Telephone Link");
           break;
         default:
@@ -772,7 +773,7 @@ function classifyLinks(doc, curPageURL) {
 
 class ImageLoader {
   constructor(src) {
-    staticConst(this.constructor, "SrcTable", ()=>Object.create(null));
+    staticConst(this.constructor, 'SrcTable', ()=>Object.create(null));
 
     /* If another ImageLoader has been created for the given src, reuse it: */
     const existingLoader = this.constructor.SrcTable[src];
@@ -780,7 +781,7 @@ class ImageLoader {
       return existingLoader;
     }
     this.constructor.SrcTable[src] = this;
-    this.element = makeElement("img");
+    this.element = makeElement('img');
     this.loaded = this.errored = false;
 
     /* For the timeout and quit function, so that ImageLoaders can be
@@ -800,7 +801,7 @@ class ImageLoader {
     };
     /* Set the src attribute last to guarantee loading doesn't begin until the
      * onload/error event handlers have been set: */
-    this.element.setAttribute("src", src);
+    this.element.setAttribute('src', src);
   }
   whenReady(normCallback, errCallback) {
     /* If the image has already loaded or errored, we still want the callbacks
@@ -832,9 +833,9 @@ class ImageLoader {
        * executed **synchronously** in the order of attachment. Since control
        * flow can't be yielded between event handlers, we don't have to worry
        * about incrementing and decrementing the requestCounter for each one. */
-      this.element.addEventListener("load", normCallback);
+      this.element.addEventListener('load', normCallback);
       if (errCallback !== undefined) {
-        this.element.addEventListener("error", errCallback);
+        this.element.addEventListener('error', errCallback);
       }
     }
   }
@@ -842,19 +843,19 @@ class ImageLoader {
     if (!(this.loaded || this.errored)) {
       /* Removing the src attribute does not fire the onerror event, so we must
        * manually decrement the requestCounter: */
-      this.element.removeAttribute("src");
+      this.element.removeAttribute('src');
       requestCounter.decrement();
     }
   }
 }
 
 function classifyImages(doc, curPageURL) {
-  const IMAGES = doc.getElementsByTagName("img");
+  const IMAGES = doc.getElementsByTagName('img');
   for (const image of IMAGES) {
     const imageRecord = new ElementRecord(curPageURL, image);
     imageRecord.label("image");
     const srcProp = image.src;
-    const srcAttr = image.getAttribute("src");
+    const srcAttr = image.getAttribute('src');
     if (srcAttr === null) {
       imageRecord.group.label("null");
       continue;
@@ -878,8 +879,8 @@ function classifyImages(doc, curPageURL) {
     }
     /* Check whether the displayed size of this particular img element matches
     * the native size of this image: */
-    const widthAttr =  image.getAttribute("width");
-    const heightAttr = image.getAttribute("height");
+    const widthAttr =  image.getAttribute('width');
+    const heightAttr = image.getAttribute('height');
     const anyDimensionsSpecified = (widthAttr !== null || heightAttr !== null);
     const compareImageSize = ()=>{
       const loadEle = imgLoader.element;
@@ -929,13 +930,13 @@ const USER_SELECTOR = {
   selector: null,
 };
 function classifyOther(doc, curPageURL) {
-  const IFRAMES = doc.getElementsByTagName("iframe");
+  const IFRAMES = doc.getElementsByTagName('iframe');
   for (const iframe of IFRAMES) {
     const eleRecord = new ElementRecord(curPageURL, iframe);
     eleRecord.label("iframe");
 
     const srcProp = iframe.src;
-    const srcAttr = iframe.getAttribute("src");
+    const srcAttr = iframe.getAttribute('src');
     if (srcAttr === null) {
       eleRecord.group.label("null");
       continue;
@@ -1007,7 +1008,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
     /* Checks if the request resolved to a file rather than an HTML document: */
     function findURLExtension(url) {
       for (let i = url.length - 1; i >= 0; --i) {
-        if (url.charAt(i) === ".") return url.substring(i+1).toLowerCase();
+        if (url.charAt(i) === '.') return url.substring(i+1).toLowerCase();
       }
       return undefined;
     }
@@ -1018,8 +1019,8 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
       pageRecordGroup.label("file");
     }
     /* Then, check the request's content-type: */
-    const contentType = request.getResponseHeader("Content-Type");
-    const validContentType = "text/html";
+    const contentType = request.getResponseHeader('Content-Type');
+    const validContentType = 'text/html';
     if (!contentType.startsWith(validContentType)) {
       if (!isRecognizedFile) {
         pageRecordGroup.label("unknownContentType");
@@ -1033,9 +1034,8 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   const normalResponseHandler = (pageRecordGroup, pageURL, pageDOM, request)=>{
     if (!pageDOM) {
       console.error(
-        "Null response from " + pageURL +
-        ". It may be an unrecognized file type." +
-        "\n\tIt was linked-to from " + curPage
+        `Null response from ${pageURL}. It may be an unrecognized file type.` +
+        `\n\tIt was linked-to from ${curPage}`
       );
       console.error(request);
       return;
@@ -1167,8 +1167,8 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
       }
       onComplete(httpRequest);
     };
-    httpRequest.open("GET", URLOfPageToVisit);
-    httpRequest.responseType = "document";
+    httpRequest.open('GET', URLOfPageToVisit);
+    httpRequest.responseType = 'document';
 
     httpRequest.send();
     httpRequest.sent = true;
@@ -1204,7 +1204,7 @@ function cutOff(str, maxLen, breakStr) {
   cutOffPoint = str.lastIndexOf(breakStr, cutOffPoint);
 
   /* If the breakStr character can't be found, return an empty string: */
-  if (cutOffPoint === -1) return "";
+  if (cutOffPoint === -1) return '';
   return str.substring(0, cutOffPoint);
 }
 
@@ -1306,67 +1306,91 @@ function makeAutoCompleteList(
       sugList.dispatchEvent(new CustomEvent('hide', {detail}));
     });
   };
+  /* Use when already within a requestAnimationFrame call: */
+  const showSugListImmediately = (detail, after)=>{
+    sugList.classList.remove('hidden');
+    if (after) after();
+    sugList.dispatchEvent(new CustomEvent('show', {detail}));
+  };
+  /* Use in ordinary contexts: */
   const showSugList = (detail, after)=>{
-    window.requestAnimationFrame(()=>{
-      sugList.classList.remove('hidden');
-      if (after) after();
-      sugList.dispatchEvent(new CustomEvent('show', {detail}));
-    });
+    window.requestAnimationFrame(()=>showSugListImmediately(detail, after));
   };
 
   /* Callback for updating the suggestion list: */
-  function updateSuggestions() {
-    clearChildren(sugList);
-    const userPattern = inputEle.value;
+  const updateSuggestions = (()=>{
+    /* This is used to optimize away needlessly refreshing the list if all
+     * suggestions are already shown, and the new user pattern won't change
+     * that. Note that we don't currently optimize away refreshing the list
+     * when the user-pattern doesn't change because that only really happens if
+     * the user highlights the textbox, copies, and pastes immediately, which
+     * is a rare and pointless operation anyways: */
+    let alreadyShowingAll;
+    const NO_CHANGE = Symbol('No changes need to be made to the suggestionList.');
+    return ()=>{
+      const userPattern = inputEle.value;
+      const [matchingSugEles, results] = (()=> {
+        if (userPattern.length === 0) {
+          if (alreadyShowingAll) return [NO_CHANGE, suggestions];
+          alreadyShowingAll = true;
+          return [allSuggestionEles(), suggestions];
+        }
+        /* Show a list of matching suggestions, with matching characters bolded: */
+        const fuzzySearchResults = (suggestions
+          .map(sug => fuzzySearchLex(userPattern, sug))
+          .filter(fuzzyRes => !fuzzyRes.hasOwnProperty('error'))
+        );
+        /* If there are no matches, show a list of all suggestions: */
+        if (fuzzySearchResults.length === 0) {
+          if (alreadyShowingAll) return [NO_CHANGE, suggestions];
+          alreadyShowingAll = true;
+          return [allSuggestionEles(), suggestions];
+        }
+        /* Some change was (probably) made: */
+        alreadyShowingAll = false;
+        /* If there are matches, sort them so the closest matches are on top: */
+        return [(fuzzySearchResults
+          .sort((res1, res2) => res1.insertions - res2.insertions)
+          .map(fuzzyRes => getSugEle(fuzzyRes.refStr, fuzzyRes))
+        ), fuzzySearchResults.map(res => res.refStr)];
+      })();
 
-    const [matchingSugEles, results] = (()=> {
-      if (userPattern.length === 0) {
-        return [allSuggestionEles(), suggestions];
+      /* If we are already showing all suggestions, don't refresh the list: */
+      if (matchingSugEles === NO_CHANGE) {
+        showSugList({reason: 'update-no-change', results});
+        return false;
       }
-      /* Show a list of matching suggestions, with matching characters bolded: */
-      const fuzzySearchResults = (suggestions
-        .map(sug => fuzzySearchLex(userPattern, sug))
-        .filter(fuzzyRes => !fuzzyRes.hasOwnProperty('error'))
-      );
-      /* If there are no matches, show a list of all suggestions: */
-      if (fuzzySearchResults.length === 0) {
-        return [allSuggestionEles(), suggestions];
-      }
-      /* If there are matches, sort them so the closest matches are on top: */
-      return [(fuzzySearchResults
-        .sort((res1, res2) => res1.insertions - res2.insertions)
-        .map(fuzzyRes => getSugEle(fuzzyRes.refStr, fuzzyRes))
-      ), fuzzySearchResults.map(res => res.refStr)];
-    })();
-    appendChildren(sugList, matchingSugEles);
-    showSugList({
-      reason: 'update',
-      results
-    });
-  }
+      window.requestAnimationFrame(()=>{
+        clearChildren(sugList);
+        appendChildren(sugList, matchingSugEles);
+        showSugListImmediately({reason: 'update', results});
+      });
+      return true;
+    };
+  })();
 
   /* Events for navigating and selecting items off of the suggestion list: */
-  sugList.addEventListener("click", (e)=> {
+  sugList.addEventListener('click', (e)=> {
     /* If the user clicked on the list but not a selection (e.g. by clicking the
      * border of the list element), do nothing: */
     if (e.target === sugList) return;
 
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
-    const eleValue = nullDefault(
+    const selectionEleValue = nullDefault(
       targetSuggestion.getAttribute('data-value'),
       ()=>targetSuggestion.innerText
     );
 
     /* If the element has no set data-value attribute (e.g. a custom element was
      * given via the sugToEleMap parameter), use the element's innerText: */
-    inputEle.value = eleValue;
+    inputEle.value = selectionEleValue;
     hideSugListFocusInput({
       reason: 'click',
       selectionMade: true,
-      selectionText: eleValue,
+      selectionText: selectionEleValue,
       selectionElement: targetSuggestion,
       sourceEvent: e
-    }, ()=>{ inputEle.value = eleValue; }); //After closing, set input value
+    }, ()=>{ inputEle.value = selectionEleValue; }); //After closing, set input value
   });
   /* Follow the cursor with the focused suggestion: */
   sugList.addEventListener('mousemove', (e)=>{
@@ -1379,44 +1403,54 @@ function makeAutoCompleteList(
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     window.requestAnimationFrame(()=>targetSuggestion.focus());
   });
-  sugList.addEventListener("keydown", (e)=>{
+  sugList.addEventListener('keydown', (e)=>{
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
-    if (e.key === "Enter")  {
-      const eleValue = nullDefault(
-        targetSuggestion.getAttribute('data-value'),
-        ()=>targetSuggestion.innerText
-      );
-      hideSugListFocusInput({
-        reason: 'enter-in-list',
-        selectionMade: true,
-        selectionText: eleValue,
-        selectionElement: targetSuggestion,
-        sourceEvent: e
-      }, ()=>{ inputEle.value = eleValue; }); //After closing, set input value
-    } else if (e.key === "ArrowUp") {
-      const prevSug = targetSuggestion.previousSibling;
-      if (prevSug === null) {
+    switch (e.key) {
+      case 'Enter': {
+        const selectionEleValue = nullDefault(
+          targetSuggestion.getAttribute('data-value'),
+          ()=>targetSuggestion.innerText
+        );
         hideSugListFocusInput({
-          reason: 'close-up',
+          reason: 'enter-in-list',
+          selectionMade: true,
+          selectionText: selectionEleValue,
+          selectionElement: targetSuggestion,
+          sourceEvent: e
+        }, ()=>{ inputEle.value = selectionEleValue; }); //After closing, set input value
+        break;
+      }
+      case 'ArrowUp': {
+        const prevSug = targetSuggestion.previousSibling;
+        if (prevSug === null) {
+          hideSugListFocusInput({
+            reason: 'close-up',
+            selectionMade: false,
+            sourceEvent: e
+          });
+        } else {
+          window.requestAnimationFrame(()=>prevSug.focus());
+        }
+        e.preventDefault();
+        break;
+      }
+      case 'ArrowDown': {
+        const nextSug = targetSuggestion.nextSibling;
+        if (nextSug !== null) {
+          window.requestAnimationFrame(()=>nextSug.focus());
+          e.preventDefault();
+        }
+        break;
+      }
+      case 'Escape':
+        hideSugListFocusInput({
+          reason: 'close-escape',
           selectionMade: false,
           sourceEvent: e
         });
-      } else {
-        window.requestAnimationFrame(()=>prevSug.focus());
-      }
-      e.preventDefault();
-    } else if (e.key === "ArrowDown") {
-      const nextSug = targetSuggestion.nextSibling;
-      if (nextSug !== null) {
-        window.requestAnimationFrame(()=>nextSug.focus());
-        e.preventDefault();
-      }
-    } else if (e.key === "Escape") {
-      hideSugListFocusInput({
-        reason: 'close-escape',
-        selectionMade: false,
-        sourceEvent: e
-      });
+        break;
+      default:
+        return;
     }
   });
   /* Events for populating the suggestion list and navigating to and from it via
@@ -1450,17 +1484,17 @@ function makeAutoCompleteList(
       switch (e.key) {
         case 'Enter': {
           const targetSuggestion = sugList.firstChild;
-          const eleValue = nullDefault(
+          const selectionEleValue = nullDefault(
             targetSuggestion.getAttribute('data-value'),
             ()=>targetSuggestion.innerText
           );
           hideSugListFocusInput({
             reason: 'enter-in-input',
             selectionMade: true,
-            selectionText: eleValue,
+            selectionText: selectionEleValue,
             selectionElement: targetSuggestion,
             sourceEvent: e
-          }, ()=>{ inputEle.value = eleValue; }); //After closing, set input value
+          }, ()=>{ inputEle.value = selectionEleValue; }); //After closing, set input value
           break;
         }
         case 'ArrowDown':
@@ -1483,6 +1517,13 @@ function makeAutoCompleteList(
             sourceEvent: e
           });
           break;
+        case 'ArrowUp':
+          hideSugListFocusInput({
+            reason: 'close-up-in-input',
+            selectionMade: false,
+            sourceEvent: e
+          });
+          break;
         default:
           return;
       }
@@ -1490,8 +1531,14 @@ function makeAutoCompleteList(
   });
   /* Allow for the dropdown to be closed by clicking off of it: */
   document.addEventListener('mousedown', (e)=>{
+    if (
+      e.target === inputEle
+      || sugList.id === e.target.getAttribute('data-opens')
+    ) {
+      return;
+    }
     const selection = getAncestorWithParent(e.target, sugList);
-    if (selection === null && e.target !== inputEle) sugList.hide('click-off');
+    if (selection === null) sugList.hide('click-off');
   });
   /* Add utility functions for programmatically manipulating the list: */
   Object.assign(sugList, {
@@ -1522,7 +1569,7 @@ function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
 
   /* Case-(in)sensitive string comparison: */
   const strComp = (()=>{
-    const sensitivity = (opts.caseSensitive) ? "case" : "base";
+    const sensitivity = (opts.caseSensitive) ? 'case' : 'base';
     const compOpts = {usage: 'search', sensitivity};
     return (s1, s2) => s1.localeCompare(s2, undefined, compOpts);
   })();
@@ -1584,41 +1631,46 @@ function presentResults() {
   const ModalBuffer = document.createDocumentFragment();
 
   /* Create button for minimizing modal so that the site can be used normally:
-   * (The text is a minimize symbol, resembling "_")*/
-  const minimizeButton = makeElement("button", "🗕", {id: "crlr-min"});
-  minimizeButton.type = "button";
-  minimizeButton.onclick = () => MODAL.classList.toggle("minimized");
+   * (The text is a minimize symbol, resembling "_"). We create an icon
+   * resembling the minimize symbol out of a rectangular div instead of using
+   * symbol directly, because the symbol is displayed incorrectly on older
+   * operating-systems. */
+  const minIcon = makeElement('span', undefined, {id: 'crlr-min-icon'});
+  const minText = makeElement('span', "🗕", {id: 'crlr-min-text'});
+  const minButton = makeElement('button', [minIcon, minText], {id: 'crlr-min'});
+  minButton.type = 'button';
+  minButton.addEventListener('click', ()=>MODAL.classList.toggle('minimized'));
 
   /* Make the modal header, containing the minimize button, the title, etc.: */
   let headerStr = "Results";
   headerStr += (crawlTerminatedBeforeCompletion) ? " (incomplete):" : ":";
-  const modalTitle = makeElement("h1", headerStr, {id: "crlr-title"});
-  const modalHeaderMsg = makeElement("div", modalTitle,
+  const modalTitle = makeElement('h1', headerStr, {id: 'crlr-title'});
+  const modalHeaderMsg = makeElement('div', modalTitle,
     {
-      id: "crlr-header-msg",
-      class: "flex-row"
+      id: 'crlr-header-msg',
+      class: 'flex-row'
     }
   );
-  const modalHeader = makeElement("header", [minimizeButton, modalHeaderMsg],
+  const modalHeader = makeElement('header', [minButton, modalHeaderMsg],
     {
-      id: "crlr-header",
-      class: "flex-row"
+      id: 'crlr-header',
+      class: 'flex-row'
     }
   );
   ModalBuffer.appendChild(modalHeader);
 
   /* Make the modal content, for presenting crawl data and controls for viewing
    * that data: */
-  const modalContent = makeElement("div", undefined, {id: "crlr-content"});
+  const modalContent = makeElement('div', undefined, {id: 'crlr-content'});
   ModalBuffer.appendChild(modalContent);
 
   /* Make textbox and suggestion-list for specifying which label to show data
    * for in the modal: */
-  const inputTextBox = makeElement("input", undefined, {
-    id: "crlr-input-textbox",
-    type: "text",
-    value: "link",
-    spellcheck: "false"
+  const inputTextBox = makeElement('input', undefined, {
+    id: 'crlr-input-textbox',
+    type: 'text',
+    value: 'link',
+    spellcheck: 'false'
   });
 
   const [suggestions, emptySugs] = (()=>{
@@ -1667,13 +1719,15 @@ function presentResults() {
   });
 
   const clearInputButton = makeElement(
-    "button",
+    'button',
     "✕", //"x" cross symbol
     {
-      id: "crlr-input-clear",
-      "data-for": "crlr-input-textbox"
+      id: 'crlr-input-clear',
+      'data-for': 'crlr-input-textbox',
+      'data-opens': 'crlr-suggestions'
     }
   );
+
   clearInputButton.addEventListener(
     'click',
     function clearInput() {
@@ -1682,33 +1736,48 @@ function presentResults() {
       inputTextBox.focus();
     }
   );
+
+  const openDropDownButton = makeElement(
+    'button',
+    "▼", //"v" downward-pointing solid triangle symbol
+    {
+      id: 'crlr-input-open',
+      tabIndex: -1,
+      'data-for': 'crlr-input-textbox',
+      'data-opens': "crlr-suggestions"
+    }
+  );
+  openDropDownButton.addEventListener('mousedown', ()=>{
+    sugList.show('drop-down-button');
+  });
+
   const logObjInputContainer = makeElement(
-    "div",
-    [clearInputButton, sugContainer],
-    {id: "crlr-textbox-controls"}
+    'div',
+    [clearInputButton, sugContainer, openDropDownButton],
+    {id: 'crlr-textbox-controls'}
   );
 
   const altFormatCheckBox = makeElement(
-    "input",
+    'input',
     undefined,
     {
-      id: "crlr-data-alt-format-checkbox",
-      type: "checkbox",
+      id: 'crlr-data-alt-format-checkbox',
+      type: 'checkbox',
     }
   );
   const checkBoxLabel = makeElement(
-    "label",
+    'label',
     "Invert output mapping?",
     {
-      for: "crlr-data-alt-format-checkbox"
+      for: 'crlr-data-alt-format-checkbox'
     }
   );
   const inputRow = makeElement(
-    "div",
+    'div',
     [logObjInputContainer, altFormatCheckBox, checkBoxLabel],
     {
-      id: "crlr-inputs",
-      class: "flex-row"
+      id: 'crlr-inputs',
+      class: 'flex-row'
     }
   );
 
@@ -1723,9 +1792,9 @@ function presentResults() {
   checkBoxLabel    .onmousedown = preventClickToHighlight;
 
   /* Create containers for output: */
-  const pre = makeElement("pre");
-  const preCont = makeElement("div", pre, {class: "crlr-output"});
-  const dlLinkPara = makeElement("p");
+  const pre = makeElement('pre');
+  const preCont = makeElement('div', pre, {class: 'crlr-output'});
+  const dlLinkPara = makeElement('p');
   appendChildren(
     modalContent,
     [inputRow, preCont, dlLinkPara]
@@ -1808,12 +1877,12 @@ function presentResults() {
       downloadName +=".json";
 
       const dlLink = makeElement(
-        "a",
+        'a',
         linkText,
         {
           href: url,
           download: downloadName,
-          class: "crlr-download"
+          class: 'crlr-download'
         }
       );
       window.requestAnimationFrame(()=>{
@@ -1849,19 +1918,19 @@ function presentResults() {
   /* Call the function immediately so that the data for the default label
    * is displayed immediately: */
   updateOutput();
-  inputTextBox.addEventListener("input", updateOutput);
+  inputTextBox.addEventListener('input', updateOutput);
   sugList.addEventListener('hide', (e)=>{
     if (e.detail.selectionMade) updateOutput();
   });
-  altFormatCheckBox.addEventListener("change", updateOutput);
+  altFormatCheckBox.addEventListener('change', updateOutput);
 
   /* Add how long the crawler took to the header: */
   const endTime = performance.now();
   const runningTime = Math.round((endTime - startTime)/10)/100;
   const timeInfoEle = makeElement(
-    "p",
+    'p',
     `(Crawling took ${runningTime} seconds)`,
-    {id: "crlr-time"}
+    {id: 'crlr-time'}
   );
   modalHeaderMsg.appendChild(timeInfoEle);
 
@@ -1901,11 +1970,11 @@ function RobotsTxt() {
       const line = lines[i].trim();
 
       /* Skip empty and comment lines: */
-      if (line.length === 0 || line.charAt(0) === "#") continue;
+      if (line.length === 0 || line.charAt(0) === '#') continue;
 
       /* Split the line by the first colon ":": */
       const parsedLine = (function() {
-        const splitPoint = line.indexOf(":");
+        const splitPoint = line.indexOf(':');
         if (splitPoint === -1) {
           return undefined;
         }
@@ -1921,12 +1990,12 @@ function RobotsTxt() {
 
       /* Check for sitemaps before checking the user agent so that they are always
        * visible to us: */
-      if (clauseType === "sitemap") {
+      if (clauseType === 'sitemap') {
         sitemap.push(clauseValue);
       }
       /* Make sure the user agent matches this crawler: */
-      else if (clauseType === "user-agent") {
-        validUserAgentSection = (clauseValue === "*");
+      else if (clauseType === 'user-agent') {
+        validUserAgentSection = (clauseValue === '*');
       }
       /* Skip the remaining section until a matching user-agent directive is
        * found: */
@@ -1935,17 +2004,17 @@ function RobotsTxt() {
       }
       /* If the line is a disallow clause, add the pattern to the array of
        * disallowed patterns: */
-      else if (clauseType === "disallow") {
+      else if (clauseType === 'disallow') {
         /* An empty disallow string is considered equal to a global allow. */
-        if (clauseValue === "") {
-          allowed.push("/");
+        if (clauseValue === '') {
+          allowed.push('/');
         } else {
           disallowed.push(clauseValue);
         }
       }
       /* If the line is an allow clause, add the pattern to the array of
        * allowed patterns: */
-      else if (clauseType === "allow") {
+      else if (clauseType === 'allow') {
         allowed.push(clauseValue);
       } else {
         console.warn(`Unknown clause: "${line}"`);
@@ -1966,7 +2035,7 @@ function RobotsTxt() {
      * E.G. "/*.php$" will match "/files/documents/letter.php" but
      * won't match "/files/my.php.data/settings.txt". */
     const REQUIRE_END_WITH_PATTERN =
-        (parsedPattern.charAt(parsedPattern.length-1) === "$");
+        (parsedPattern.charAt(parsedPattern.length-1) === '$');
     if (REQUIRE_END_WITH_PATTERN) {
       /* Remove the $ character from the pattern: */
       parsedPattern = parsedPattern.substr(0, parsedPattern.length-1);
@@ -1977,19 +2046,19 @@ function RobotsTxt() {
       /* If the entire pattern is asterisks, then anything will match: */
       if (i <= 0) return true;
 
-      if (parsedPattern.charAt(i) !== "*") {
+      if (parsedPattern.charAt(i) !== '*') {
         parsedPattern = parsedPattern.substr(0, i+1);
         break;
       }
     }
 
-    const patternSections = parsedPattern.split("*");
+    const patternSections = parsedPattern.split('*');
     let patternIndex = 0;
     for (let strIndex = 0, len = str.length; strIndex < len; /*@noIncrement*/) {
       const subPat = patternSections[patternIndex];
 
-      /*Skip empty patterns: */
-      if (subPat === "") {
+      /* Skip empty patterns: */
+      if (subPat === '') {
         ++patternIndex;
         continue;
       }
@@ -2064,7 +2133,7 @@ function RobotsTxt() {
         onComplete(this);
       }
     };
-    httpRequest.open("GET", "/robots.txt");
+    httpRequest.open('GET', '/robots.txt');
     httpRequest.send();
   };
 }
@@ -2145,7 +2214,7 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
      * it will not be crawled a second time: */
     const initLabel = "(Initial page for crawler script)";
     const startPageSpoofLink = makeElement(
-      "a",
+      'a',
       initLabel,
       {href: anchorlessURL}
     );
