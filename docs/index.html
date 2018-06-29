@@ -22,7 +22,7 @@
       JSCrawler Instruction Manual
     </h1>
     <p id="app-info">
-      <span id="edit-date">Last edited Jun 7th, 2018</span>
+      <span id="edit-date">Last edited Jun 29th, 2018</span>
     </p>
   </div>
   </header>
@@ -53,6 +53,10 @@ const startTime = performance.now();
   };
   [HTMLCollection, NodeList].forEach(createIter);
 }());
+
+/* A function for higher-level warnings, use instead of consoleWarnHigh to make it
+ * easier to identify actual functional errors: */
+const consoleWarnHigh = (str)=&gt;console.warn(`%c${str}`, &#39;background-color:#fff0f0;color:#ff2e2e;padding:2px;border:1px dashed #ff2e2e&#39;);
 
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */
@@ -261,7 +265,6 @@ const maybeArrayPush = function (obj, arrName, val) {
  * Note hrefs are returned without an anchor (the part after the #, if present).*/
 function getHrefOrSrcProp(ele, retainAnchor) {
   validateType(ele, HTMLElement, &quot;element&quot;);
-  if ((ele.href !== undefined) &amp;&amp; (ele.src  !== undefined)) throw new Error(&quot;Element with href AND src!?!&quot;); //@debug
   if (ele.href !== undefined) {
     return (retainAnchor ? ele.href : urlRemoveAnchor(ele));
   }
@@ -273,7 +276,6 @@ function getHrefOrSrcProp(ele, retainAnchor) {
 /* Similar to above, except returns the attribute instead of the property: */
 function getHrefOrSrcAttr(ele) {
   validateType(ele, HTMLElement, &quot;element&quot;);
-  if ((ele.href !== undefined) &amp;&amp; (ele.src  !== undefined)) throw new Error(&quot;Element with href AND src!?!&quot;); //@debug
   for (const attrName of [&#39;href&#39;, &#39;src&#39;]) {
     const attrVal = ele.getAttribute(attrName);
     if (attrVal !== null) return attrVal;
@@ -304,6 +306,7 @@ const GROUP_LABELS = (()=&gt;{
     &quot;forbidden&quot;,
     &quot;notFound&quot;,
     &quot;internalServiceError&quot;,
+    &quot;gatewayTimeout&quot;,
     &quot;robotsDisallowed&quot;,
     &quot;unloaded&quot;,
     &quot;file&quot;,
@@ -401,7 +404,7 @@ const ELEMENT_LABELS = (()=&gt;{
      * truncated HTML, since they may not have an href or src: */
     const getTruncatedOuterHTML = (ele, maxLen = 80) =&gt; {
       let trunc = ele.outerHTML;
-      if (trunc.length &gt; maxLen) trunc = trunc.substring(0, maxLen) + &#39;...&#39;; //@magic
+      if (trunc.length &gt; maxLen) trunc = trunc.substring(0, maxLen) + &#39;...&#39;;
       return trunc;
     };
     const userSelData = labelData[&quot;userSelected&quot;];
@@ -429,6 +432,10 @@ class ElementRecord {
     staticConst(this.constructor, &#39;GroupTable&#39;, ()=&gt;Object.create(null));
     staticConst(this.constructor, &#39;LabelTable&#39;, ()=&gt;Object.create(null));
 
+    /* A list of all ElementRecords, for use in querying: */
+    staticConst(this.constructor, &#39;ALL&#39;, ()=&gt;[]);
+    this.constructor.ALL.push(this);
+
     /* Properties: */
     this.document = documentID;
 
@@ -436,7 +443,6 @@ class ElementRecord {
      * entire document in memory, thus allowing documents to be garbage-
      * collected when they&#39;re done being processed: */
     this.element = elementInDocument.cloneNode(&#39;Deep&#39;);
-    // const groupName = eleToGroupName(elementInDocument);
     this.group = makeIfUndef(
       this.constructor.GroupTable,
       groupName,
@@ -746,7 +752,7 @@ function classifyLinks(doc, curPageURL) {
     const bannedStr = BANNED_STRINGS.isStringBanned(link.href);
     if (bannedStr) {
       linkRecord.label(&quot;bannedString&quot;);
-      console.error(
+      consoleWarnHigh(
         `Found link ${hrefAttr} containing a banned string: ${bannedStr}.\n\t`+
         `Linked-to from: ${curPageURL}`
       );
@@ -779,7 +785,7 @@ function classifyLinks(doc, curPageURL) {
       if (linkIsAbsolute) {
         if (link.matches(&#39;.field-name-field-related-links a&#39;)) {
           console.warn(&quot;absint link in related links&quot;, link);
-          continue; //@debug
+          continue; //@debug This will be removable when set notation is done, via `absolute&amp;internal&amp;!userSelected`
         }
         linkRecord.label(&quot;absoluteInternal&quot;);
       }
@@ -1013,8 +1019,11 @@ function classifyOther(doc, curPageURL) {
   if (USER_SELECTOR === null) return;
   const USER_SELECTED = doc.querySelectorAll(USER_SELECTOR.selector);
   for (const userEle of USER_SELECTED) {
-    /* The groupname should not matter, but we&#39;ll use the tagName for fun: */
-    const eleRecord = new ElementRecord(curPageURL, userEle, userEle.tagName);
+    /* For the group-name, try to use the href or src properties (like the
+     * default behavior for links, images, and iframes) if one exists, but fall
+     * back to the tagname otherwise: */
+    const groupName = nullishDefault(userEle.href, userEle.src, userEle.tagName);
+    const eleRecord = new ElementRecord(curPageURL, userEle, groupName);
     eleRecord.label(&quot;userSelected&quot;);
   }
 }//Close function classifyOther
@@ -1075,11 +1084,11 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   /* Handle normal, valid page responses: */
   const normalResponseHandler = (pageRecordGroup, pageURL, pageDOM, request)=&gt;{
     if (!pageDOM) {
-      console.error(
+      consoleWarnHigh(
         `Null response from ${pageURL}. It may be an unrecognized file type.` +
         `\n\tIt was linked-to from ${curPage}`
       );
-      console.error(request);
+      consoleWarnHigh(request);
       return;
     }
 
@@ -1103,7 +1112,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
 
     /* Otherwise, something went wrong with the request: */
     if (request.readyState !== 4) {
-      console.error(&quot;AN UNIDENTIFIED READYSTATE ERROR OCURRED!&quot;, request);
+      consoleWarnHigh(&quot;AN UNIDENTIFIED READYSTATE ERROR OCURRED!&quot;, request);
       throw new Error(
         &quot;AN UNIDENTIFIED READYSTATE ERROR OCURRED!&quot; + JSON.stringify(request)
       );
@@ -1146,11 +1155,16 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
         msg =  `${msgHead}That means that the server encountered some unexpected `;
         msg += `condition which prevented it from fulfilling the request.`;
         break;
+      case 504:
+        pageRecordGroup.label(&quot;gatewayTimeout&quot;);
+        msg =  `${msgHead}That means that the server wasn&#39;t able to get a  `;
+        msg += `response from another server before it closed the connection.`;
+        break;
       default:
-        console.error(&quot;AN UNIDENTIFIED ERROR OCURRED!&quot;, request);
+        consoleWarnHigh(&quot;AN UNIDENTIFIED ERROR OCURRED!&quot;, request);
         return;
     }
-    console.error(msg + &quot;\n\tLinked-to from: &quot; + curPage);
+    consoleWarnHigh(msg + &quot;\n\tLinked-to from: &quot; + curPage);
   };
 
   /* When the request resolves, regardless of whether the response was an error,
@@ -1263,25 +1277,39 @@ function getAncestorWithParent(descendent, parent) {
   return ancestor;
 }
 
+/* Go through the list of parameters until a value is found which isn&#39;t null or
+ * undefined, then return that value. If no such value is found, return null: */
+function nullishDefault(...vals) {
+  for (const val of vals) if (val !== null &amp;&amp; val !== undefined) return val;
+  return null;
+}
 /* If the first parameter is null, return the second. Else, return the first: */
-function nullDefault(possiblyNullVal, defaultValue) {
-  const maybeLazy = (possiblyNullVal === null) ? defaultValue : possiblyNullVal;
-  return (typeof maybeLazy === &#39;function&#39;) ? maybeLazy() : maybeLazy;
+function lazyNullDefault(possiblyNullVal, defaultValue) {
+  if (possiblyNullVal === null) {
+    return (typeof defaultValue === &#39;function&#39;) ? defaultValue() : defaultValue;
+  }
+  return possiblyNullVal;
 }
 
 /**
  * Creates an auto-complete/suggestion-list element for a given input element
  * using a given array of suggestions.
  */
-function makeAutoCompleteList(
-  inputEle,
-  suggestions,
-  sugToEleMap = &#39;li&#39;,
-  listEle = &#39;ul&#39;
-) {
-  if (!(inputEle instanceof HTMLInputElement)) {
-    throw new TypeError(&quot;inputEle must be an HTMLInputElement.&quot;);
+function makeAutoCompleteList(inputEle, suggestions, { //Options:
+  suggestionToEle = &#39;li&#39;,
+  listEle = &#39;ul&#39;,
+  getInputValue,
+  setInputValue
+} = {}) {
+  validateType(inputEle, HTMLInputElement, &quot;inputEle&quot;);
+  if (getInputValue === undefined) {
+    getInputValue = ()=&gt;inputEle.value;
   }
+  if (setInputValue === undefined) {
+    setInputValue = val=&gt;{inputEle.value = val;};
+  }
+  validateType(getInputValue, &#39;function&#39;, &quot;getInputValue&quot;);
+  validateType(setInputValue, &#39;function&#39;, &quot;setInputValue&quot;);
   const getSugEle = (sugStr, extraMetadata = {})=&gt;{
     const defaultMetadata = Object.freeze({
       defaultContents() {
@@ -1294,24 +1322,24 @@ function makeAutoCompleteList(
       },
     });
     const metadata = Object.assign({}, defaultMetadata, extraMetadata);
-    if (typeof sugToEleMap === &#39;string&#39;) {
+    if (typeof suggestionToEle === &#39;string&#39;) {
       /* By default, just return a &lt;li&gt; showing the suggestion with any matching
        * characters bolded: */
-      return makeElement(sugToEleMap, metadata.defaultContents(), {
+      return makeElement(suggestionToEle, metadata.defaultContents(), {
         tabIndex: &#39;0&#39;, //Allow tab navigation to this element in normal order
         &#39;data-value&#39;: sugStr
       });
     }
-    if (sugToEleMap instanceof Map) {
-      return sugToEleMap.get(sugStr);
+    if (suggestionToEle instanceof Map) {
+      return suggestionToEle.get(sugStr);
     }
-    if (typeof sugToEleMap === &#39;function&#39;) {
-      return sugToEleMap(sugStr, metadata);
+    if (typeof suggestionToEle === &#39;function&#39;) {
+      return suggestionToEle(sugStr, metadata);
     }
-    if (typeof sugToEleMap === &#39;object&#39; &amp;&amp; sugToEleMap !== null) {
-      return sugToEleMap[sugStr];
+    if (typeof suggestionToEle === &#39;object&#39; &amp;&amp; suggestionToEle !== null) {
+      return suggestionToEle[sugStr];
     }
-    throw new TypeError(&quot;sugToEleMap must be a Map, function, object, or string.&quot;);
+    throw new TypeError(&quot;suggestionToEle must be a Map, function, object, or string.&quot;);
   };
   const allSuggestionEles = ()=&gt; {
     return suggestions.map(sug =&gt; getSugEle(sug, {showingAll: true}));
@@ -1370,7 +1398,7 @@ function makeAutoCompleteList(
     let alreadyShowingAll;
     const NO_CHANGE = Symbol(&#39;No changes need to be made to the suggestionList.&#39;);
     return ()=&gt;{
-      const userPattern = inputEle.value;
+      const userPattern = getInputValue();
       const [matchingSugEles, results] = (()=&gt; {
         if (userPattern.length === 0) {
           if (alreadyShowingAll) return [NO_CHANGE, suggestions];
@@ -1418,21 +1446,20 @@ function makeAutoCompleteList(
     if (e.target === sugList) return;
 
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
-    const selectionEleValue = nullDefault(
+    const selectionEleValue = lazyNullDefault(
       targetSuggestion.getAttribute(&#39;data-value&#39;),
       ()=&gt;targetSuggestion.innerText
     );
 
     /* If the element has no set data-value attribute (e.g. a custom element was
-     * given via the sugToEleMap parameter), use the element&#39;s innerText: */
-    inputEle.value = selectionEleValue;
+     * given via the suggestionToEle parameter), use the element&#39;s innerText: */
     hideSugListFocusInput({
       reason: &#39;click&#39;,
       selectionMade: true,
       selectionText: selectionEleValue,
       selectionElement: targetSuggestion,
       sourceEvent: e
-    }, ()=&gt;{ inputEle.value = selectionEleValue; }); //After closing, set input value
+    }, ()=&gt;{ setInputValue(selectionEleValue); }); //After closing, set input value
   });
   /* Follow the cursor with the focused suggestion: */
   sugList.addEventListener(&#39;mousemove&#39;, (e)=&gt;{
@@ -1449,7 +1476,7 @@ function makeAutoCompleteList(
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     switch (e.key) {
       case &#39;Enter&#39;: {
-        const selectionEleValue = nullDefault(
+        const selectionEleValue = lazyNullDefault(
           targetSuggestion.getAttribute(&#39;data-value&#39;),
           ()=&gt;targetSuggestion.innerText
         );
@@ -1459,7 +1486,7 @@ function makeAutoCompleteList(
           selectionText: selectionEleValue,
           selectionElement: targetSuggestion,
           sourceEvent: e
-        }, ()=&gt;{ inputEle.value = selectionEleValue; }); //After closing, set input value
+        }, ()=&gt;{ setInputValue(selectionEleValue); }); //After closing, set input value
         break;
       }
       case &#39;ArrowUp&#39;: {
@@ -1526,7 +1553,7 @@ function makeAutoCompleteList(
       switch (e.key) {
         case &#39;Enter&#39;: {
           const targetSuggestion = sugList.firstChild;
-          const selectionEleValue = nullDefault(
+          const selectionEleValue = lazyNullDefault(
             targetSuggestion.getAttribute(&#39;data-value&#39;),
             ()=&gt;targetSuggestion.innerText
           );
@@ -1536,7 +1563,7 @@ function makeAutoCompleteList(
             selectionText: selectionEleValue,
             selectionElement: targetSuggestion,
             sourceEvent: e
-          }, ()=&gt;{ inputEle.value = selectionEleValue; }); //After closing, set input value
+          }, ()=&gt;{ setInputValue(selectionEleValue); }); //After closing, set input value
           break;
         }
         case &#39;ArrowDown&#39;:
@@ -1544,7 +1571,7 @@ function makeAutoCompleteList(
           e.preventDefault();
           break;
         case &#39;Backspace&#39;:
-          if (inputEle.value.length === 0) {
+          if (getInputValue().length === 0) {
             hideSugListFocusInput({
               reason: &#39;close-backspace&#39;,
               selectionMade: false,
@@ -1747,12 +1774,16 @@ function presentResults() {
     if (isEmpty) row.classList.add(&#39;empty-suggestion&#39;);
     return row;
   };
-  const sugList = makeAutoCompleteList(
-    inputTextBox,
-    suggestions,
-    rowElementFromLabel, //Function mapping a suggestion to an element
-    &#39;table&#39; //The tagname of the outer, container element
-  );
+  const sugList = makeAutoCompleteList(inputTextBox, suggestions, { //options
+    suggestionToEle: rowElementFromLabel,
+    listEle: &#39;table&#39;, //The tagname of the outer, container element
+    getInputValue() {
+      return inputTextBox.value;
+    },
+    setInputValue(val) {
+      inputTextBox.value = val;
+    }
+  });
   sugList.id = &#39;crlr-suggestions&#39;;
 
   /* A container for the textbox and suggestion list, for styling purposes: */
@@ -2130,7 +2161,6 @@ function RobotsTxt() {
     if (HOSTNAME !== (new URL(fullUrl)).hostname.toLowerCase()) {
       throw new Error(&quot;URL &quot; + fullUrl + &quot; is not within the same domain!&quot;);
     }
-    if (this.ignoreFile) return true;
 
     /* The path portion of the fullURL. That is, the part
      * following the &quot;.com&quot; or &quot;.net&quot; or &quot;.edu&quot; or whatever.

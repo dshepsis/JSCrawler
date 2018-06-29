@@ -1,3 +1,4 @@
+/* This is a buggy attempt at implementing buffering */
 'use strict';
 const startTime = performance.now();
 
@@ -11,10 +12,6 @@ const startTime = performance.now();
   };
   [HTMLCollection, NodeList].forEach(createIter);
 }());
-
-/* A function for higher-level warnings, use instead of consoleWarnHigh to make it
- * easier to identify actual functional errors: */
-const consoleWarnHigh = (str)=>console.warn(`%c${str}`, 'background-color:#fff0f0;color:#ff2e2e;padding:2px;border:1px dashed #ff2e2e');
 
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */
@@ -223,6 +220,7 @@ const maybeArrayPush = function (obj, arrName, val) {
  * Note hrefs are returned without an anchor (the part after the #, if present).*/
 function getHrefOrSrcProp(ele, retainAnchor) {
   validateType(ele, HTMLElement, "element");
+  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
   if (ele.href !== undefined) {
     return (retainAnchor ? ele.href : urlRemoveAnchor(ele));
   }
@@ -234,6 +232,7 @@ function getHrefOrSrcProp(ele, retainAnchor) {
 /* Similar to above, except returns the attribute instead of the property: */
 function getHrefOrSrcAttr(ele) {
   validateType(ele, HTMLElement, "element");
+  if ((ele.href !== undefined) && (ele.src  !== undefined)) throw new Error("Element with href AND src!?!"); //@debug
   for (const attrName of ['href', 'src']) {
     const attrVal = ele.getAttribute(attrName);
     if (attrVal !== null) return attrVal;
@@ -362,7 +361,7 @@ const ELEMENT_LABELS = (()=>{
      * truncated HTML, since they may not have an href or src: */
     const getTruncatedOuterHTML = (ele, maxLen = 80) => {
       let trunc = ele.outerHTML;
-      if (trunc.length > maxLen) trunc = trunc.substring(0, maxLen) + '...';
+      if (trunc.length > maxLen) trunc = trunc.substring(0, maxLen) + '...'; //@magic
       return trunc;
     };
     const userSelData = labelData["userSelected"];
@@ -390,10 +389,6 @@ class ElementRecord {
     staticConst(this.constructor, 'GroupTable', ()=>Object.create(null));
     staticConst(this.constructor, 'LabelTable', ()=>Object.create(null));
 
-    /* A list of all ElementRecords, for use in querying: */
-    staticConst(this.constructor, 'ALL', ()=>[]);
-    this.constructor.ALL.push(this);
-
     /* Properties: */
     this.document = documentID;
 
@@ -401,6 +396,7 @@ class ElementRecord {
      * entire document in memory, thus allowing documents to be garbage-
      * collected when they're done being processed: */
     this.element = elementInDocument.cloneNode('Deep');
+    // const groupName = eleToGroupName(elementInDocument);
     this.group = makeIfUndef(
       this.constructor.GroupTable,
       groupName,
@@ -710,7 +706,7 @@ function classifyLinks(doc, curPageURL) {
     const bannedStr = BANNED_STRINGS.isStringBanned(link.href);
     if (bannedStr) {
       linkRecord.label("bannedString");
-      consoleWarnHigh(
+      console.error(
         `Found link ${hrefAttr} containing a banned string: ${bannedStr}.\n\t`+
         `Linked-to from: ${curPageURL}`
       );
@@ -743,7 +739,7 @@ function classifyLinks(doc, curPageURL) {
       if (linkIsAbsolute) {
         if (link.matches('.field-name-field-related-links a')) {
           console.warn("absint link in related links", link);
-          continue; //@debug This will be removable when set notation is done, via `absolute&internal&!userSelected`
+          continue; //@debug
         }
         linkRecord.label("absoluteInternal");
       }
@@ -977,11 +973,8 @@ function classifyOther(doc, curPageURL) {
   if (USER_SELECTOR === null) return;
   const USER_SELECTED = doc.querySelectorAll(USER_SELECTOR.selector);
   for (const userEle of USER_SELECTED) {
-    /* For the group-name, try to use the href or src properties (like the
-     * default behavior for links, images, and iframes) if one exists, but fall
-     * back to the tagname otherwise: */
-    const groupName = nullishDefault(userEle.href, userEle.src, userEle.tagName);
-    const eleRecord = new ElementRecord(curPageURL, userEle, groupName);
+    /* The groupname should not matter, but we'll use the tagName for fun: */
+    const eleRecord = new ElementRecord(curPageURL, userEle, userEle.tagName);
     eleRecord.label("userSelected");
   }
 }//Close function classifyOther
@@ -993,7 +986,41 @@ function classifyOther(doc, curPageURL) {
  * generate a new list of internal URLs, each of which is checked recursively.
  *
  * The same page will not be requested twice. */
-function visitLinks(RecordList, curPage, robotsTxt, recursive) {
+function buffer(func, timeBetweenCalls, bufferSize) {
+  const bufferingOn = (bufferSize !== undefined && bufferSize > 0);
+  const argBuffer = (bufferingOn) ? [] : undefined;
+  const addToBuffer = (item)=>{
+    /* If we're over max size, discard the oldest entry(s) in the buffer: */
+    if (argBuffer.length >= bufferSize) {
+      argBuffer.pop();
+    }
+    /* Place the new item at the start of the buffer (queue): */
+    argBuffer.unshift(item);
+  };
+  let blocked = false;
+  return function throttledFn(...args) {
+    if (blocked) {
+      if (bufferingOn) {
+        addToBuffer(args);
+        return buffer.CALL_BUFFERED;
+      }
+      return buffer.CALL_BLOCKED;
+    }
+    blocked = true;
+    const onTimeout = ()=>{
+      blocked = false;
+      if (bufferingOn && argBuffer.length > 0) {
+        throttledFn.apply(null, argBuffer.pop());
+      }
+    };
+    window.setTimeout(onTimeout, timeBetweenCalls);
+    return func.apply(null, args);
+  };
+}
+buffer.CALL_BUFFERED = Symbol('Function call was buffered.');
+buffer.CALL_BLOCKED = Symbol('Function call was blocked');
+
+const visitLinks = buffer(function (RecordList, curPage, robotsTxt, recursive) {
   /* Parameter defaults:
    * If no robots.txt handler is passed, just create one which will assume all
    * crawling is allowed: */
@@ -1042,11 +1069,11 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   /* Handle normal, valid page responses: */
   const normalResponseHandler = (pageRecordGroup, pageURL, pageDOM, request)=>{
     if (!pageDOM) {
-      consoleWarnHigh(
+      console.error(
         `Null response from ${pageURL}. It may be an unrecognized file type.` +
         `\n\tIt was linked-to from ${curPage}`
       );
-      consoleWarnHigh(request);
+      console.error(request);
       return;
     }
 
@@ -1070,7 +1097,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
 
     /* Otherwise, something went wrong with the request: */
     if (request.readyState !== 4) {
-      consoleWarnHigh("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", request);
+      console.error("AN UNIDENTIFIED READYSTATE ERROR OCURRED!", request);
       throw new Error(
         "AN UNIDENTIFIED READYSTATE ERROR OCURRED!" + JSON.stringify(request)
       );
@@ -1119,10 +1146,10 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
         msg += `response from another server before it closed the connection.`;
         break;
       default:
-        consoleWarnHigh("AN UNIDENTIFIED ERROR OCURRED!", request);
+        console.error("AN UNIDENTIFIED ERROR OCURRED!", request);
         return;
     }
-    consoleWarnHigh(msg + "\n\tLinked-to from: " + curPage);
+    console.error(msg + "\n\tLinked-to from: " + curPage);
   };
 
   /* When the request resolves, regardless of whether the response was an error,
@@ -1192,7 +1219,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
   /* Even if no local links were every found and requested, still update the
    * request counter, so that presentResults() will be called regardless: */
   requestCounter.update();
-} //Close function visitLinks
+}, 100, 1e5); //Close function visitLinks
 
 /*****
  *** PRESENTING RESULTS:
@@ -1235,39 +1262,25 @@ function getAncestorWithParent(descendent, parent) {
   return ancestor;
 }
 
-/* Go through the list of parameters until a value is found which isn't null or
- * undefined, then return that value. If no such value is found, return null: */
-function nullishDefault(...vals) {
-  for (const val of vals) if (val !== null && val !== undefined) return val;
-  return null;
-}
 /* If the first parameter is null, return the second. Else, return the first: */
-function lazyNullDefault(possiblyNullVal, defaultValue) {
-  if (possiblyNullVal === null) {
-    return (typeof defaultValue === 'function') ? defaultValue() : defaultValue;
-  }
-  return possiblyNullVal;
+function nullDefault(possiblyNullVal, defaultValue) {
+  const maybeLazy = (possiblyNullVal === null) ? defaultValue : possiblyNullVal;
+  return (typeof maybeLazy === 'function') ? maybeLazy() : maybeLazy;
 }
 
 /**
  * Creates an auto-complete/suggestion-list element for a given input element
  * using a given array of suggestions.
  */
-function makeAutoCompleteList(inputEle, suggestions, { //Options:
-  suggestionToEle = 'li',
-  listEle = 'ul',
-  getInputValue,
-  setInputValue
-} = {}) {
-  validateType(inputEle, HTMLInputElement, "inputEle");
-  if (getInputValue === undefined) {
-    getInputValue = ()=>inputEle.value;
+function makeAutoCompleteList(
+  inputEle,
+  suggestions,
+  sugToEleMap = 'li',
+  listEle = 'ul'
+) {
+  if (!(inputEle instanceof HTMLInputElement)) {
+    throw new TypeError("inputEle must be an HTMLInputElement.");
   }
-  if (setInputValue === undefined) {
-    setInputValue = val=>{inputEle.value = val;};
-  }
-  validateType(getInputValue, 'function', "getInputValue");
-  validateType(setInputValue, 'function', "setInputValue");
   const getSugEle = (sugStr, extraMetadata = {})=>{
     const defaultMetadata = Object.freeze({
       defaultContents() {
@@ -1280,24 +1293,24 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
       },
     });
     const metadata = Object.assign({}, defaultMetadata, extraMetadata);
-    if (typeof suggestionToEle === 'string') {
+    if (typeof sugToEleMap === 'string') {
       /* By default, just return a <li> showing the suggestion with any matching
        * characters bolded: */
-      return makeElement(suggestionToEle, metadata.defaultContents(), {
+      return makeElement(sugToEleMap, metadata.defaultContents(), {
         tabIndex: '0', //Allow tab navigation to this element in normal order
         'data-value': sugStr
       });
     }
-    if (suggestionToEle instanceof Map) {
-      return suggestionToEle.get(sugStr);
+    if (sugToEleMap instanceof Map) {
+      return sugToEleMap.get(sugStr);
     }
-    if (typeof suggestionToEle === 'function') {
-      return suggestionToEle(sugStr, metadata);
+    if (typeof sugToEleMap === 'function') {
+      return sugToEleMap(sugStr, metadata);
     }
-    if (typeof suggestionToEle === 'object' && suggestionToEle !== null) {
-      return suggestionToEle[sugStr];
+    if (typeof sugToEleMap === 'object' && sugToEleMap !== null) {
+      return sugToEleMap[sugStr];
     }
-    throw new TypeError("suggestionToEle must be a Map, function, object, or string.");
+    throw new TypeError("sugToEleMap must be a Map, function, object, or string.");
   };
   const allSuggestionEles = ()=> {
     return suggestions.map(sug => getSugEle(sug, {showingAll: true}));
@@ -1356,7 +1369,7 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
     let alreadyShowingAll;
     const NO_CHANGE = Symbol('No changes need to be made to the suggestionList.');
     return ()=>{
-      const userPattern = getInputValue();
+      const userPattern = inputEle.value;
       const [matchingSugEles, results] = (()=> {
         if (userPattern.length === 0) {
           if (alreadyShowingAll) return [NO_CHANGE, suggestions];
@@ -1404,20 +1417,21 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
     if (e.target === sugList) return;
 
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
-    const selectionEleValue = lazyNullDefault(
+    const selectionEleValue = nullDefault(
       targetSuggestion.getAttribute('data-value'),
       ()=>targetSuggestion.innerText
     );
 
     /* If the element has no set data-value attribute (e.g. a custom element was
-     * given via the suggestionToEle parameter), use the element's innerText: */
+     * given via the sugToEleMap parameter), use the element's innerText: */
+    inputEle.value = selectionEleValue;
     hideSugListFocusInput({
       reason: 'click',
       selectionMade: true,
       selectionText: selectionEleValue,
       selectionElement: targetSuggestion,
       sourceEvent: e
-    }, ()=>{ setInputValue(selectionEleValue); }); //After closing, set input value
+    }, ()=>{ inputEle.value = selectionEleValue; }); //After closing, set input value
   });
   /* Follow the cursor with the focused suggestion: */
   sugList.addEventListener('mousemove', (e)=>{
@@ -1434,7 +1448,7 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
     const targetSuggestion = getAncestorWithParent(e.target, sugList);
     switch (e.key) {
       case 'Enter': {
-        const selectionEleValue = lazyNullDefault(
+        const selectionEleValue = nullDefault(
           targetSuggestion.getAttribute('data-value'),
           ()=>targetSuggestion.innerText
         );
@@ -1444,7 +1458,7 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
           selectionText: selectionEleValue,
           selectionElement: targetSuggestion,
           sourceEvent: e
-        }, ()=>{ setInputValue(selectionEleValue); }); //After closing, set input value
+        }, ()=>{ inputEle.value = selectionEleValue; }); //After closing, set input value
         break;
       }
       case 'ArrowUp': {
@@ -1511,7 +1525,7 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
       switch (e.key) {
         case 'Enter': {
           const targetSuggestion = sugList.firstChild;
-          const selectionEleValue = lazyNullDefault(
+          const selectionEleValue = nullDefault(
             targetSuggestion.getAttribute('data-value'),
             ()=>targetSuggestion.innerText
           );
@@ -1521,7 +1535,7 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
             selectionText: selectionEleValue,
             selectionElement: targetSuggestion,
             sourceEvent: e
-          }, ()=>{ setInputValue(selectionEleValue); }); //After closing, set input value
+          }, ()=>{ inputEle.value = selectionEleValue; }); //After closing, set input value
           break;
         }
         case 'ArrowDown':
@@ -1529,7 +1543,7 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
           e.preventDefault();
           break;
         case 'Backspace':
-          if (getInputValue().length === 0) {
+          if (inputEle.value.length === 0) {
             hideSugListFocusInput({
               reason: 'close-backspace',
               selectionMade: false,
@@ -1732,16 +1746,12 @@ function presentResults() {
     if (isEmpty) row.classList.add('empty-suggestion');
     return row;
   };
-  const sugList = makeAutoCompleteList(inputTextBox, suggestions, { //options
-    suggestionToEle: rowElementFromLabel,
-    listEle: 'table', //The tagname of the outer, container element
-    getInputValue() {
-      return inputTextBox.value;
-    },
-    setInputValue(val) {
-      inputTextBox.value = val;
-    }
-  });
+  const sugList = makeAutoCompleteList(
+    inputTextBox,
+    suggestions,
+    rowElementFromLabel, //Function mapping a suggestion to an element
+    'table' //The tagname of the outer, container element
+  );
   sugList.id = 'crlr-suggestions';
 
   /* A container for the textbox and suggestion list, for styling purposes: */
@@ -1972,6 +1982,7 @@ function presentResults() {
   MODAL.appendChild(ModalBuffer);
 }
 
+
 /**
  * Robots.txt-related functions:
  */
@@ -2119,6 +2130,7 @@ function RobotsTxt() {
     if (HOSTNAME !== (new URL(fullUrl)).hostname.toLowerCase()) {
       throw new Error("URL " + fullUrl + " is not within the same domain!");
     }
+    // if (this.ignoreFile) return true; //@debug This is probably not necessary
 
     /* The path portion of the fullURL. That is, the part
      * following the ".com" or ".net" or ".edu" or whatever.
@@ -2256,4 +2268,4 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
   });
 }
 
-startCrawl("");
+startCrawl("-ignoreRobotsTxt -ignoreTimer -disallow'/result'");
