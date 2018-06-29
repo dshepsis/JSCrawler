@@ -429,6 +429,27 @@ class ElementRecord {
   }
 }
 
+/* Caches ElementRecords for a given document. Used for the `classify` functions
+ * to ensure that the same ElementRecord is always used for the same element: */
+class RecordCache {
+  constructor(documentURL) {
+    this.document = documentURL;
+    this.recordMap = new Map();
+  }
+  /* Returns an element record for the given document. If the element is in the
+   * cache (the recordMap), then the existing ElementRecord is returned.
+   * Otherwise, a new ElementRecord is created. The given groupName is used only
+   * if the element is not in the cache, and is optional for elements with
+   * href or src attributes. */
+  getFor(element, groupName) {
+    const recMap = this.recordMap;
+    if (recMap.has(element)) return recMap.get(element);
+    const newRecord = new ElementRecord(this.document, element, groupName);
+    recMap.set(element, newRecord);
+    return newRecord;
+  }
+}
+
 /* Returns an array of all records matching a label, regardless of whether that
  * label is an element or group label. For group labels, each matching group
  * has all of its member records appended to the returned list. */
@@ -680,7 +701,7 @@ const requestCounter = (function() {
 
 /* Finds all of the links in a document and classifies them
  * based on the contents of their hrefs: */
-function classifyLinks(doc, curPageURL) {
+function classifyLinks(doc, recordCache) {
   const LINKS = doc.getElementsByTagName('a');
 
   /* Contains the URLs of all of the local (same-domain) pages linked to from
@@ -697,7 +718,7 @@ function classifyLinks(doc, curPageURL) {
   /* Loop over links: */
   for (const link of LINKS) {
     const hrefAttr = link.getAttribute('href');
-    const linkRecord = new ElementRecord(curPageURL, link);
+    const linkRecord = recordCache.getFor(link);
     linkRecord.label("link");
 
     /* Handle links with no HREF attribute, such as anchors or those used as
@@ -712,7 +733,7 @@ function classifyLinks(doc, curPageURL) {
       linkRecord.label("bannedString");
       consoleWarnHigh(
         `Found link ${hrefAttr} containing a banned string: ${bannedStr}.\n\t`+
-        `Linked-to from: ${curPageURL}`
+        `Linked-to from: ${recordCache.document}`
       );
       markElement(link, "red", "BANNED STRING LINK");
 
@@ -855,10 +876,10 @@ class ImageLoader {
   }
 }
 
-function classifyImages(doc, curPageURL) {
+function classifyImages(doc, recordCache) {
   const IMAGES = doc.getElementsByTagName('img');
   for (const image of IMAGES) {
-    const imageRecord = new ElementRecord(curPageURL, image);
+    const imageRecord = recordCache.getFor(image);
     imageRecord.label("image");
     const srcProp = image.src;
     const srcAttr = image.getAttribute('src');
@@ -935,10 +956,10 @@ function classifyImages(doc, curPageURL) {
 const USER_SELECTOR = {
   selector: null,
 };
-function classifyOther(doc, curPageURL) {
+function classifyOther(doc, recordCache) {
   const IFRAMES = doc.getElementsByTagName('iframe');
   for (const iframe of IFRAMES) {
-    const eleRecord = new ElementRecord(curPageURL, iframe);
+    const eleRecord = recordCache.getFor(iframe);
     eleRecord.label("iframe");
 
     const srcProp = iframe.src;
@@ -981,7 +1002,7 @@ function classifyOther(doc, curPageURL) {
      * default behavior for links, images, and iframes) if one exists, but fall
      * back to the tagname otherwise: */
     const groupName = nullishDefault(userEle.href, userEle.src, userEle.tagName);
-    const eleRecord = new ElementRecord(curPageURL, userEle, groupName);
+    const eleRecord = recordCache.getFor(userEle, groupName);
     eleRecord.label("userSelected");
   }
 }//Close function classifyOther
@@ -1051,11 +1072,12 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
     }
 
     if (recursive) {
+      const recordCache = new RecordCache(pageURL);
       /* Check images on the given page: */
-      classifyImages(pageDOM, pageURL);
-      classifyOther(pageDOM, pageURL);
+      classifyImages(pageDOM, recordCache);
+      classifyOther(pageDOM, recordCache);
       /* Recursively check the links found on the given page: */
-      const newLinks = classifyLinks(pageDOM, pageURL);
+      const newLinks = classifyLinks(pageDOM, recordCache);
       visitLinks(newLinks, pageURL, robotsTxt);
     }
   };
@@ -2236,9 +2258,10 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
     Object.freeze(robotsTxt);
 
     const anchorlessURL = urlRemoveAnchor(window.location);
-    classifyImages(document, anchorlessURL);
-    classifyOther(document, anchorlessURL);
-    const initialPageLinks = classifyLinks(document, anchorlessURL);
+    const recordCache = new RecordCache(anchorlessURL);
+    classifyImages(document, recordCache);
+    classifyOther(document, recordCache);
+    const initialPageLinks = classifyLinks(document, recordCache);
 
     /* A spoof link to mark the page where the crawl started as visited, so that
      * it will not be crawled a second time: */
