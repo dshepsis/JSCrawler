@@ -170,6 +170,92 @@ function equalsAny(val, possibleMatches) {
   return false;
 }
 
+/* Non-testable concept for how to transform evaluateSetExpression to work on
+ * individual elements rather than sets, since I think that approach may be
+ * better since it allows for just filtering a list of all records, avoiding the
+ * many intermediate data structures recquired by the set-based approach: */
+const evaluateBoolExpression = (record, tokens)=>{
+  const numTokens = tokens.length;
+
+  /* Helper function for allowing labels, parentheses, and not-operators to be
+   * treated the same way: */
+  const evaluateOperandAtIndex = index => {
+    const token = tokens[index];
+    const type = token.type;
+    switch (type) {
+      case 'label': {
+        return {value: record.isLabelled(token.match[1]), end: index};
+      }
+      case 'not': {
+        if (index + 1 >= numTokens) throw new Error(
+          `Unexpected negation operator at end of expression`
+        );
+        const {value, end} = evaluateOperandAtIndex(index + 1);
+        return {value: !value, end};
+      }
+      case 'lParen': {
+        let unclosedParens = 1;
+        let closingIndex = index;
+        while (unclosedParens > 0) {
+          ++closingIndex;
+          if (closingIndex >= numTokens) throw new Error(
+            `Unmatched left parenthesis at index ${index}`
+          );
+          const tokenType = tokens[closingIndex].type;
+          if (tokenType === 'lParen') ++unclosedParens;
+          else if (tokenType === 'rParen') {
+            --unclosedParens;
+            if (unclosedParens === 0) break;
+          }
+        }
+        return {
+          value: evaluateBoolExpression(record, tokens.slice(index + 1, closingIndex)),
+          end: closingIndex
+        };
+      }
+      default:
+        throw new Error(`Expecting operand, instead found token of type ${type}`);
+    }
+  };
+
+  let runningOr = false; //Analogous to running sum
+  const {value: firstOperandValue, end: endFirst} = evaluateOperandAtIndex(0);
+  let runningAnd = firstOperandValue; //Analogous to running product
+  let prevOperator = null;
+  for (let i = endFirst + 1; i < numTokens; ++i) {
+    const token = tokens[i];
+    switch (prevOperator) {
+      case null:
+        prevOperator = token.type;
+        if (!equalsAny(prevOperator, ['and', 'or', 'termSpace'])) {
+          throw new Error(
+            `Expected operator, found token of type '${prevOperator}' instead.`
+          );
+        }
+        break;
+      case 'and': {
+        const {value, end} = evaluateOperandAtIndex(i);
+        i = end;
+        runningAnd = runningAnd && value;
+        prevOperator = null;
+        break;
+      }
+      case 'or': {
+        runningOr = runningOr || runningAnd;
+        ({value: runningAnd, end: i} = evaluateOperandAtIndex(i));
+        prevOperator = null;
+        break;
+      }
+      case 'termSpace':
+        prevOperator = null;
+        break;
+      default:
+        throw new Error(`Unsupported token type: '${token.type}'.`);
+    }
+  }
+  return runningOr || runningAnd;
+};
+
 const evaluateSetExpression = (tokens)=>{
   const numTokens = tokens.length;
 

@@ -215,6 +215,11 @@ window.addEventListener('visibilitychange', ()=>{
         break;
       } //Close case: 'file-escape-html'
       case 'date':
+        /* @TODO This currently references the current time, rather than the
+         * last time the template (or any of its dependencies) was updated.
+         * This means that the template must be re-compiled even if no content
+         * has actually changed.
+         * This may be more trouble than its worth to fix, though. */
         outputTokens[i] = dateFormatter().format(token.argument);
         break;
       case 'dev-refresh':
