@@ -242,6 +242,13 @@ function getHrefOrSrcAttr(ele) {
    * error. */
   return null;
 }
+/* For user-selected elements (See the CSS-Select flag), display them as
+ * truncated HTML, since they may not have an href or src: */
+function getTruncatedOuterHTML(ele, maxLen = 80) {
+  let trunc = ele.outerHTML;
+  if (trunc.length > maxLen) trunc = trunc.substring(0, maxLen) + '...';
+  return trunc;
+}
 
 /* Labels which apply to all elements in the same group. For example, links
  * are grouped by the page they point to. Two or more links may point to the
@@ -358,13 +365,6 @@ const ELEMENT_LABELS = (()=>{
      * that link to them: */
     labelData["anchor"].getLocationsName = ele => getHrefOrSrcProp(ele, true);
 
-    /* For user-selected elements (See the CSS-Select flag), display them as
-     * truncated HTML, since they may not have an href or src: */
-    const getTruncatedOuterHTML = (ele, maxLen = 80) => {
-      let trunc = ele.outerHTML;
-      if (trunc.length > maxLen) trunc = trunc.substring(0, maxLen) + '...';
-      return trunc;
-    };
     const userSelData = labelData["userSelected"];
     userSelData.getInstancesName = getTruncatedOuterHTML;
     userSelData.getLocationsName = getTruncatedOuterHTML;
@@ -448,6 +448,18 @@ class RecordCache {
     recMap.set(element, newRecord);
     return newRecord;
   }
+}
+
+/* Helper functions for treating the Element and Group labels isomorphically: */
+function getLabelType(label) {
+  if (ELEMENT_LABELS.has(label)) return ELEMENT_LABELS;
+  if (GROUP_LABELS.has(label)) return GROUP_LABELS;
+  return null;
+}
+function isOrIsGroupLabelled(record, label) {
+  if (ELEMENT_LABELS.has(label)) return record.isLabelled(label);
+  if (GROUP_LABELS.has(label)) return record.group.isLabelled(label);
+  return null;
 }
 
 /* Returns an array of all records matching a label, regardless of whether that
@@ -1183,7 +1195,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
     httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
         checkRequestHeaders(
-          pageData,  //Loop Parameter
+          pageData,   //Loop Parameter
           httpRequest //Request Parameter
         );
       }
@@ -1263,12 +1275,243 @@ function nullishDefault(...vals) {
   for (const val of vals) if (val !== null && val !== undefined) return val;
   return null;
 }
+
 /* If the first parameter is null, return the second. Else, return the first: */
 function lazyNullDefault(possiblyNullVal, defaultValue) {
   if (possiblyNullVal === null) {
     return (typeof defaultValue === 'function') ? defaultValue() : defaultValue;
   }
   return possiblyNullVal;
+}
+
+/* A function for lexing with simple grammars via regex. Used for parsing
+ * queries over ElementRecords based on labels, e.g. evaluating
+ * `image & external` to find all externally-hosted images on the site. */
+function linearLex(grammar) {
+  const anyType = nullishDefault(
+    grammar.DEFAULT_NEXT,
+    /* By default, properties in the grammar object are ignored if their value
+     * isn't an object containing a regex property: */
+    Object.keys(grammar).filter(typeName=>{
+      const type = grammar[typeName];
+      return (typeof type === 'object' && type.regex !== undefined);
+    })
+  );
+  const startingTypes = nullishDefault(grammar.START, anyType);
+  const endingTypes = nullishDefault(grammar.END, anyType);
+  return (str)=>{
+    const tokens = [];
+    const openOperatorStack = [];
+    let allowedTypes = startingTypes;
+    let lastToken = null;
+
+    /* Run the loop at least once, even if the string is empty (''), to allow
+     * for potential matches, e.g. /(\s*)/: */
+    let once = true;
+    outer: for (let i = 0, len = str.length; once || i < len; once = false) {
+      const remainingStr = str.substring(i);
+      for (const typeName of allowedTypes) {
+        const type = grammar[typeName];
+        const match = remainingStr.match(type.regex);
+        if (match === null) continue;
+
+        const start = i + match.index;
+        const end = start + match[0].length;
+        i = end;
+        lastToken = {match, type: typeName, start, end};
+
+        /* Handle opening parenthetical operators: */
+        /* Note that closing operators are handled first, to make the rare case
+         * of something closing and opening the same tag be more useful: */
+        let closeTag = type.close;
+        if (closeTag !== undefined) {
+          if (typeof closeTag === 'function') closeTag = closeTag(match);
+          const lastOpener = openOperatorStack.pop();
+          const emptyStack = (lastOpener === undefined);
+          if (emptyStack || closeTag !== lastOpener.tag) {
+            const lastOpenerInfo = emptyStack ?
+              '' : ` Last opening operator had tag name "${lastOpener.tag}".`;
+            throw new Error(
+              `Lexing Error: Unmatched closing parenthetical operator `+
+              `"${match[0]}" with tag name "${closeTag}" at character `+
+              `${start} of parameter string.${lastOpenerInfo}`
+            );
+          }
+          Object.assign(lastOpener.token, {
+            closedAt: tokens.length,
+            closingToken: lastToken,
+          });
+          Object.assign(lastToken, {
+            isParenthetical: true,
+            isCloser: true,
+            closes: lastOpener.tag,
+            openedAt: lastOpener.index,
+            openingToken: lastOpener.token
+          });
+        }
+        let openTag = type.open;
+        if (openTag !== undefined) {
+          if (typeof openTag === 'function') openTag = openTag(match);
+          openOperatorStack.push({
+            tag: openTag,
+            token: lastToken,
+            index: tokens.length
+          });
+          Object.assign(lastToken, {
+            isParenthetical: true,
+            isOpener: true,
+            opens: openTag,
+          });
+        }
+        tokens.push(lastToken);
+        allowedTypes = type.next;
+        if (allowedTypes === undefined || allowedTypes === "*") {
+          allowedTypes = anyType;
+        }
+        continue outer;
+      }
+      /* If no match was found: */
+      let errorLocation;
+      if (tokens.length === 0) {
+        errorLocation = `at the start of '${remainingStr}'`;
+      } else {
+        errorLocation = (
+          `in '${remainingStr}' following a token of type '${lastToken.type}'`
+        );
+      }
+      throw new Error(
+        `Lexing Error: Could not find a match ${errorLocation} among the `+
+        `following token types: [${allowedTypes}].`
+      );
+    }
+    if (openOperatorStack.length !== 0) {
+      const lastOpener = openOperatorStack[openOperatorStack.length - 1];
+      throw new Error(
+        `Lexing Error: Unmatched opening parenthetical operator `+
+        `"${lastOpener.token.match[0]}" with tag name "${lastOpener.tag}" `+
+        `at character ${lastOpener.token.start} of the parameter string.`
+      );
+    }
+    if (endingTypes.indexOf(lastToken.type) === -1) throw new Error(
+      `Lexing Error: String terminated with token "${lastToken.match[0]}" of `+
+      `type "${lastToken.type}", but only the following types are allowed: `+
+      `[${endingTypes}].`
+    );
+    return tokens;
+  };
+}
+
+const labelQueryLexer = (()=>{
+  const operand = ['not', 'label', 'lParen'];
+  const operator = ['and', 'or', 'rParen', 'termSpace'];
+  const grammar = {
+    START: operand,
+    END: ['label', 'rParen', 'termSpace'],
+    label: {
+      regex: /^\s*\b([\w-]+)\b/,
+      next: operator
+    },
+    not: {
+      regex: /^\s*(\bnot\b|!)/,
+      next: ['label', 'lParen']
+    },
+    and: {
+      regex: /^\s*(\band\b|&&?|\+)/,
+      next: operand
+    },
+    or: {
+      regex: /^\s*(\bor\b|\|\|?|,)/,
+      next: operand
+    },
+    lParen: {
+      regex: /^\s*(\()/,
+      open: 'paren',
+      next: operand
+    },
+    rParen: {
+      regex: /^\s*(\))/,
+      close: 'paren',
+      next: operator
+    },
+    termSpace: {
+      regex: /^\s*$/
+    }
+  };
+  return linearLex(grammar);
+})();
+
+/* A function which accepts an array of tokens produced by labelQueryLexer and
+ * returns a function which accepts an ElementRecord and returns true if that
+ * record matches the query, or false otherwise. */
+function makeRecordFilter(tokens) {
+  return function evalRecord(record, subExprStart, subExprEnd) {
+    /* Used for recursion without using record.slice(): */
+    if (subExprStart === undefined) subExprStart = 0;
+    if (subExprEnd === undefined) subExprEnd = tokens.length;
+
+    let runningOr = false; //Analogous to running sum
+    let runningAnd = true; //Analogous to running product
+    let nextOperandNegated = false;
+    for (let i = subExprStart; i < subExprEnd; ++i) {
+      const token = tokens[i];
+      switch (token.type) {
+        case 'label':
+          runningAnd = runningAnd && (
+            nextOperandNegated !== isOrIsGroupLabelled(record, token.match[1])
+          );
+          nextOperandNegated = false;
+          break;
+        case 'lParen':
+          runningAnd = runningAnd && (
+            nextOperandNegated !== evalRecord(record, i + 1, token.closedAt)
+          );
+          i = token.closedAt;
+          nextOperandNegated = false;
+          break;
+        case 'not':
+          nextOperandNegated = true;
+          break;
+        case 'or':
+          runningOr = runningOr || runningAnd;
+          runningAnd = true;
+          break;
+        case 'and': case 'termSpace':
+          /* 'and' is assumed by default, so nothing needs to be done: */
+          break;
+        default:
+          throw new Error(`Unsupported token type: '${token.type}'.`);
+      }
+    }
+    return runningOr || runningAnd;
+  };
+}
+
+/* @TODO: Write optimization algorithm for queries only have & operators at top-level: */
+function getRecordsMatchingQuery(queryStr) {
+  let queryTokens;
+  try {
+    queryTokens = labelQueryLexer(queryStr);
+  } catch (e) {
+    return null;
+  }
+  /* If the query is just 1 label, use the previous method to get the list: */
+  if (queryTokens.length === 1) {
+    return getAllRecordsLabelled(queryStr);
+  }
+  /* Otherwise, validate all labels in queryTokens: */
+  for (const token of queryTokens) {
+    if (
+      token.type === 'label' &&
+      getLabelType(token.match[1]) === null
+    ) {
+      return null;
+    }
+  }
+  /* If they're all valid, get the matching records by filtering all records: */
+  const matchesQuery = makeRecordFilter(queryTokens);
+  /* An arrow function is used here because matchesQuery accepts additional
+   * parameters for recursion, and filter passes unrelated extra parameters: */
+  return ElementRecord.ALL.filter(record => matchesQuery(record));
 }
 
 /**
@@ -1857,48 +2100,86 @@ function presentResults() {
    * elements on that page which match the given label. If the invertMapping
    * parameter is truthy, that mapping is inverted, so that an element's href/
    * src maps to an array of documents containing that element: */
-  const collectDataForLabel = (label, invertMapping)=>{
-    const labelType = (GROUP_LABELS.has(label)) ? GROUP_LABELS : ELEMENT_LABELS;
-    const recordList = getAllRecordsLabelled(label);
-    const labelData = Object.create(null);
-    if (recordList !== null) {
-      for (const record of recordList) {
-        let key, val;
+  const makeRecordIndex = (queryStr, recordList, invertMapping)=>{
+    const labelType = getLabelType(queryStr);
+    const simpleQuery = (labelType !== null);
 
-        /* Map from from a given element to URLs of pages which contain a
+    const labelData = Object.create(null);
+    for (const record of recordList) {
+      let key, val;
+
+      /* Map from from a given element to URLs of pages which contain a
          * matching element. E.g. URL => list of pages containing links to that
          * URL: */
-        if (invertMapping) {
-          /* Use the appropriate name for displaying the list of locations of
-           * each element (i.e. pages containing that element): */
-          key = labelType.metadata[label].getLocationsName(record.element);
-          val = record.document;
+      if (invertMapping) {
+        /* Use the appropriate name for displaying the list of locations of
+         * each element (i.e. pages containing that element): */
+        if (simpleQuery) {
+          key = labelType.metadata[queryStr].getLocationsName(record.element);
+        } else {
+          const ele = record.element;
+          key = nullishDefault(
+            ele.href,
+            ele.src,
+            getTruncatedOuterHTML(ele)
+          );
         }
-        /* Map from page URL to elements on that page
-         * (i.e. page -> [elements]): */
-        else {
-          key = record.document;
-
-          /* Use the appropriate name for displaying the list of instances of
-           * elements matching the given element on each page. */
-          val = labelType.metadata[label].getInstancesName(record.element);
-        }
-        maybeArrayPush(labelData, key, val);
+        val = record.document;
       }
+      /* Map from page URL to elements on that page
+         * (i.e. page -> [elements]): */
+      else {
+        key = record.document;
+
+        /* Use the appropriate name for displaying the list of instances of
+           * elements matching the given element on each page. */
+        if (simpleQuery) {
+          val = labelType.metadata[queryStr].getInstancesName(record.element);
+        } else {
+          val = nullishDefault(
+            getHrefOrSrcAttr(record.element),
+            getTruncatedOuterHTML(record.element)
+          );
+        }
+      }
+      maybeArrayPush(labelData, key, val);
     }
     return labelData;
   };
 
   /* For handling the output of logging objects to the user: */
   const updateOutput = (function() {
-    let currentlyDisplayedLabel;
+    const MAX_OUTPUT_LENGTH = 5000; //Characters
+    let currentQuery;
+    let currentRecords;
     let usingAltFormat;
 
-    function outputDataToModal(label, useInvertedFormat) {
-      const MAX_OUTPUT_LENGTH = 5000;
+    return function outputDataToModal() {
+      const wantedQuery = inputTextBox.value;
+      const altFormatWanted = altFormatCheckBox.checked;
+
+      let outputChanged = false;
+      if (currentQuery !== wantedQuery) {
+        const wantedRecords = getRecordsMatchingQuery(wantedQuery);
+        if (wantedRecords !== null) {
+          currentQuery = wantedQuery;
+          currentRecords = wantedRecords;
+          outputChanged = true;
+        }
+      }
+      if (usingAltFormat !== altFormatWanted) {
+        usingAltFormat = altFormatWanted;
+        outputChanged = true;
+      }
+      if (!outputChanged) return;
+
 
       /* Main JSON Preview output: */
-      const objForLabel = collectDataForLabel(label, useInvertedFormat);
+      const objForLabel = makeRecordIndex(
+        currentQuery, currentRecords, usingAltFormat
+      );
+      /* Attach to window for debugging or additional processing: */
+      window.queryResults = objForLabel;
       const objJSON = JSON.stringify(objForLabel, null, 2);
       const previewTooLong = (objJSON.length > MAX_OUTPUT_LENGTH);
       let objJSONPreview = objJSON;
@@ -1925,7 +2206,7 @@ function presentResults() {
       const url = URL.createObjectURL(blob);
 
       let downloadName = window.location.hostname.replace(/^www\./i, "");
-      downloadName += "_" + label;
+      downloadName += "_" + currentQuery;
       if (crawlTerminatedBeforeCompletion) downloadName += "_(INCOMPLETE)";
       downloadName +=".json";
 
@@ -1943,28 +2224,6 @@ function presentResults() {
         clearChildren(dlLinkPara);
         appendChildren(dlLinkPara, [beforeLinkText, dlLink, afterLinkText]);
       });
-    }
-    /* Reads which log object to output, what format to use, and calls
-     * outputLogObjToModal to actually change what is shown to the user: */
-    return function updateOutput() {
-      const wantedLabel = inputTextBox.value;
-      const altFormatWanted = altFormatCheckBox.checked;
-
-      let anyInvalidation = false;
-      if (currentlyDisplayedLabel !== wantedLabel) {
-        /* If the label changed, check if it's valid: */
-        if (ELEMENT_LABELS.has(wantedLabel) || GROUP_LABELS.has(wantedLabel)) {
-          currentlyDisplayedLabel = wantedLabel;
-          anyInvalidation = true;
-        }
-      }
-      if (usingAltFormat !== altFormatWanted) {
-        usingAltFormat = altFormatWanted;
-        anyInvalidation = true;
-      }
-      if (anyInvalidation) {
-        outputDataToModal(currentlyDisplayedLabel, usingAltFormat);
-      }
     };
   }());//Close closure
 
