@@ -22,7 +22,7 @@
       JSCrawler Instruction Manual
     </h1>
     <p id="app-info">
-      <span id="edit-date">Last edited Jul 5th, 2018</span>
+      <span id="edit-date">Last edited Jul 12th, 2018</span>
     </p>
   </div>
   </header>
@@ -132,7 +132,7 @@ const PROTOCOL = window.location.protocol;
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = [
   &#39;doc&#39;, &#39;docx&#39;, &#39;gif&#39;, &#39;jpeg&#39;, &#39;jpg&#39;, &#39;pdf&#39;,
-  &#39;png&#39;, &#39;ppt&#39;, &#39;pptx&#39;, &#39;xls&#39;, &#39;xlsm&#39;, &#39;xlsx&#39;
+  &#39;png&#39;, &#39;ppt&#39;, &#39;pptx&#39;, &#39;xls&#39;, &#39;xlsm&#39;, &#39;xlsx&#39;, &#39;xml&#39;
 ];
 const RECOGNIZED_SCHEMES = [&#39;mailto:&#39;, &#39;file:&#39;, &#39;tel:&#39;, &#39;javascript:&#39;];
 
@@ -794,15 +794,15 @@ function classifyLinks(doc, recordCache) {
       linkRecord.label(&quot;anchor&quot;);
       markElement(link, &quot;pink&quot;, &quot;Anchor link&quot;);
     }
+
+    const matchingProtocol = (linkProtocol === PROTOCOL);
+    if (!matchingProtocol) linkRecord.group.label(&quot;http-httpsError&quot;);
+
     if (linkIsInternal) {
       linkRecord.group.label(&quot;internal&quot;);
-      if (linkProtocol === PROTOCOL) {
-        /* Store this record for return, because it is internal with a matching
-         * protocol, so its page should be checked in visitLinks: */
-        internalLinksFromThisPage.push(linkRecord);
-      } else {
-        linkRecord.group.label(&quot;http-httpsError&quot;);
-      }
+      /* Store this record for return, because it is internal with a matching
+       * protocol, so its page should be checked in visitLinks: */
+      if (matchingProtocol) internalLinksFromThisPage.push(linkRecord);
       if (linkIsAbsolute) {
         if (link.matches(&#39;.field-name-field-related-links a&#39;)) {
           console.warn(&quot;absint link in related links&quot;, link);
@@ -2307,10 +2307,9 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
 
     /* A spoof link to mark the page where the crawl started as visited, so that
      * it will not be crawled a second time: */
-    const initLabel = &quot;(Initial page for crawler script)&quot;;
     const startPageSpoofLink = makeElement(
       &#39;a&#39;,
-      initLabel,
+      &quot;(Initial page for crawler script)&quot;,
       {href: anchorlessURL}
     );
     const spoofLinkRecord = new ElementRecord(anchorlessURL, startPageSpoofLink);

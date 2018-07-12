@@ -90,7 +90,7 @@ const PROTOCOL = window.location.protocol;
 /* Settings variables: */
 const RECOGNIZED_FILE_TYPES = [
   'doc', 'docx', 'gif', 'jpeg', 'jpg', 'pdf',
-  'png', 'ppt', 'pptx', 'xls', 'xlsm', 'xlsx'
+  'png', 'ppt', 'pptx', 'xls', 'xlsm', 'xlsx', 'xml'
 ];
 const RECOGNIZED_SCHEMES = ['mailto:', 'file:', 'tel:', 'javascript:'];
 
@@ -752,15 +752,15 @@ function classifyLinks(doc, recordCache) {
       linkRecord.label("anchor");
       markElement(link, "pink", "Anchor link");
     }
+
+    const matchingProtocol = (linkProtocol === PROTOCOL);
+    if (!matchingProtocol) linkRecord.group.label("http-httpsError");
+
     if (linkIsInternal) {
       linkRecord.group.label("internal");
-      if (linkProtocol === PROTOCOL) {
-        /* Store this record for return, because it is internal with a matching
-         * protocol, so its page should be checked in visitLinks: */
-        internalLinksFromThisPage.push(linkRecord);
-      } else {
-        linkRecord.group.label("http-httpsError");
-      }
+      /* Store this record for return, because it is internal with a matching
+       * protocol, so its page should be checked in visitLinks: */
+      if (matchingProtocol) internalLinksFromThisPage.push(linkRecord);
       if (linkIsAbsolute) {
         if (link.matches('.field-name-field-related-links a')) {
           console.warn("absint link in related links", link);
@@ -2265,10 +2265,9 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
 
     /* A spoof link to mark the page where the crawl started as visited, so that
      * it will not be crawled a second time: */
-    const initLabel = "(Initial page for crawler script)";
     const startPageSpoofLink = makeElement(
       'a',
-      initLabel,
+      "(Initial page for crawler script)",
       {href: anchorlessURL}
     );
     const spoofLinkRecord = new ElementRecord(anchorlessURL, startPageSpoofLink);
