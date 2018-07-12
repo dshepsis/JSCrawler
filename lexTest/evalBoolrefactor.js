@@ -30,55 +30,8 @@ function makeRecordFilter(tokens) {
           runningOr = runningOr || runningAnd;
           runningAnd = true;
           break;
-        case 'and':
+        case 'and': case 'termSpace':
           /* 'and' is assumed by default, so nothing needs to be done: */
-          break;
-        case 'termSpace':
-          break;
-        default:
-          throw new Error(`Unsupported token type: '${token.type}'.`);
-      }
-    }
-    return runningOr || runningAnd;
-  };
-}
-
-/* With weirder state!: */
-function makeRecordFilter2(tokens) {
-  return function evalRecord(record, subExprStart, subExprEnd) {
-    /* Used for recursion without using record.slice(): */
-    if (subExprStart === undefined) subExprStart = 0;
-    if (subExprEnd === undefined) subExprEnd = tokens.length;
-
-    let runningOr = false; //Analogous to running sum
-    let runningAnd = true; //Analogous to running product
-
-    /* Represents both the value of the previous operand, and whether the next
-     * operand should be negated: */
-    let runningNot = false;
-    for (let i = subExprStart; i < subExprEnd; ++i) {
-      const token = tokens[i];
-      switch (token.type) {
-        case 'label':
-          runningNot = (runningNot !== record.isLabelled(token.match[1]));
-          break;
-        case 'lParen':
-          runningNot = (runningNot !== evalRecord(record, i + 1, token.closedAt));
-          i = token.closedAt;
-          break;
-        case 'not':
-          runningNot = true;
-          break;
-        case 'or':
-          runningOr = runningOr || runningAnd;
-          runningAnd = true;
-          runningNot = false;
-          break;
-        case 'and':
-          runningAnd = runningAnd && runningNot;
-          runningNot = false;
-          break;
-        case 'termSpace':
           break;
         default:
           throw new Error(`Unsupported token type: '${token.type}'.`);
@@ -91,16 +44,13 @@ function makeRecordFilter2(tokens) {
 /**
  * Test
  */
-
-/* A modified version of linearLex which adds support for explicit
- * parenthetical operators via the open and close properties: */
 const nullishDefault = (...vals)=>{
   for (const val of vals) if (val !== null && val !== undefined) return val;
   return null;
 };
 const linearLex = (grammar)=> {
   const anyType = nullishDefault(
-    grammar.ANY,
+    grammar.DEFAULT_NEXT,
     /* By default, properties in the grammar object are ignored if their value
      * isn't an object containing a regex property: */
     Object.keys(grammar).filter(typeName=>{
@@ -132,15 +82,8 @@ const linearLex = (grammar)=> {
         lastToken = {match, type: typeName, start, end};
 
         /* Handle opening parenthetical operators: */
-        let openTag = type.open;
-        if (openTag !== undefined) {
-          if (typeof openTag === 'function') openTag = openTag(match);
-          openOperatorStack.push({
-            tag: openTag,
-            token: lastToken,
-            index: tokens.length
-          });
-        }
+        /* Note that closing operators are handled first, to make the rare case
+         * of something closing and opening the same tag be more useful: */
         let closeTag = type.close;
         if (closeTag !== undefined) {
           if (typeof closeTag === 'function') closeTag = closeTag(match);
@@ -156,9 +99,6 @@ const linearLex = (grammar)=> {
             );
           }
           Object.assign(lastOpener.token, {
-            isParenthetical: true,
-            isOpener: true,
-            opens: closeTag,
             closedAt: tokens.length,
             closingToken: lastToken,
           });
@@ -168,6 +108,20 @@ const linearLex = (grammar)=> {
             closes: lastOpener.tag,
             openedAt: lastOpener.index,
             openingToken: lastOpener.token
+          });
+        }
+        let openTag = type.open;
+        if (openTag !== undefined) {
+          if (typeof openTag === 'function') openTag = openTag(match);
+          openOperatorStack.push({
+            tag: openTag,
+            token: lastToken,
+            index: tokens.length
+          });
+          Object.assign(lastToken, {
+            isParenthetical: true,
+            isOpener: true,
+            opens: openTag,
           });
         }
         tokens.push(lastToken);
@@ -192,7 +146,7 @@ const linearLex = (grammar)=> {
       );
     }
     if (openOperatorStack.length !== 0) {
-      const lastOpener = openOperatorStack[openOperatorStack.length -1];
+      const lastOpener = openOperatorStack[openOperatorStack.length - 1];
       throw new Error(
         `Lexing Error: Unmatched opening parenthetical operator `+
         `"${lastOpener.token.match[0]}" with tag name "${lastOpener.tag}" `+
@@ -201,7 +155,7 @@ const linearLex = (grammar)=> {
     }
     if (endingTypes.indexOf(lastToken.type) === -1) throw new Error(
       `Lexing Error: String terminated with token "${lastToken.match[0]}" of `+
-      `type "${lastToken.type}", but only the following are allowed: `+
+      `type "${lastToken.type}", but only the following types are allowed: `+
       `[${endingTypes}].`
     );
     return tokens;
@@ -222,7 +176,7 @@ const grammar = {
     next: ['label', 'lParen']
   },
   and: {
-    regex: /^\s*(\band\b|&&?)/,
+    regex: /^\s*(\band\b|&&?|\+)/,
     next: operand
   },
   or: {
@@ -243,6 +197,7 @@ const grammar = {
     regex: /^\s*$/
   }
 };
+
 const testRecord = {
   labels: new Set('ABD'.split('')),
   isLabelled(label) {
