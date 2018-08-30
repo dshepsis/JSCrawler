@@ -1,3 +1,16 @@
+/* @TODO Add a "check resources" function to streamline categorizing things as
+ * internal, external, absolute, http-httpsError, and other labels based on
+ * resource url, since currently many things are duplicated across the 3
+ * categorization functions, creating opportunities for bugs. */
+
+/* @IDEA maybe add a flag/tool for checking text content? Like to search for
+ * encoding artifacts and stuff. Can use the heck script to get text nodes, but
+ * it may be difficult to support them in ElementRecord, which probably makes
+ * certain assumptions about "Elements" being HTMLElements. */
+
+/* @IDEA Maybe some option in the interface for finding every location of a
+ * particular link/resource? */
+
 'use strict';
 const startTime = performance.now();
 
@@ -259,7 +272,7 @@ const GROUP_LABELS = (()=>{
     "internal",
     "external",
     "null",
-    "Email",
+    "email",
     "localFile",
     "javascriptLink",
     "http-httpsError",
@@ -469,7 +482,7 @@ const getAllRecordsLabelled = (label)=>{
   let recordList;
   if (ELEMENT_LABELS.has(label)) {
     const tableEntry = ElementRecord.LabelTable[label];
-    if (tableEntry === undefined) return null;
+    if (tableEntry === undefined) return [];
 
     /* Shallow copy array, for consistency with group-label behvaior.
      * That is to say, modifying the returned list will not affect the actual
@@ -478,7 +491,7 @@ const getAllRecordsLabelled = (label)=>{
   } else if (GROUP_LABELS.has(label)) {
     recordList = [];
     const groups = RecordGroup.LabelTable[label];
-    if (groups === undefined) return null;
+    if (groups === undefined) return [];
 
     /* Take each matching group, and then append each group's list of records
      * to recordList. This gives us every record in a group matching a given
@@ -549,7 +562,7 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #b0b0b0;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;width:320px}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open,#crlr-modal #crlr-textbox-controls:hover #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #de2323;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;width:320px}#crlr-modal #crlr-textbox-controls.valid-query{box-shadow:inset 0 -2px 0 0 #b0b0b0}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #de2323}#crlr-modal #crlr-textbox-controls.focus-within.valid-query{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open,#crlr-modal #crlr-textbox-controls:hover #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
 const styleEle = makeElement('style', CRAWLER_CSS, {id: 'crlr.js.css'});
 document.head.appendChild(styleEle);
 
@@ -766,6 +779,8 @@ function classifyLinks(doc, recordCache) {
     }
 
     const matchingProtocol = (linkProtocol === PROTOCOL);
+    /* @FIXME this should actually be lower down so RECOGNIZED_SCHEMES don't
+     * get categorized here: */
     if (!matchingProtocol) linkRecord.group.label("http-httpsError");
 
     if (linkIsInternal) {
@@ -776,7 +791,7 @@ function classifyLinks(doc, recordCache) {
       if (linkIsAbsolute) {
         if (link.matches('.field-name-field-related-links a')) {
           console.warn("absint link in related links", link);
-          continue; //@debug This will be removable when set notation is done, via `absolute&internal&!userSelected`
+          // continue; //@debug
         }
         linkRecord.label("absoluteInternal");
       }
@@ -789,7 +804,7 @@ function classifyLinks(doc, recordCache) {
       }
       switch (linkProtocol) {
         case 'mailto:':
-          linkRecord.group.label("Email");
+          linkRecord.group.label("email");
           markElement(link, "yellow", "Email link");
           break;
         case 'file:':
@@ -1287,154 +1302,205 @@ function lazyNullDefault(possiblyNullVal, defaultValue) {
 /* A function for lexing with simple grammars via regex. Used for parsing
  * queries over ElementRecords based on labels, e.g. evaluating
  * `image & external` to find all externally-hosted images on the site. */
-function linearLex(grammar) {
-  const anyType = nullishDefault(
-    grammar.DEFAULT_NEXT,
-    /* By default, properties in the grammar object are ignored if their value
-     * isn't an object containing a regex property: */
-    Object.keys(grammar).filter(typeName=>{
-      const type = grammar[typeName];
-      return (typeof type === 'object' && type.regex !== undefined);
-    })
-  );
-  const startingTypes = nullishDefault(grammar.START, anyType);
-  const endingTypes = nullishDefault(grammar.END, anyType);
-  return (str)=>{
-    const tokens = [];
-    const openOperatorStack = [];
-    let allowedTypes = startingTypes;
-    let lastToken = null;
-
-    /* Run the loop at least once, even if the string is empty (''), to allow
-     * for potential matches, e.g. /(\s*)/: */
-    let once = true;
-    outer: for (let i = 0, len = str.length; once || i < len; once = false) {
-      const remainingStr = str.substring(i);
-      for (const typeName of allowedTypes) {
-        const type = grammar[typeName];
-        const match = remainingStr.match(type.regex);
-        if (match === null) continue;
-
-        const start = i + match.index;
-        const end = start + match[0].length;
-        i = end;
-        lastToken = {match, type: typeName, start, end};
-
-        /* Handle opening parenthetical operators: */
-        /* Note that closing operators are handled first, to make the rare case
-         * of something closing and opening the same tag be more useful: */
-        let closeTag = type.close;
-        if (closeTag !== undefined) {
-          if (typeof closeTag === 'function') closeTag = closeTag(match);
-          const lastOpener = openOperatorStack.pop();
-          const emptyStack = (lastOpener === undefined);
-          if (emptyStack || closeTag !== lastOpener.tag) {
-            const lastOpenerInfo = emptyStack ?
-              '' : ` Last opening operator had tag name "${lastOpener.tag}".`;
-            throw new Error(
-              `Lexing Error: Unmatched closing parenthetical operator `+
-              `"${match[0]}" with tag name "${closeTag}" at character `+
-              `${start} of parameter string.${lastOpenerInfo}`
-            );
-          }
-          Object.assign(lastOpener.token, {
-            closedAt: tokens.length,
-            closingToken: lastToken,
-          });
-          Object.assign(lastToken, {
-            isParenthetical: true,
-            isCloser: true,
-            closes: lastOpener.tag,
-            openedAt: lastOpener.index,
-            openingToken: lastOpener.token
-          });
-        }
-        let openTag = type.open;
-        if (openTag !== undefined) {
-          if (typeof openTag === 'function') openTag = openTag(match);
-          openOperatorStack.push({
-            tag: openTag,
-            token: lastToken,
-            index: tokens.length
-          });
-          Object.assign(lastToken, {
-            isParenthetical: true,
-            isOpener: true,
-            opens: openTag,
-          });
-        }
-        tokens.push(lastToken);
-        allowedTypes = type.next;
-        if (allowedTypes === undefined || allowedTypes === "*") {
-          allowedTypes = anyType;
-        }
-        continue outer;
-      }
-      /* If no match was found: */
-      let errorLocation;
-      if (tokens.length === 0) {
-        errorLocation = `at the start of '${remainingStr}'`;
-      } else {
-        errorLocation = (
-          `in '${remainingStr}' following a token of type '${lastToken.type}'`
-        );
-      }
-      throw new Error(
-        `Lexing Error: Could not find a match ${errorLocation} among the `+
-        `following token types: [${allowedTypes}].`
-      );
-    }
-    if (openOperatorStack.length !== 0) {
-      const lastOpener = openOperatorStack[openOperatorStack.length - 1];
-      throw new Error(
-        `Lexing Error: Unmatched opening parenthetical operator `+
-        `"${lastOpener.token.match[0]}" with tag name "${lastOpener.tag}" `+
-        `at character ${lastOpener.token.start} of the parameter string.`
-      );
-    }
-    if (endingTypes.indexOf(lastToken.type) === -1) throw new Error(
-      `Lexing Error: String terminated with token "${lastToken.match[0]}" of `+
-      `type "${lastToken.type}", but only the following types are allowed: `+
-      `[${endingTypes}].`
-    );
-    return tokens;
+const linearLex = (()=>{
+  const ERROR_CODES = {
+    ILLEGAL_TYPE: Symbol('No legal token type was found.'),
+    ILLEGAL_ENDING_TYPE: Symbol('No legal type was found at end of string.'),
+    UNMATCHED_CLOSER: Symbol('Unmatched closing parenthetical operator'),
+    UNMATCHED_OPENER: Symbol('Unmatched opening parenthetical operator')
   };
-}
+  function linearLex(grammar) {
+    const ANY_TYPE = nullishDefault(
+      grammar.DEFAULT_NEXT,
+      /* By default, properties in the grammar object are ignored if their value
+       * isn't an object containing a regex property: */
+      Object.keys(grammar).filter(typeName=>{
+        const type = grammar[typeName];
+        return (typeof type === 'object' && type.regex !== undefined);
+      })
+    );
+    const startingTypes = nullishDefault(grammar.START, ANY_TYPE);
+    const endingTypes = nullishDefault(grammar.END, ANY_TYPE);
+    const skipRegex = grammar.SKIP;
+    return (str)=>{
+      const tokens = [];
+      const errorTokens = [];
+      let valid = true;
+      function pushErrorToken(token) {
+        token.error = true;
+        tokens.push(token);
+        errorTokens.push(token);
+        valid = false;
+      }
+
+      const openOperatorStack = [];
+      let allowedTypes = startingTypes;
+      let lastToken = null;
+
+      /* Run the loop at least once, even if the string is empty (''), to allow
+       * for potential matches, e.g. /(\s*)/: */
+      let once = true;
+      outer: for (let i = 0, len = str.length; once || i < len; once = false) {
+        const remainingStr = str.substring(i);
+        if (skipRegex) {
+          const match = remainingStr.match(skipRegex);
+          if (match !== null) {
+            const skippedChars = match.index + match[0].length;
+            i += skippedChars;
+            if (skippedChars !== 0) continue;
+          }
+        }
+        for (const typeName of allowedTypes) {
+          const type = grammar[typeName];
+          const match = remainingStr.match(type.regex);
+          if (match === null) continue;
+
+          const start = i + match.index;
+          const end = start + match[0].length;
+          i = end;
+          lastToken = {match, type: typeName, start, end};
+
+          /* Handle opening parenthetical operators: */
+          /* Note that closing operators are handled first, to make the rare case
+           * of something closing and opening the same tag be more useful: */
+          let closeTag = type.close;
+          if (closeTag !== undefined) {
+            if (typeof closeTag === 'function') closeTag = closeTag(match);
+            const lastOpener = openOperatorStack.pop();
+            const emptyStack = (lastOpener === undefined);
+            if (emptyStack || closeTag !== lastOpener.tag) {
+              const lastOpenerInfo = emptyStack ?
+                '' : ` Last opening operator had tag name "${lastOpener.tag}".`;
+              const message = (
+                `Lexing Error: Unmatched closing parenthetical operator `+
+                `"${match[0]}" with tag name "${closeTag}" at character `+
+                `${start} of parameter string.${lastOpenerInfo}`
+              );
+              pushErrorToken({code: ERROR_CODES.UNMATCHED_CLOSER, message});
+            } else {
+              Object.assign(lastOpener.token, {
+                closedAt: tokens.length,
+                closingToken: lastToken,
+              });
+              Object.assign(lastToken, {
+                closes: lastOpener.tag,
+                openedAt: lastOpener.index,
+                openingToken: lastOpener.token
+              });
+            }
+            Object.assign(lastToken, {
+              isParenthetical: true,
+              isCloser: true
+            });
+          }
+          let openTag = type.open;
+          if (openTag !== undefined) {
+            if (typeof openTag === 'function') openTag = openTag(match);
+            openOperatorStack.push({
+              tag: openTag,
+              token: lastToken,
+              index: tokens.length
+            });
+            Object.assign(lastToken, {
+              isParenthetical: true,
+              isOpener: true,
+              opens: openTag,
+            });
+          }
+
+          /* Let grammar specify custom behavior on match: */
+          if (typeof type.onMatch === 'function') {
+            const modifiedToken = type.onMatch(lastToken, tokens);
+            if (modifiedToken !== undefined) lastToken = modifiedToken;
+            /* If the returned object has a truthy reject property, ignore this
+             * match: */
+            else if (modifiedToken.reject) continue;
+          }
+
+          tokens.push(lastToken);
+
+          allowedTypes = type.next;
+          if (allowedTypes === undefined) allowedTypes = ANY_TYPE;
+          continue outer;
+        }
+        /* If no match was found: */
+        let errorLocation;
+        if (lastToken === null) {
+          errorLocation = `at the start of '${remainingStr}'`;
+        } else {
+          errorLocation = (
+            `in '${remainingStr}' following a token of type '${lastToken.type}'`
+          );
+        }
+        const message = (
+          `Lexing Error: Could not find a match ${errorLocation} among the `+
+          `following token types: [${allowedTypes}].`
+        );
+        pushErrorToken({code: ERROR_CODES.ILLEGAL_TYPE, message});
+
+        /* If no legal matching token was found, try allowing other types.
+         * If all types were already checked, just exit. */
+        if (allowedTypes === ANY_TYPE) break;
+        const allowedSet = new Set(allowedTypes);
+        allowedTypes = ANY_TYPE.filter(type => !allowedSet.has(type));
+        if (allowedTypes.length === 0) break;
+      }
+      if (openOperatorStack.length !== 0) {
+        const lastOpener = openOperatorStack[openOperatorStack.length - 1];
+        const message = (
+          `Lexing Error: Unmatched opening parenthetical operator `+
+          `"${lastOpener.token.match[0]}" with tag name "${lastOpener.tag}" `+
+          `at character ${lastOpener.token.start} of the parameter string.`
+        );
+        pushErrorToken({code: ERROR_CODES.UNMATCHED_OPENER, message});
+      }
+      if (lastToken !== null && endingTypes.indexOf(lastToken.type) === -1) {
+        const message = (
+          `Lexing Error: String terminated with token "${lastToken.match[0]}" of `+
+          `type "${lastToken.type}", but only the following types are allowed: `+
+          `[${endingTypes}].`
+        );
+        pushErrorToken({code: ERROR_CODES.ILLEGAL_ENDING_TYPE, message});
+      }
+      return {valid, tokens, errorTokens};
+    };
+  }
+  Object.assign(linearLex, ERROR_CODES);
+  return linearLex;
+})();
 
 const labelQueryLexer = (()=>{
   const operand = ['not', 'label', 'lParen'];
-  const operator = ['and', 'or', 'rParen', 'termSpace'];
+  const operator = ['and', 'or', 'rParen'];
   const grammar = {
     START: operand,
-    END: ['label', 'rParen', 'termSpace'],
+    END: ['label', 'rParen'],
+    SKIP: /^\s*/,
     label: {
-      regex: /^\s*\b([\w-]+)\b/,
+      regex: /^\b[\w-]+\b/,
       next: operator
     },
     not: {
-      regex: /^\s*(\bnot\b|!)/,
+      regex: /^(\bnot\b|!)/,
       next: ['label', 'lParen']
     },
     and: {
-      regex: /^\s*(\band\b|&&?|\+)/,
+      regex: /^(\band\b|&&?|\+)/,
       next: operand
     },
     or: {
-      regex: /^\s*(\bor\b|\|\|?|,)/,
+      regex: /^(\bor\b|\|\|?|,)/,
       next: operand
     },
     lParen: {
-      regex: /^\s*(\()/,
+      regex: /^\(/,
       open: 'paren',
       next: operand
     },
     rParen: {
-      regex: /^\s*(\))/,
+      regex: /^\)/,
       close: 'paren',
       next: operator
-    },
-    termSpace: {
-      regex: /^\s*$/
     }
   };
   return linearLex(grammar);
@@ -1444,7 +1510,7 @@ const labelQueryLexer = (()=>{
  * returns a function which accepts an ElementRecord and returns true if that
  * record matches the query, or false otherwise. */
 function makeRecordFilter(tokens) {
-  return function evalRecord(record, subExprStart, subExprEnd) {
+  function evalRecord(record, subExprStart, subExprEnd) {
     /* Used for recursion without using record.slice(): */
     if (subExprStart === undefined) subExprStart = 0;
     if (subExprEnd === undefined) subExprEnd = tokens.length;
@@ -1457,7 +1523,7 @@ function makeRecordFilter(tokens) {
       switch (token.type) {
         case 'label':
           runningAnd = runningAnd && (
-            nextOperandNegated !== isOrIsGroupLabelled(record, token.match[1])
+            nextOperandNegated !== isOrIsGroupLabelled(record, token.match[0])
           );
           nextOperandNegated = false;
           break;
@@ -1483,17 +1549,174 @@ function makeRecordFilter(tokens) {
       }
     }
     return runningOr || runningAnd;
-  };
+  }
+  /* Don't expose recursive implementation: */
+  return record => evalRecord(record);
 }
 
-/* @TODO: Write optimization algorithm for queries only have & operators at top-level: */
-function getRecordsMatchingQuery(queryStr) {
-  let queryTokens;
-  try {
-    queryTokens = labelQueryLexer(queryStr);
-  } catch (e) {
-    return null;
+/* A wrapper around a text input element. A tokenization of the element's value
+ * is maintained, and various utility methods are provided for using and
+ * manipulating the input value based on that tokenization: */
+class TokenizedInputElement {
+  constructor(inputElement, options = {}) {
+    this.element = inputElement;
+    if (options.lexer) {
+      this.lexer = options.lexer;
+    } else if (options.grammar) {
+      this.lexer = linearLex(options.grammar);
+    } else {
+      throw new Error('A lexer or grammar must be given.');
+    }
+    this.tokenizeListeners = [];
+    this.validTokenizeListeners = [];
+    this.tokenize();
+    this.element.addEventListener('input', ()=>this.tokenize(), false);
   }
+  /* Returns an array of tokens produced by lexing the value of the input: */
+  tokenize(grammar) {
+    const lexer = (grammar === undefined) ? this.lexer : linearLex(grammar);
+    this.lexData = lexer(this.element.value);
+    this.tokens = this.lexData.tokens;
+    for (const listener of this.tokenizeListeners) {
+      listener(this.tokens, this);
+    }
+    if (this.lexData.valid) {
+      for (const listener of this.validTokenizeListeners) {
+        listener(this.tokens, this);
+      }
+    }
+  }
+  /* Adds the parameter functions as listeners for whenever the input element
+   * is tokenized. Listeners are called with 2 parameters: the list of tokens
+   * and this instance of TokenizedInputElement. */
+  onTokenize(...functions) {
+    this.tokenizeListeners.push(...functions);
+  }
+  /* Ibid, but listeners are only called if the tokenization is valid: */
+  onValidTokenize(...functions) {
+    this.validTokenizeListeners.push(...functions);
+  }
+  /* Allows removal of listeners added via onTokenize. Listeners may be
+   * specified by name or identity. Returns true if any are removed: */
+  removeTokenizeListener(...functions) {
+    const listeners = this.tokenizeListeners;
+    let anyRemoved = false;
+    for (const fn of functions) {
+      let index;
+      if (typeof fn === 'string') {
+        index = listeners.findIndex(listener => listener.name === fn);
+      } else {
+        index = listeners.indexOf(fn);
+      }
+      if (index === -1) continue;
+      anyRemoved = true;
+      listeners.splice(index, 1);
+    }
+    return anyRemoved;
+  }
+  /* Returns the input element's user-selection (highlight) bounds: */
+  selectionIndices() {
+    return [this.element.selectionStart, this.element.selectionEnd];
+  }
+  /* Gets the tokens which are included in the text selection given by either
+   * the inputs selectionStart/End or the parameters if they're provided: */
+  selectedTokens(start, end) {
+    const tokens = this.tokens;
+    const numTokens = tokens.length;
+
+    /* Validate selection bounds: */
+    const inputVal = this.element.value;
+    const inputLen = inputVal.length;
+    if (start < 0 || end > inputLen) throw new Error('Selection out of range!');
+    if (start > end) throw new Error('Selection has reversed bounds!');
+
+    /* Make bounds optional: */
+    if (start === undefined) [start, end] = this.selectionIndices();
+    else if (end === undefined) end = start;
+
+    let tokenStartIndex = 0;
+    for (; tokenStartIndex < numTokens; ++tokenStartIndex) {
+      if (tokens[tokenStartIndex].end >= start) break;
+    }
+    let tokenEndIndex = tokenStartIndex;
+    for (; tokenEndIndex < numTokens; ++tokenEndIndex) {
+      if (tokens[tokenEndIndex].start > end) break;
+    }
+    let stringStartIndex, stringEndIndex;
+    if (tokenStartIndex === numTokens || tokenEndIndex === 0) {
+      /* If no tokens are selected because the selection is entirely before or
+       * after any tokens: */
+      stringStartIndex = start;
+      stringEndIndex = end;
+    } else {
+      stringStartIndex = Math.min(start, tokens[tokenStartIndex].start);
+      stringEndIndex = Math.max(end, tokens[tokenEndIndex - 1].end);
+    }
+    const substring = inputVal.substring(stringStartIndex, stringEndIndex);
+    return {
+      tokenStartIndex, tokenEndIndex,
+      tokens: tokens.slice(tokenStartIndex, tokenEndIndex),
+      stringStartIndex, stringEndIndex, substring
+    };
+  }
+  replaceSelectedTokens(replacementStr, start, end) {
+    const {stringStartIndex, stringEndIndex} = this.selectedTokens(start, end);
+    const currentVal = this.element.value;
+    const modifiedVal = (
+      currentVal.substring(0, stringStartIndex) +
+      replacementStr +
+      currentVal.substring(stringEndIndex)
+    );
+    this.element.value = modifiedVal;
+
+    /* Refresh the tokenization after the change: */
+    this.tokenize();
+    return modifiedVal;
+  }
+} //Close Class TokenizedInputElement
+
+const InputSelectionTracker = (()=>{
+  const trackers = [];
+  document.addEventListener('selectionchange', ()=>{
+    for (const tracker of trackers) {
+      let selectionChanged = false;
+      if (tracker.selectionStart !== tracker.element.selectionStart) {
+        selectionChanged = true;
+        tracker.selectionStart = tracker.element.selectionStart;
+      }
+      if (tracker.selectionEnd !== tracker.element.selectionEnd) {
+        selectionChanged = true;
+        tracker.selectionEnd = tracker.element.selectionEnd;
+      }
+      if (!selectionChanged) return;
+      for (const listener of tracker.changeListeners) {
+        listener(tracker.element, tracker.selectionStart, tracker.selectionEnd);
+      }
+    }
+  });
+  return class InputSelectionTracker {
+    constructor (inputElement) {
+      this.element = inputElement;
+      this.selectionStart = this.element.selectionStart;
+      this.selectionEnd = this.element.selectionEnd;
+      this.changeListeners = [];
+      trackers.push(this);
+    }
+    onSelectionChange(...listeners) {
+      this.changeListeners.push(...listeners);
+    }
+  };
+})();
+
+/* @TODO: Write optimization algorithm for queries only have & operators at top-level: */
+function getRecordsMatchingQuery(
+  queryStr,
+  lexedQuery = labelQueryLexer(queryStr)
+) {
+  if (!lexedQuery.valid) return null;
+
+  const queryTokens = lexedQuery.tokens;
+
   /* If the query is just 1 label, use the previous method to get the list: */
   if (queryTokens.length === 1) {
     return getAllRecordsLabelled(queryStr);
@@ -1502,16 +1725,13 @@ function getRecordsMatchingQuery(queryStr) {
   for (const token of queryTokens) {
     if (
       token.type === 'label' &&
-      getLabelType(token.match[1]) === null
+      getLabelType(token.match[0]) === null
     ) {
       return null;
     }
   }
   /* If they're all valid, get the matching records by filtering all records: */
-  const matchesQuery = makeRecordFilter(queryTokens);
-  /* An arrow function is used here because matchesQuery accepts additional
-   * parameters for recursion, and filter passes unrelated extra parameters: */
-  return ElementRecord.ALL.filter(record => matchesQuery(record));
+  return ElementRecord.ALL.filter(makeRecordFilter(queryTokens));
 }
 
 /**
@@ -1521,18 +1741,14 @@ function getRecordsMatchingQuery(queryStr) {
 function makeAutoCompleteList(inputEle, suggestions, { //Options:
   suggestionToEle = 'li',
   listEle = 'ul',
-  getInputValue,
-  setInputValue
+  getInputValue = ()=>inputEle.value.trim(),
+  setInputValue = val=>{inputEle.value = val;},
+  autoUpdate = true
 } = {}) {
   validateType(inputEle, HTMLInputElement, "inputEle");
-  if (getInputValue === undefined) {
-    getInputValue = ()=>inputEle.value;
-  }
-  if (setInputValue === undefined) {
-    setInputValue = val=>{inputEle.value = val;};
-  }
   validateType(getInputValue, 'function', "getInputValue");
   validateType(setInputValue, 'function', "setInputValue");
+
   const getSugEle = (sugStr, extraMetadata = {})=>{
     const defaultMetadata = Object.freeze({
       defaultContents() {
@@ -1747,7 +1963,9 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
   });
   /* Events for populating the suggestion list and navigating to and from it via
    * the input element: */
-  inputEle.addEventListener('input', updateSuggestions);
+  if (autoUpdate) {
+    inputEle.addEventListener('input', updateSuggestions);
+  }
   inputEle.addEventListener('mousedown', (e)=>{
     /* If the input is clicked while already focused, show the list: */
     if (
@@ -1815,12 +2033,14 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
             selectionMade: false,
             sourceEvent: e
           });
+          e.preventDefault();
           break;
         default:
           return;
       }
     }
   });
+
   /* Allow for the dropdown to be closed by clicking off of it: */
   document.addEventListener('mousedown', (e)=>{
     if (
@@ -1965,27 +2185,33 @@ function presentResults() {
     spellcheck: 'false'
   });
 
-  const [suggestions, emptySugs] = (()=>{
-    const keys = [];
-    const emptySet = new Set();
+  /* Creates and updates a tokenization of the input textbox's contents */
+  const inputTokenizer = new TokenizedInputElement(
+    inputTextBox,
+    {lexer: labelQueryLexer}
+  );
+
+  const [suggestions, labelsWithoutRecords] = (()=>{
+    const allLabels = [];
+    const emptyLabels = new Set();
     /* Iterate over Group labels, then iterate over Element labels:
      * (The order doesn't actually matter.) */
     let labelTable = RecordGroup.LabelTable;
     const checkLabel = (label)=>{
-      keys.push(label);
-      if (labelTable[label] === undefined) emptySet.add(label);
+      allLabels.push(label);
+      if (labelTable[label] === undefined) emptyLabels.add(label);
     };
     for (const label of GROUP_LABELS.list) checkLabel(label);
     labelTable = ElementRecord.LabelTable;
     for (const label of ELEMENT_LABELS.list) checkLabel(label);
-    return [keys, emptySet];
+    return [allLabels, emptyLabels];
   })();
 
   const rowElementFromLabel = (sugStr, metadata)=>{
     const sugColumn = makeElement('td', metadata.defaultContents(), {
       class: 'crlr-suggestion'
     });
-    const isEmpty = emptySugs.has(sugStr);
+    const isEmpty = labelsWithoutRecords.has(sugStr);
     const emptyColumn = makeElement('td', isEmpty ? "(empty)" : "", {
       class: 'crlr-suggestion-info'
     });
@@ -2001,12 +2227,17 @@ function presentResults() {
     suggestionToEle: rowElementFromLabel,
     listEle: 'table', //The tagname of the outer, container element
     getInputValue() {
-      return inputTextBox.value;
+      return inputTokenizer.selectedTokens().substring;
     },
     setInputValue(val) {
-      inputTextBox.value = val;
-    }
+      inputTokenizer.replaceSelectedTokens(val);
+    },
   });
+  /* When the user moves the selection in the inputTextBox, update the suggestion
+   * list to ensure it offers suggestions to the selected token(s): */
+  const selectionTracker = new InputSelectionTracker(inputTextBox);
+  selectionTracker.onSelectionChange(()=>{sugList.update();});
+
   sugList.id = 'crlr-suggestions';
 
   /* A container for the textbox and suggestion list, for styling purposes: */
@@ -2155,14 +2386,15 @@ function presentResults() {
     let usingAltFormat;
 
     return function outputDataToModal() {
-      const wantedQuery = inputTextBox.value;
+      const queryStr = inputTextBox.value;
+      const lexedQuery = inputTokenizer.lexData;
       const altFormatWanted = altFormatCheckBox.checked;
 
       let outputChanged = false;
-      if (currentQuery !== wantedQuery) {
-        const wantedRecords = getRecordsMatchingQuery(wantedQuery);
+      if (currentQuery !== queryStr) {
+        const wantedRecords = getRecordsMatchingQuery(queryStr, lexedQuery);
         if (wantedRecords !== null) {
-          currentQuery = wantedQuery;
+          currentQuery = queryStr;
           currentRecords = wantedRecords;
           outputChanged = true;
         }
@@ -2172,7 +2404,6 @@ function presentResults() {
         outputChanged = true;
       }
       if (!outputChanged) return;
-
 
       /* Main JSON Preview output: */
       const objForLabel = makeRecordIndex(
@@ -2230,7 +2461,18 @@ function presentResults() {
   /* Call the function immediately so that the data for the default label
    * is displayed immediately: */
   updateOutput();
-  inputTextBox.addEventListener('input', updateOutput);
+  inputTokenizer.onValidTokenize(updateOutput);
+
+  /* Add a class to the input container so that it can be styled based on
+  * whether the query is valid: */
+  const classFromQueryValidity = ()=>{
+    const validQuery = inputTokenizer.lexData.valid;
+    logObjInputContainer.classList.toggle('valid-query', validQuery);
+    inputTextBox.setAttribute('aria-invalid', validQuery ? "false" : "true");
+  };
+  classFromQueryValidity();
+  inputTokenizer.onTokenize(classFromQueryValidity);
+
   sugList.addEventListener('hide', (e)=>{
     if (e.detail.selectionMade) updateOutput();
   });
@@ -2491,7 +2733,7 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
    * "userSelected" label. Useful for finding particular elements not otherwise
    * captured by the script: */
   const userSelectorMatch = (
-    /-(?:CSS)?[-_]?Select(?:[oe]r)?(["'`])([^"\n]+)\1/i.exec(flagStr)
+    /-(?:CSS)?[-_]?Select(?:[oe]r)?(["'`])(.+?)\1/i.exec(flagStr)
   );
   if (userSelectorMatch !== null) {
     const selector = userSelectorMatch[2];
