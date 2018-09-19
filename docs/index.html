@@ -22,7 +22,7 @@
       JSCrawler Instruction Manual
     </h1>
     <p id="app-info">
-      <span id="edit-date">Last edited Aug 30th, 2018</span>
+      <span id="edit-date">Last edited Sep 19th, 2018</span>
     </p>
   </div>
   </header>
@@ -34,6 +34,7 @@
       <li><a href="#modal">The Results Modal</a></li>
       <li><a href="#labels">Result Labels</a></li>
       <li><a href="#flags">Script Flags</a></li>
+      <li><a href="#complex-queries">Complex Queries</a></li>
     </ol>
 
     <h2 id="running" class="anchor-point">Running the Script:</h2>
@@ -69,7 +70,9 @@ const startTime = performance.now();
 
 /* A function for higher-level warnings, use instead of consoleWarnHigh to make it
  * easier to identify actual functional errors: */
-const consoleWarnHigh = (str)=&gt;console.warn(`%c${str}`, &#39;background-color:#fff0f0;color:#ff2e2e;padding:2px;border:1px dashed #ff2e2e&#39;);
+const consoleWarnHigh = (str)=&gt;console.warn(`%c${str}`,
+  &#39;background-color:#fff0f0;color:#ff2e2e;padding:2px;border:1px dashed #ff2e2e&#39;
+);
 
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */
@@ -604,7 +607,7 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row&gt;*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row&gt;:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content&gt;*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content&gt;:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #de2323;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;width:320px}#crlr-modal #crlr-textbox-controls.valid-query{box-shadow:inset 0 -2px 0 0 #b0b0b0}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #de2323}#crlr-modal #crlr-textbox-controls.focus-within.valid-query{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open,#crlr-modal #crlr-textbox-controls:hover #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions&gt;.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions&gt;.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions&gt;.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:&quot;✓&quot;;font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output&gt;pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row&gt;*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row&gt;:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content&gt;*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content&gt;:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline;flex-flow:row wrap-reverse;margin-top:-10px}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-inputs&gt;*{margin-top:10px;min-width:0}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #de2323;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;max-width:100%}#crlr-modal #crlr-textbox-controls&gt;*{min-width:0}#crlr-modal #crlr-textbox-controls.valid-query{box-shadow:inset 0 -2px 0 0 #b0b0b0}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #de2323}#crlr-modal #crlr-textbox-controls.focus-within.valid-query{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;min-width:250px;width:0;max-width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open,#crlr-modal #crlr-textbox-controls:hover #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions&gt;.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions&gt;.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions&gt;.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:&quot;✓&quot;;font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{max-height:400px;max-width:100%;display:inline-block;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
 const styleEle = makeElement(&#39;style&#39;, CRAWLER_CSS, {id: &#39;crlr.js.css&#39;});
 document.head.appendChild(styleEle);
 
@@ -1341,6 +1344,59 @@ function lazyNullDefault(possiblyNullVal, defaultValue) {
   return possiblyNullVal;
 }
 
+const TextBoxResizer = (()=&gt;{
+  const TRBL = [&#39;Top&#39;, &#39;Right&#39;, &#39;Bottom&#39;, &#39;Left&#39;];
+  function TRBLString(str, suffix = &#39;&#39;) {
+    return TRBL.map(dir =&gt; str + dir + suffix);
+  }
+  const stylesThatAffectWidth = [
+    &#39;fontSize&#39;, &#39;fontFamily&#39;, &#39;fontStyle&#39;, &#39;fontVariant&#39;, &#39;fontWeight&#39;,
+    &#39;lineHeight&#39;, &#39;textIndent&#39;, &#39;boxSizing&#39;,
+    ...TRBLString(&#39;margin&#39;), ...TRBLString(&#39;padding&#39;),
+    ...TRBLString(&#39;border&#39;, &#39;Width&#39;), ...TRBLString(&#39;border&#39;, &#39;Style&#39;)
+  ];
+  class TextBoxResizer {
+    constructor(element) {
+      this.element = element;
+      this.computedStyles = window.getComputedStyle(element);
+      this.measurer = document.createElement(&#39;span&#39;);
+      this.measurerText = document.createTextNode(&#39;&#39;);
+      this.measurer.appendChild(this.measurerText);
+      this.measurerStyle = this.measurer.style;
+      Object.assign(this.measurerStyle, {
+        visibility: &#39;hidden&#39;,
+        whiteSpace: &#39;pre&#39;,
+        position: &#39;fixed&#39;,
+        top: &#39;0&#39;, left: &#39;0&#39;
+      });
+      document.body.appendChild(this.measurer);
+      element.addEventListener(&#39;keydown&#39;, ()=&gt;{
+        window.requestAnimationFrame(()=&gt;this.resize());
+      });
+    }
+    updateMeasurer() {
+      this.measurerText.data = this.element.value || &#39;\u200B&#39;;
+      for (const style of stylesThatAffectWidth) {
+        this.measurerStyle[style] = this.computedStyles[style];
+      }
+      return this;
+    }
+    measure() {
+      return this.measurer.getBoundingClientRect();
+    }
+    resize() {
+      this.updateMeasurer();
+      const measurement = this.measure();
+      const targetStyle = this.element.style;
+      targetStyle.width = `${measurement.width + 1}px`;
+      targetStyle.height = `${measurement.height}px`;
+      return this;
+    }
+  }
+  Object.assign(TextBoxResizer, {stylesThatAffectWidth});
+  return TextBoxResizer;
+})();
+
 /* A function for lexing with simple grammars via regex. Used for parsing
  * queries over ElementRecords based on labels, e.g. evaluating
  * `image &amp; external` to find all externally-hosted images on the site. */
@@ -1377,6 +1433,7 @@ const linearLex = (()=&gt;{
 
       const openOperatorStack = [];
       let allowedTypes = startingTypes;
+      let nonMatchingTypes = [];
       let lastToken = null;
 
       /* Run the loop at least once, even if the string is empty (&#39;&#39;), to allow
@@ -1393,9 +1450,11 @@ const linearLex = (()=&gt;{
           }
         }
         for (const typeName of allowedTypes) {
+          nonMatchingTypes.push(typeName);
           const type = grammar[typeName];
           const match = remainingStr.match(type.regex);
           if (match === null) continue;
+          nonMatchingTypes = [];
 
           const start = i + match.index;
           const end = start + match[0].length;
@@ -1483,8 +1542,8 @@ const linearLex = (()=&gt;{
         /* If no legal matching token was found, try allowing other types.
          * If all types were already checked, just exit. */
         if (allowedTypes === ANY_TYPE) break;
-        const allowedSet = new Set(allowedTypes);
-        allowedTypes = ANY_TYPE.filter(type =&gt; !allowedSet.has(type));
+        const nonMatchingSet = new Set(nonMatchingTypes);
+        allowedTypes = ANY_TYPE.filter(type =&gt; !nonMatchingSet.has(type));
         if (allowedTypes.length === 0) break;
       }
       if (openOperatorStack.length !== 0) {
@@ -1662,7 +1721,7 @@ class TokenizedInputElement {
   }
   /* Gets the tokens which are included in the text selection given by either
    * the inputs selectionStart/End or the parameters if they&#39;re provided: */
-  selectedTokens(start, end) {
+  selectedTokens(trimFilter, start, end) {
     const tokens = this.tokens;
     const numTokens = tokens.length;
 
@@ -1684,6 +1743,19 @@ class TokenizedInputElement {
     for (; tokenEndIndex &lt; numTokens; ++tokenEndIndex) {
       if (tokens[tokenEndIndex].start &gt; end) break;
     }
+
+    /* Allow the user to filter out undesired tokens from the start and end */
+    if (trimFilter !== undefined) {
+      let [trimStart, trimEnd] = [tokenStartIndex, tokenEndIndex - 1];
+      for (; trimStart &lt; tokenEndIndex; ++trimStart) {
+        if (!trimFilter(tokens[trimStart])) break;
+      }
+      for (; trimEnd &gt; trimStart; --trimEnd) {
+        if (!trimFilter(tokens[trimEnd])) break;
+      }
+      [tokenStartIndex, tokenEndIndex] = [trimStart, trimEnd + 1];
+    }
+
     let stringStartIndex, stringEndIndex;
     if (tokenStartIndex === numTokens || tokenEndIndex === 0) {
       /* If no tokens are selected because the selection is entirely before or
@@ -1701,8 +1773,8 @@ class TokenizedInputElement {
       stringStartIndex, stringEndIndex, substring
     };
   }
-  replaceSelectedTokens(replacementStr, start, end) {
-    const {stringStartIndex, stringEndIndex} = this.selectedTokens(start, end);
+  replaceSelectedTokens(replacementStr, filter, start, end) {
+    const {stringStartIndex, stringEndIndex} = this.selectedTokens(filter, start, end);
     const currentVal = this.element.value;
     const modifiedVal = (
       currentVal.substring(0, stringStartIndex) +
@@ -2117,16 +2189,21 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
  *
  * This is used by the makeAutoCompleteList function to produce a
  * suggestion list where the matching characters are bolded. */
+const strComps = (()=&gt;{
+  const makeCollator = sensitivity =&gt; new Intl.Collator(undefined, {
+    usage: &#39;search&#39;, sensitivity
+  });
+  const makeComparator = (col)=&gt; (s1, s2)=&gt; col.compare(s1, s2);
+  const sensComp = makeComparator(makeCollator(&#39;case&#39;));
+  const insensComp = makeComparator(makeCollator(&#39;base&#39;));
+  return {sensComp, insensComp};
+})();
 function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
   const defaultOptions = {caseSensitive: false};
   const opts = Object.assign({}, defaultOptions, extraOpts);
 
   /* Case-(in)sensitive string comparison: */
-  const strComp = (()=&gt;{
-    const sensitivity = (opts.caseSensitive) ? &#39;case&#39; : &#39;base&#39;;
-    const compOpts = {usage: &#39;search&#39;, sensitivity};
-    return (s1, s2) =&gt; s1.localeCompare(s2, undefined, compOpts);
-  })();
+  const strComp = (opts.caseSensitive) ? strComps.sensComp : strComps.insensComp;
 
   const ptrnLen = ptrn.length;
   const refLen = refStr.length;
@@ -2226,6 +2303,8 @@ function presentResults() {
     value: &#39;link&#39;,
     spellcheck: &#39;false&#39;
   });
+  /* Auto-resize the texbox to its contents: */
+  const labelInputResizer = new TextBoxResizer(inputTextBox);
 
   /* Creates and updates a tokenization of the input textbox&#39;s contents */
   const inputTokenizer = new TokenizedInputElement(
@@ -2265,14 +2344,15 @@ function presentResults() {
     if (isEmpty) row.classList.add(&#39;empty-suggestion&#39;);
     return row;
   };
+  const trimTokens = token =&gt; (token.type !== &#39;label&#39;);
   const sugList = makeAutoCompleteList(inputTextBox, suggestions, { //options
     suggestionToEle: rowElementFromLabel,
     listEle: &#39;table&#39;, //The tagname of the outer, container element
     getInputValue() {
-      return inputTokenizer.selectedTokens().substring;
+      return inputTokenizer.selectedTokens(trimTokens).substring;
     },
     setInputValue(val) {
-      inputTokenizer.replaceSelectedTokens(val);
+      inputTokenizer.replaceSelectedTokens(val, trimTokens);
     },
   });
   /* When the user moves the selection in the inputTextBox, update the suggestion
@@ -2320,7 +2400,7 @@ function presentResults() {
     sugList.show(&#39;drop-down-button&#39;);
   });
 
-  const logObjInputContainer = makeElement(
+  const labelInputContainer = makeElement(
     &#39;div&#39;,
     [clearInputButton, sugContainer, openDropDownButton],
     {id: &#39;crlr-textbox-controls&#39;}
@@ -2343,7 +2423,7 @@ function presentResults() {
   );
   const inputRow = makeElement(
     &#39;div&#39;,
-    [logObjInputContainer, altFormatCheckBox, checkBoxLabel],
+    [labelInputContainer, altFormatCheckBox, checkBoxLabel],
     {
       id: &#39;crlr-inputs&#39;,
       class: &#39;flex-row&#39;
@@ -2361,12 +2441,11 @@ function presentResults() {
   checkBoxLabel    .onmousedown = preventClickToHighlight;
 
   /* Create containers for output: */
-  const pre = makeElement(&#39;pre&#39;);
-  const preCont = makeElement(&#39;div&#39;, pre, {class: &#39;crlr-output&#39;});
+  const pre = makeElement(&#39;pre&#39;, undefined, {class: &#39;crlr-output&#39;});
   const dlLinkPara = makeElement(&#39;p&#39;);
   appendChildren(
     modalContent,
-    [inputRow, preCont, dlLinkPara]
+    [inputRow, pre, dlLinkPara]
   );
 
   /* Returns an object which maps a page&#39;s href to an array of hrefs/srcs of
@@ -2479,7 +2558,9 @@ function presentResults() {
       const url = URL.createObjectURL(blob);
 
       let downloadName = window.location.hostname.replace(/^www\./i, &quot;&quot;);
-      downloadName += &quot;_&quot; + currentQuery;
+      downloadName += &quot;_&quot; + currentQuery
+        .replace(/\|\|?/, &quot;or&quot;)
+        .replace(/&amp;&amp;?/, &quot;and&quot;);
       if (crawlTerminatedBeforeCompletion) downloadName += &quot;_(INCOMPLETE)&quot;;
       downloadName +=&quot;.json&quot;;
 
@@ -2509,14 +2590,17 @@ function presentResults() {
   * whether the query is valid: */
   const classFromQueryValidity = ()=&gt;{
     const validQuery = inputTokenizer.lexData.valid;
-    logObjInputContainer.classList.toggle(&#39;valid-query&#39;, validQuery);
+    labelInputContainer.classList.toggle(&#39;valid-query&#39;, validQuery);
     inputTextBox.setAttribute(&#39;aria-invalid&#39;, validQuery ? &quot;false&quot; : &quot;true&quot;);
   };
   classFromQueryValidity();
   inputTokenizer.onTokenize(classFromQueryValidity);
 
   sugList.addEventListener(&#39;hide&#39;, (e)=&gt;{
-    if (e.detail.selectionMade) updateOutput();
+    if (e.detail.selectionMade) {
+      labelInputResizer.resize();
+      updateOutput();
+    }
   });
   altFormatCheckBox.addEventListener(&#39;change&#39;, updateOutput);
 
@@ -2820,7 +2904,6 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
     visitLinks(initialPageLinks, anchorlessURL, robotsTxt, recursiveCrawl);
   });
 }
-
 startCrawl(&quot;&quot;);</code></pre>
       </li>
       <li id="running-open-site" class="anchor-point"><p>
@@ -3130,7 +3213,7 @@ startCrawl(&quot;&quot;);</code></pre>
     <ul>
       <li id="labels-internal" class="anchor-point">
         <p>
-        	<strong class="item-header">internal</strong>: Refers to all links and iframes which point
+        	<strong class="item-header">internal</strong>: Refers to all links, images, and iframes which point
           to a page within the same domain, as well as images which are hosted
           on the same domain. "Domain" refers to the part of a site's URL before
           the first forward slash <code>/</code>.
@@ -3212,7 +3295,7 @@ https://newbrunswick.rutgers.edu/</code></pre>
       	<strong class="item-header">visited</strong>: Refers to all links and images which the
         crawler has checked. Note that only local links are included as only
         local links can be crawled. External images can and are stil checked by
-        the crawler, however.
+        the crawler, however, and are also included under this label.
       </p></li>
       <li id="labels-unknownContentType" class="warning-label anchor-point"><p>
       	<strong class="item-header">unknownContentType</strong>: Refers to links which refer to
@@ -3493,6 +3576,60 @@ https://newbrunswick.rutgers.edu/</code></pre>
         </p>
       </li>
     </ul>
+
+    <h2 id="complex-queries" class="anchor-point">Complex Queries:</h2>
+    <img src="img/query_complex_example.png" alt="A complex label query." class="click-to-open figure" />
+    <p>
+      Suppose you want to find every external image specifically. Using just the
+      <code>external</code> label would also give you links and iframes. Complex
+      queries allow you to find this kind of information easily: <code>external and image</code>.
+    </p>
+    <p>
+      The rules for complex queries are not complicated:
+      <ul>
+        <li>
+          <strong><code>and</code>, <code>&amp;</code>, or <code>&amp;&amp;</code></strong>:
+          Shows elements which match both labels. e.g. <code>image & bannedString</code>
+          which shows all images on dev sites (using the default banned string settings).
+        </li>
+        <li>
+          <p>
+            <strong><code>or</code>, <code>|</code>, or <code>||</code></strong>:
+            Shows elements which match either label.  e.g. <code>http-httpsError or absoluteInternal</code>
+            which can be used to easily scour for links that can be changed with little effort.
+          </p>
+          <p>
+            Note that
+            <code>and</code> takes precedence over <code>or</code>, so a query of the form
+            <code>A and B or C</code> will show an element with label <code>C</code>
+            even if it doesn't have label <code>A</code>.
+          </p>
+        </li>
+        <li>
+          <strong><code>not</code> or <code>!</code></strong>:
+          Shows elements which do not match the given subsequent label.
+          e.g. <code>!robotsDisallowed</code> shows only links which were not
+          disallowed for crawling by the domain's <a href="#flags-ignoreRobotsTxt">robots.txt file</a>, and
+          <code>iframe and !emptyTitle</code> shows all iframes with title attributes.
+        </li>
+        <li>
+          <p>
+            <strong>Parentheses <code>(</code> and <code>)</code></strong>:
+            Used for grouping parts of a complex query. This can be used to invert
+            the <code>and-or</code> precedence rule described above, allowing you
+            use a query like <code>image and (external or absoluteInternal)</code>
+            to find all images which are either externally hosted or locally hosted, but
+            with an absolute URL.
+          </p>
+          <p>
+            In most cases, you will either not use parentheses in your queries,
+            or only use one pair to break alter precedence. Parentheses can also
+            be used with the not operator (e.g. <code>link and !(file or external)</code>),
+            as well as nested arbitrarily, but this will very seldom be necessary.
+          </p>
+        </li>
+      </ul>
+    </p>
   </main>
 
   <footer>

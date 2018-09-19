@@ -30,7 +30,7 @@
 }
 /* all: initial sets everything to display: inline, so reset block elements to
  * display: block (yes this has to be this verbose, sadly): */
-#crlr-modal p, #crlr-modal h1, #crlr-modal h2, #crlr-modal h3, #crlr-modal h4, #crlr-modal h5, #crlr-modal h6, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
+#crlr-modal p, #crlr-modal h1, #crlr-modal ol, #crlr-modal ul, #crlr-modal pre, #crlr-modal address, #crlr-modal blockquote, #crlr-modal dl, #crlr-modal div, #crlr-modal fieldset, #crlr-modal form, #crlr-modal hr, #crlr-modal noscript, #crlr-modal table {
   display: block;
 }
 
@@ -44,35 +44,6 @@
   font-weight: bold;
   margin-top: 0.67em;
   margin-bottom: 0.67em;
-}
-#crlr-modal h2 {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-top: 0.83em;
-  margin-bottom: 0.83em;
-}
-#crlr-modal h3 {
-  font-size: 1.17em;
-  font-weight: bold;
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
-#crlr-modal h4 {
-  font-weight: bold;
-  margin-top: 1.33em;
-  margin-bottom: 1.33em;
-}
-#crlr-modal h5 {
-  font-size: .83em;
-  font-weight: bold;
-  margin-top: 1.67em;
-  margin-bottom: 1.67em;
-}
-#crlr-modal h6 {
-  font-size: .67em;
-  font-weight: bold;
-  margin-top: 2.33em;
-  margin-bottom: 2.33em;
 }
 
 #crlr-modal * {
@@ -190,7 +161,6 @@
 
 #crlr-modal #crlr-header {
   align-items: flex-end;
-
   padding: 0.5em;
   border-bottom: 1px dotted #808080;
   width: 100%;
@@ -206,7 +176,7 @@
   overflow-y: auto;
   /* For some zoom levels, a horizontal scrollbar appears (this is probably a
    * floating-point bug or something) which is undesirable. Content isn't
-   * supposed to actually escape the content-div horizontally, so it's save
+   * supposed to actually escape the content-div horizontally, so it's safe
    * to hide it: */
   overflow-x: hidden;
 }
@@ -256,28 +226,20 @@
 /* Output styling: */
 #crlr-modal #crlr-inputs {
   align-items: baseline;
+  flex-flow: row wrap-reverse;
+  margin-top: -10px; /* To counteract the top-margin of the top row: */
 }
 #crlr-modal #crlr-inputs * {
   font-size: 25px;
 }
-#crlr-modal #crlr-input-clear {
-  color: #666; /* Wicked de-emphasis */
-  padding: 0 0.25em;
-  border: none;
-  font-size: 1em;
-  text-shadow: 0.5px 1px 2px rgba(0, 0, 0, 0.4);
-  flex: 0 0 auto;
-}
-#crlr-modal #crlr-input-clear:active {
-  box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
-  text-shadow: none;
-}
-#crlr-modal #crlr-input-clear:focus {
-  outline: 2px solid #a6c7ff; /* Light blue */
+#crlr-modal #crlr-inputs > * {
+  margin-top: 10px;
+  min-width: 0;
 }
 
 #crlr-modal #crlr-textbox-controls {
   background-color: #ededf2;
+
   /* The following achieves a similar effect to border-bottom, but without
    * the beveled corners: */
   padding: 4px;
@@ -288,7 +250,10 @@
 
   display: flex;
   align-items: baseline;
-  width: 320px;
+  max-width: 100%;
+}
+#crlr-modal #crlr-textbox-controls > * {
+  min-width: 0;
 }
 #crlr-modal #crlr-textbox-controls.valid-query {
   box-shadow: inset 0 -2px 0 0 #b0b0b0; /* Light gray */
@@ -302,10 +267,29 @@
 }
 #crlr-modal #crlr-input-textbox {
   background-color: transparent;
-  width: 100%;
+  min-width: 250px;
+  width: 0;
+  max-width: 100%;
   flex: 1 1 auto;
   border: none;
 }
+
+/* Custom textbox clear button: */
+#crlr-modal #crlr-input-clear {
+  color: #666; /* Wicked de-emphasis */
+  padding: 0 0.25em;
+  font-size: 1em;
+  text-shadow: 0.5px 1px 2px rgba(0, 0, 0, 0.4);
+  flex: 0 0 auto;
+}
+#crlr-modal #crlr-input-clear:active {
+  box-shadow: inset 1px 1px 2px 1px rgba(0,0,0,0.25);
+  text-shadow: none;
+}
+#crlr-modal #crlr-input-clear:focus {
+  outline: 2px solid #a6c7ff; /* Light blue */
+}
+/* Hide default clear button in MS Edge: */
 #crlr-modal #crlr-input-textbox::-ms-clear {
   width: 0;
   height: 0;
@@ -417,11 +401,9 @@
 }
 
 #crlr-modal .crlr-output {
-  display: inline-block;
-  max-width: 100%;
-}
-#crlr-modal .crlr-output > pre {
   max-height: 400px;
+  max-width: 100%;
+  display: inline-block;
   padding: 0.5em;
   margin: 0;
   overflow: auto;

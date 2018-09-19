@@ -100,6 +100,10 @@ a:hover {
   color: inherit;
 }
 
+code {
+  background-color: #e4e4ec;
+}
+
 pre.code-block {
   display: flex;
 }

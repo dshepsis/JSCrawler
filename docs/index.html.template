@@ -31,6 +31,7 @@
       <li><a href="#modal">The Results Modal</a></li>
       <li><a href="#labels">Result Labels</a></li>
       <li><a href="#flags">Script Flags</a></li>
+      <li><a href="#complex-queries">Complex Queries</a></li>
     </ol>
 
     <h2 id="running" class="anchor-point">Running the Script:</h2>
@@ -346,7 +347,7 @@
     <ul>
       <li id="labels-internal" class="anchor-point">
         <p>
-        	<strong class="item-header">internal</strong>: Refers to all links and iframes which point
+        	<strong class="item-header">internal</strong>: Refers to all links, images, and iframes which point
           to a page within the same domain, as well as images which are hosted
           on the same domain. "Domain" refers to the part of a site's URL before
           the first forward slash <code>/</code>.
@@ -428,7 +429,7 @@ https://newbrunswick.rutgers.edu/</code></pre>
       	<strong class="item-header">visited</strong>: Refers to all links and images which the
         crawler has checked. Note that only local links are included as only
         local links can be crawled. External images can and are stil checked by
-        the crawler, however.
+        the crawler, however, and are also included under this label.
       </p></li>
       <li id="labels-unknownContentType" class="warning-label anchor-point"><p>
       	<strong class="item-header">unknownContentType</strong>: Refers to links which refer to
@@ -709,6 +710,60 @@ https://newbrunswick.rutgers.edu/</code></pre>
         </p>
       </li>
     </ul>
+
+    <h2 id="complex-queries" class="anchor-point">Complex Queries:</h2>
+    <img src="img/query_complex_example.png" alt="A complex label query." class="click-to-open figure" />
+    <p>
+      Suppose you want to find every external image specifically. Using just the
+      <code>external</code> label would also give you links and iframes. Complex
+      queries allow you to find this kind of information easily: <code>external and image</code>.
+    </p>
+    <p>
+      The rules for complex queries are not complicated:
+      <ul>
+        <li>
+          <strong><code>and</code>, <code>&amp;</code>, or <code>&amp;&amp;</code></strong>:
+          Shows elements which match both labels. e.g. <code>image & bannedString</code>
+          which shows all images on dev sites (using the default banned string settings).
+        </li>
+        <li>
+          <p>
+            <strong><code>or</code>, <code>|</code>, or <code>||</code></strong>:
+            Shows elements which match either label.  e.g. <code>http-httpsError or absoluteInternal</code>
+            which can be used to easily scour for links that can be changed with little effort.
+          </p>
+          <p>
+            Note that
+            <code>and</code> takes precedence over <code>or</code>, so a query of the form
+            <code>A and B or C</code> will show an element with label <code>C</code>
+            even if it doesn't have label <code>A</code>.
+          </p>
+        </li>
+        <li>
+          <strong><code>not</code> or <code>!</code></strong>:
+          Shows elements which do not match the given subsequent label.
+          e.g. <code>!robotsDisallowed</code> shows only links which were not
+          disallowed for crawling by the domain's <a href="#flags-ignoreRobotsTxt">robots.txt file</a>, and
+          <code>iframe and !emptyTitle</code> shows all iframes with title attributes.
+        </li>
+        <li>
+          <p>
+            <strong>Parentheses <code>(</code> and <code>)</code></strong>:
+            Used for grouping parts of a complex query. This can be used to invert
+            the <code>and-or</code> precedence rule described above, allowing you
+            use a query like <code>image and (external or absoluteInternal)</code>
+            to find all images which are either externally hosted or locally hosted, but
+            with an absolute URL.
+          </p>
+          <p>
+            In most cases, you will either not use parentheses in your queries,
+            or only use one pair to break alter precedence. Parentheses can also
+            be used with the not operator (e.g. <code>link and !(file or external)</code>),
+            as well as nested arbitrarily, but this will very seldom be necessary.
+          </p>
+        </li>
+      </ul>
+    </p>
   </main>
 
   <footer>

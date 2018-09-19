@@ -27,7 +27,9 @@ const startTime = performance.now();
 
 /* A function for higher-level warnings, use instead of consoleWarnHigh to make it
  * easier to identify actual functional errors: */
-const consoleWarnHigh = (str)=>console.warn(`%c${str}`, 'background-color:#fff0f0;color:#ff2e2e;padding:2px;border:1px dashed #ff2e2e');
+const consoleWarnHigh = (str)=>console.warn(`%c${str}`,
+  'background-color:#fff0f0;color:#ff2e2e;padding:2px;border:1px dashed #ff2e2e'
+);
 
 /* A helper function which throws a pre-baked error message when the parameter
  * ambiguousVar does not match the type specified by desiredType: */
@@ -562,7 +564,7 @@ function clearChildren(parent) {
  * NOTE: This CSS is a minified version of the CSS found in crlr.js.css. If
  *   you want to make changes to it, edit that file and minify it before
  *   pasting it here. */
-const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal h2,#crlr-modal h3,#crlr-modal h4,#crlr-modal h5,#crlr-modal h6,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal h2{font-size:1.5em;margin-top:.83em;margin-bottom:.83em}#crlr-modal h3{font-size:1.17em;margin-top:1em;margin-bottom:1em}#crlr-modal h4{margin-top:1.33em;margin-bottom:1.33em}#crlr-modal h5{font-size:.83em;margin-top:1.67em;margin-bottom:1.67em}#crlr-modal h6{font-size:.67em;margin-top:2.33em;margin-bottom:2.33em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;border:none;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #de2323;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;width:320px}#crlr-modal #crlr-textbox-controls.valid-query{box-shadow:inset 0 -2px 0 0 #b0b0b0}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #de2323}#crlr-modal #crlr-textbox-controls.focus-within.valid-query{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open,#crlr-modal #crlr-textbox-controls:hover #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{display:inline-block;max-width:100%}#crlr-modal .crlr-output>pre{max-height:400px;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
+const CRAWLER_CSS = `#crlr-modal,#crlr-modal *{all:initial;margin:initial;padding:initial;border:initial;border-radius:initial;display:initial;position:initial;height:initial;width:initial;background:initial;float:initial;clear:initial;font:initial;line-height:initial;letter-spacing:initial;overflow:initial;text-align:initial;vertical-align:initial;text-decoration:initial;visibility:initial;z-index:initial;box-shadow:initial;box-sizing:border-box}#crlr-modal h1,#crlr-modal strong{font-weight:700}#crlr-modal address,#crlr-modal blockquote,#crlr-modal div,#crlr-modal dl,#crlr-modal fieldset,#crlr-modal form,#crlr-modal h1,#crlr-modal hr,#crlr-modal noscript,#crlr-modal ol,#crlr-modal p,#crlr-modal pre,#crlr-modal table,#crlr-modal ul{display:block}#crlr-modal h1{font-size:2em;margin-top:.67em;margin-bottom:.67em}#crlr-modal *{font-family:sans-serif;color:inherit}#crlr-modal pre,#crlr-modal pre *{font-family:monospace;white-space:pre}#crlr-modal a:link{color:#00e;text-decoration:underline}#crlr-modal a:visited{color:#551a8b}#crlr-modal a:hover{color:#8b0000}#crlr-modal a:active{color:red}#crlr-modal a:focus{outline:#a6c7ff dotted 2px}#crlr-modal{border:5px solid #0000a3;border-radius:1em;background-color:#fcfcfe;position:fixed;z-index:99999999999999;top:2em;bottom:2em;left:2em;right:2em;margin:0;overflow:hidden;color:#222;box-shadow:2px 2px 6px 1px rgba(0,0,0,.4);display:flex;flex-direction:column}#crlr-modal.waiting-for-results{bottom:auto;right:auto;display:table;padding:1em}#crlr-modal #crlr-min{border:1px solid gray;border-radius:5px;background-color:rgba(0,0,20,.1);align-self:flex-start;flex:0 0 auto;position:relative;width:34px;height:39px}#crlr-min-icon{position:absolute;background-color:#333;height:3px;left:12px;right:12px;bottom:10px}#crlr-min-text{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}#crlr-modal #crlr-min:hover{border-color:#00f;background-color:rgba(0,0,20,.2)}#crlr-modal #crlr-min:focus{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal .flex-row{display:flex}#crlr-modal .flex-row>*{margin-top:0;margin-bottom:0;margin-right:16px}#crlr-modal .flex-row>:last-child{margin-right:0}#crlr-modal #crlr-header{align-items:flex-end;padding:.5em;border-bottom:1px dotted grey;width:100%;background-color:#e1e1ea}#crlr-modal #crlr-header #crlr-header-msg{align-items:baseline}#crlr-modal #crlr-content{flex:1;padding:1em;overflow-y:auto;overflow-x:hidden}#crlr-modal #crlr-content>*{margin-top:0;margin-bottom:10px}#crlr-modal #crlr-content>:last-child{margin-bottom:0}#crlr-modal.minimized :not(#crlr-min){display:none}#crlr-modal.minimized #crlr-min *{display:initial}#crlr-modal.minimized #crlr-header{display:flex;margin:0;border:none;background-color:transparent}#crlr-modal.minimized{display:inline-block;right:auto;bottom:auto;background-color:#e1e1ea;opacity:.2;transition:opacity .2s}#crlr-modal.minimized.focus-within,#crlr-modal.minimized:hover{opacity:1}#crlr-modal.minimized #crlr-min{margin:0}#crlr-modal #crlr-inputs{align-items:baseline;flex-flow:row wrap-reverse;margin-top:-10px}#crlr-modal #crlr-inputs *{font-size:25px}#crlr-modal #crlr-inputs>*{margin-top:10px;min-width:0}#crlr-modal #crlr-textbox-controls{background-color:#ededf2;padding:4px;box-shadow:inset 0 -2px 0 0 #de2323;transition:box-shadow .2s;position:relative;display:flex;align-items:baseline;max-width:100%}#crlr-modal #crlr-textbox-controls>*{min-width:0}#crlr-modal #crlr-textbox-controls.valid-query{box-shadow:inset 0 -2px 0 0 #b0b0b0}#crlr-modal #crlr-textbox-controls.focus-within{box-shadow:inset 0 0 0 2px #de2323}#crlr-modal #crlr-textbox-controls.focus-within.valid-query{box-shadow:inset 0 0 0 2px #a6c7ff}#crlr-modal #crlr-input-textbox{background-color:transparent;min-width:250px;width:0;max-width:100%;flex:1 1 auto;border:none}#crlr-modal #crlr-input-clear{color:#666;padding:0 .25em;font-size:1em;text-shadow:.5px 1px 2px rgba(0,0,0,.4);flex:0 0 auto}#crlr-modal #crlr-input-clear:active{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25);text-shadow:none}#crlr-modal #crlr-input-clear:focus{outline:#a6c7ff solid 2px}#crlr-modal #crlr-input-textbox::-ms-clear{width:0;height:0}#crlr-modal #crlr-input-open{border:none;opacity:0;padding:0 .25em;font-size:.8em;flex:0 0 auto;align-self:center}#crlr-modal #crlr-textbox-controls.focus-within #crlr-input-open,#crlr-modal #crlr-textbox-controls:hover #crlr-input-open{opacity:1}#crlr-modal #crlr-input-open:hover{background-color:rgba(0,0,0,.2)}#crlr-modal #crlr-textbox-suggestions-container{display:inline;font-size:1em}#crlr-modal #crlr-textbox-suggestions-container *{font-size:1em}#crlr-modal #crlr-suggestions{margin:0 0 1em;padding:5px;font-size:.8em;border:1px solid gray;position:absolute;background-color:#fff;z-index:1;width:100%;min-width:300px;left:0;display:table;table-layout:fixed;border-collapse:collapse}#crlr-modal #crlr-suggestions tr{display:table-row}#crlr-modal #crlr-suggestions td{padding:5px;display:table-cell;overflow:hidden;text-overflow:ellipsis}#crlr-modal #crlr-suggestions .crlr-suggestion-info{font-size:.7em;text-align:right;vertical-align:middle;width:25%}#crlr-modal #crlr-suggestions.hidden{display:none}#crlr-modal #crlr-input-textbox:focus~#crlr-suggestions>.crlr-suggestion-row:first-child,#crlr-modal #crlr-suggestions>.crlr-suggestion-row:focus{background-color:#add8e6}#crlr-suggestions>.crlr-suggestion-row.empty-suggestion{color:gray}#crlr-modal input[type=checkbox]{opacity:0;margin:0}#crlr-modal input[type=checkbox]+label{padding-top:.1em;padding-bottom:.1em;padding-left:1.75em;position:relative;align-self:center}#crlr-modal input[type=checkbox]+label::before{position:absolute;left:.125em;height:1.4em;top:0;border:1px solid gray;padding:0 .2em;line-height:1.4em;background-color:#e1e1ea;content:"✓";font-weight:700;color:transparent;display:block}#crlr-modal input[type=checkbox]:checked+label::before{color:#222}#crlr-modal input[type=checkbox]:focus+label::before{box-shadow:0 0 0 1px #a6c7ff;border-color:#a6c7ff}#crlr-modal input[type=checkbox]:active+label::before{box-shadow:inset 1px 1px 2px 1px rgba(0,0,0,.25)}#crlr-modal .crlr-output{max-height:400px;max-width:100%;display:inline-block;padding:.5em;margin:0;overflow:auto;border:1px dashed gray;background-color:#e1e1ea}`;
 const styleEle = makeElement('style', CRAWLER_CSS, {id: 'crlr.js.css'});
 document.head.appendChild(styleEle);
 
@@ -1299,6 +1301,59 @@ function lazyNullDefault(possiblyNullVal, defaultValue) {
   return possiblyNullVal;
 }
 
+const TextBoxResizer = (()=>{
+  const TRBL = ['Top', 'Right', 'Bottom', 'Left'];
+  function TRBLString(str, suffix = '') {
+    return TRBL.map(dir => str + dir + suffix);
+  }
+  const stylesThatAffectWidth = [
+    'fontSize', 'fontFamily', 'fontStyle', 'fontVariant', 'fontWeight',
+    'lineHeight', 'textIndent', 'boxSizing',
+    ...TRBLString('margin'), ...TRBLString('padding'),
+    ...TRBLString('border', 'Width'), ...TRBLString('border', 'Style')
+  ];
+  class TextBoxResizer {
+    constructor(element) {
+      this.element = element;
+      this.computedStyles = window.getComputedStyle(element);
+      this.measurer = document.createElement('span');
+      this.measurerText = document.createTextNode('');
+      this.measurer.appendChild(this.measurerText);
+      this.measurerStyle = this.measurer.style;
+      Object.assign(this.measurerStyle, {
+        visibility: 'hidden',
+        whiteSpace: 'pre',
+        position: 'fixed',
+        top: '0', left: '0'
+      });
+      document.body.appendChild(this.measurer);
+      element.addEventListener('keydown', ()=>{
+        window.requestAnimationFrame(()=>this.resize());
+      });
+    }
+    updateMeasurer() {
+      this.measurerText.data = this.element.value || '\u200B';
+      for (const style of stylesThatAffectWidth) {
+        this.measurerStyle[style] = this.computedStyles[style];
+      }
+      return this;
+    }
+    measure() {
+      return this.measurer.getBoundingClientRect();
+    }
+    resize() {
+      this.updateMeasurer();
+      const measurement = this.measure();
+      const targetStyle = this.element.style;
+      targetStyle.width = `${measurement.width + 1}px`;
+      targetStyle.height = `${measurement.height}px`;
+      return this;
+    }
+  }
+  Object.assign(TextBoxResizer, {stylesThatAffectWidth});
+  return TextBoxResizer;
+})();
+
 /* A function for lexing with simple grammars via regex. Used for parsing
  * queries over ElementRecords based on labels, e.g. evaluating
  * `image & external` to find all externally-hosted images on the site. */
@@ -1335,6 +1390,7 @@ const linearLex = (()=>{
 
       const openOperatorStack = [];
       let allowedTypes = startingTypes;
+      let nonMatchingTypes = [];
       let lastToken = null;
 
       /* Run the loop at least once, even if the string is empty (''), to allow
@@ -1351,9 +1407,11 @@ const linearLex = (()=>{
           }
         }
         for (const typeName of allowedTypes) {
+          nonMatchingTypes.push(typeName);
           const type = grammar[typeName];
           const match = remainingStr.match(type.regex);
           if (match === null) continue;
+          nonMatchingTypes = [];
 
           const start = i + match.index;
           const end = start + match[0].length;
@@ -1441,8 +1499,8 @@ const linearLex = (()=>{
         /* If no legal matching token was found, try allowing other types.
          * If all types were already checked, just exit. */
         if (allowedTypes === ANY_TYPE) break;
-        const allowedSet = new Set(allowedTypes);
-        allowedTypes = ANY_TYPE.filter(type => !allowedSet.has(type));
+        const nonMatchingSet = new Set(nonMatchingTypes);
+        allowedTypes = ANY_TYPE.filter(type => !nonMatchingSet.has(type));
         if (allowedTypes.length === 0) break;
       }
       if (openOperatorStack.length !== 0) {
@@ -1620,7 +1678,7 @@ class TokenizedInputElement {
   }
   /* Gets the tokens which are included in the text selection given by either
    * the inputs selectionStart/End or the parameters if they're provided: */
-  selectedTokens(start, end) {
+  selectedTokens(trimFilter, start, end) {
     const tokens = this.tokens;
     const numTokens = tokens.length;
 
@@ -1642,6 +1700,19 @@ class TokenizedInputElement {
     for (; tokenEndIndex < numTokens; ++tokenEndIndex) {
       if (tokens[tokenEndIndex].start > end) break;
     }
+
+    /* Allow the user to filter out undesired tokens from the start and end */
+    if (trimFilter !== undefined) {
+      let [trimStart, trimEnd] = [tokenStartIndex, tokenEndIndex - 1];
+      for (; trimStart < tokenEndIndex; ++trimStart) {
+        if (!trimFilter(tokens[trimStart])) break;
+      }
+      for (; trimEnd > trimStart; --trimEnd) {
+        if (!trimFilter(tokens[trimEnd])) break;
+      }
+      [tokenStartIndex, tokenEndIndex] = [trimStart, trimEnd + 1];
+    }
+
     let stringStartIndex, stringEndIndex;
     if (tokenStartIndex === numTokens || tokenEndIndex === 0) {
       /* If no tokens are selected because the selection is entirely before or
@@ -1659,8 +1730,8 @@ class TokenizedInputElement {
       stringStartIndex, stringEndIndex, substring
     };
   }
-  replaceSelectedTokens(replacementStr, start, end) {
-    const {stringStartIndex, stringEndIndex} = this.selectedTokens(start, end);
+  replaceSelectedTokens(replacementStr, filter, start, end) {
+    const {stringStartIndex, stringEndIndex} = this.selectedTokens(filter, start, end);
     const currentVal = this.element.value;
     const modifiedVal = (
       currentVal.substring(0, stringStartIndex) +
@@ -2075,16 +2146,21 @@ function makeAutoCompleteList(inputEle, suggestions, { //Options:
  *
  * This is used by the makeAutoCompleteList function to produce a
  * suggestion list where the matching characters are bolded. */
+const strComps = (()=>{
+  const makeCollator = sensitivity => new Intl.Collator(undefined, {
+    usage: 'search', sensitivity
+  });
+  const makeComparator = (col)=> (s1, s2)=> col.compare(s1, s2);
+  const sensComp = makeComparator(makeCollator('case'));
+  const insensComp = makeComparator(makeCollator('base'));
+  return {sensComp, insensComp};
+})();
 function fuzzySearchLex(ptrn, refStr, extraOpts = {}) {
   const defaultOptions = {caseSensitive: false};
   const opts = Object.assign({}, defaultOptions, extraOpts);
 
   /* Case-(in)sensitive string comparison: */
-  const strComp = (()=>{
-    const sensitivity = (opts.caseSensitive) ? 'case' : 'base';
-    const compOpts = {usage: 'search', sensitivity};
-    return (s1, s2) => s1.localeCompare(s2, undefined, compOpts);
-  })();
+  const strComp = (opts.caseSensitive) ? strComps.sensComp : strComps.insensComp;
 
   const ptrnLen = ptrn.length;
   const refLen = refStr.length;
@@ -2184,6 +2260,8 @@ function presentResults() {
     value: 'link',
     spellcheck: 'false'
   });
+  /* Auto-resize the texbox to its contents: */
+  const labelInputResizer = new TextBoxResizer(inputTextBox);
 
   /* Creates and updates a tokenization of the input textbox's contents */
   const inputTokenizer = new TokenizedInputElement(
@@ -2223,14 +2301,15 @@ function presentResults() {
     if (isEmpty) row.classList.add('empty-suggestion');
     return row;
   };
+  const trimTokens = token => (token.type !== 'label');
   const sugList = makeAutoCompleteList(inputTextBox, suggestions, { //options
     suggestionToEle: rowElementFromLabel,
     listEle: 'table', //The tagname of the outer, container element
     getInputValue() {
-      return inputTokenizer.selectedTokens().substring;
+      return inputTokenizer.selectedTokens(trimTokens).substring;
     },
     setInputValue(val) {
-      inputTokenizer.replaceSelectedTokens(val);
+      inputTokenizer.replaceSelectedTokens(val, trimTokens);
     },
   });
   /* When the user moves the selection in the inputTextBox, update the suggestion
@@ -2278,7 +2357,7 @@ function presentResults() {
     sugList.show('drop-down-button');
   });
 
-  const logObjInputContainer = makeElement(
+  const labelInputContainer = makeElement(
     'div',
     [clearInputButton, sugContainer, openDropDownButton],
     {id: 'crlr-textbox-controls'}
@@ -2301,7 +2380,7 @@ function presentResults() {
   );
   const inputRow = makeElement(
     'div',
-    [logObjInputContainer, altFormatCheckBox, checkBoxLabel],
+    [labelInputContainer, altFormatCheckBox, checkBoxLabel],
     {
       id: 'crlr-inputs',
       class: 'flex-row'
@@ -2319,12 +2398,11 @@ function presentResults() {
   checkBoxLabel    .onmousedown = preventClickToHighlight;
 
   /* Create containers for output: */
-  const pre = makeElement('pre');
-  const preCont = makeElement('div', pre, {class: 'crlr-output'});
+  const pre = makeElement('pre', undefined, {class: 'crlr-output'});
   const dlLinkPara = makeElement('p');
   appendChildren(
     modalContent,
-    [inputRow, preCont, dlLinkPara]
+    [inputRow, pre, dlLinkPara]
   );
 
   /* Returns an object which maps a page's href to an array of hrefs/srcs of
@@ -2437,7 +2515,9 @@ function presentResults() {
       const url = URL.createObjectURL(blob);
 
       let downloadName = window.location.hostname.replace(/^www\./i, "");
-      downloadName += "_" + currentQuery;
+      downloadName += "_" + currentQuery
+        .replace(/\|\|?/, "or")
+        .replace(/&&?/, "and");
       if (crawlTerminatedBeforeCompletion) downloadName += "_(INCOMPLETE)";
       downloadName +=".json";
 
@@ -2467,14 +2547,17 @@ function presentResults() {
   * whether the query is valid: */
   const classFromQueryValidity = ()=>{
     const validQuery = inputTokenizer.lexData.valid;
-    logObjInputContainer.classList.toggle('valid-query', validQuery);
+    labelInputContainer.classList.toggle('valid-query', validQuery);
     inputTextBox.setAttribute('aria-invalid', validQuery ? "false" : "true");
   };
   classFromQueryValidity();
   inputTokenizer.onTokenize(classFromQueryValidity);
 
   sugList.addEventListener('hide', (e)=>{
-    if (e.detail.selectionMade) updateOutput();
+    if (e.detail.selectionMade) {
+      labelInputResizer.resize();
+      updateOutput();
+    }
   });
   altFormatCheckBox.addEventListener('change', updateOutput);
 
@@ -2778,5 +2861,4 @@ function startCrawl(flagStr, robotsTxt=robotsTxtHandler) {
     visitLinks(initialPageLinks, anchorlessURL, robotsTxt, recursiveCrawl);
   });
 }
-
 startCrawl("");
