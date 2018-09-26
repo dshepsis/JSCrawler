@@ -25,13 +25,36 @@
   </header>
 
   <main role="main" class="center-col">
+    <h2 id="intro">About:</h2>
+    <p>
+      JSCrawler is a web-crawler: a program which automatically gathers
+      information from pages on a web-site. JSCrawler's main use is in
+      identifying and locating common issues on a web-site so they can be easily
+      and systematically fixed.
+    </p>
+
     <h2 id="table-of-contents">Table of Contents:</h2>
     <ol>
+      <li><a href="#prerequisites">Prerequisites</a></li>
       <li><a href="#running">Running the Script</a></li>
       <li><a href="#modal">The Results Modal</a></li>
       <li><a href="#labels">Result Labels</a></li>
       <li><a href="#flags">Script Flags</a></li>
       <li><a href="#complex-queries">Complex Queries</a></li>
+      <li><a href="#q-and-a">Q&amp;A</a></li>
+    </ol>
+
+    <h2 id="prerequisites" class="anchor-point">Prerequisites:</h2>
+    <p>In order to use the crawler, you must have the following:</p>
+    <ol>
+      <li>
+        Permission from the website's owner/operator to make numerous rapid
+        requests to their servers
+      </li>
+      <li>
+        An up-to-date version of a modern browser (e.g. Google Chrome, Mozilla
+        Firefox, Microsoft Edge)
+      </li>
     </ol>
 
     <h2 id="running" class="anchor-point">Running the Script:</h2>
@@ -58,31 +81,13 @@
         </strong></p>
         <ol>
           <li><p>
-            Make sure you are not logged in to the site you are crawling. The
-            reason for this is to prevent the script from crawling administration
-            pages or accidentally taking actions like clearing the cache or editing
-            pages
+            Make sure you are not logged in to the site you are crawling. To
+            understand why, please read
+            <a href="#qa-logged-in">this Q&amp;A entry</a>.
           </p></li>
           <li><p>
-            Note that I haven't ever observed the script editing or deleting pages
-            when running the script while logged in accidentally. I believe there
-            are validation measures in place which prevent this from occurring.
-            However, you should still be careful. Even if nothing went wrong,
-            there are often thousands of administration pages on any site, and
-            there's a good chance the script will time out, trigger DDoS
-            protection, and/or produce totally worthlessly overstuffed data
-          </p></li>
-          <li><p>
-            If you accidentally start the script while logged in, simply refresh the
-            page immediately. You will get a prompt asking you if you want to
-            leave the site. Just press <kbd>enter</kbd> or click “Yes” and the browser will
-            refresh. Then, make sure nothing catastrophic happened (nothing
-            should have) and be more careful next time.
-          </p></li>
-          <li><p>
-            You may wish to run the script in your browser's “Incognito” or
-            Private mode to reduce the chances of any such issues in the first
-            place.
+            You can use an incognito or private browser window to avoid this
+            problem.
           </p></li>
         </ol>
       </li>
@@ -99,21 +104,8 @@
           </p></li>
           <li><p>
             If you are concerned about the security implications of copying and
-            pasting a large script into your browser, the main assurance I can
-            offer you is that the script cannot escape the tab/window it was run
-            in, cannot request information from any site besides the one it
-            started in (even from other Rutgers sites), and you should already
-            be completely logged out from the current site before running the
-            script, so it could not collect any personal information even if it
-            wanted to.
-          </p></li>
-          <li><p>
-            You can also view the full, commented source-code of the script
-            and assure yourself that no suspicious code is there.
-          </p></li>
-          <li><p>
-            Depending on the computer you're using, there may be some noticeable
-            lag when pasting in the script, due to the large amount of text.
+            pasting a large script into your browser, please read
+            <a href="#qa-dangerous">this Q&amp;A entry</a>.
           </p></li>
         </ol>
       </li>
@@ -208,7 +200,7 @@
               it. If you click on the site again afterwards, the modal will become
               translucent:
             </p>
-            <img src="img/modal_minimize.png" alt="The modal's minimize button, which goes translucent when the user clicks back on the webpage." class="click-to-open figure" />
+            <img src="img/modal_minimize.png" alt="The modal's minimize button, which turns translucent when the user clicks back on the webpage." class="click-to-open figure" />
           </li>
         </ol>
       </li>
@@ -246,9 +238,10 @@
         </p>
         <p>
           You can empty the textbox by clicking on the large "✖" button
-          at the left of the textbox. While the textbox is tempty, double-clicking on it, clicking on the black triangle icon, or pressing
-          the down-arrow key while the textbox is selected will bring up a complete list of
-          labels:
+          at the left of the textbox. While the textbox is tempty,
+          double-clicking on it, clicking on the black triangle icon, or pressing
+          the down-arrow key <kbd>↓</kbd> while the textbox is selected will
+          bring up a complete list of labels:
         </p>
         <img src="img/modal_label_options.png" alt="Part of the drop-down list of options for labels." class="click-to-open figure" />
         <p>
@@ -256,9 +249,14 @@
           Clicking on one of the drop-down options will auto-fill the textbox.
         </p>
         <p>
-          As you type into the textbox, the list will narrow down to only the options with matching characters. For example, typing "alt" will bring up "no<strong>Alt</strong>Text" and "<strong>a</strong>bso<strong>l</strong>u<strong>t</strong>eInternal".
-          The shortest matching suggestion will be listed on top. Pressing <kbd>Enter</kbd>
-          while typing in the textbox will fill it with the top suggestion. This means you can quickly select a label by typing a few characters and hitting enter.
+          As you type into the textbox, the list will narrow down to only the
+          options with matching characters. For example, typing "alt" will bring
+          up "no<strong>Alt</strong>Text" and
+          "<strong>a</strong>bso<strong>l</strong>u<strong>t</strong>eInternal".
+          The shortest matching suggestion will be listed on top. Pressing
+          <kbd>Enter</kbd> while typing in the textbox will fill it with the top
+          suggestion. This means you can quickly select a label by typing a few
+          characters and hitting enter.
         </p>
       </li>
       <li id="modal-invert" class="anchor-point">
@@ -764,6 +762,46 @@ https://newbrunswick.rutgers.edu/</code></pre>
         </li>
       </ul>
     </p>
+
+    <h2 id="q-and-a" class="anchor-point">Q&amp;A:</h2>
+    <ul id="q-and-a-list">
+      <li id="qa-logged-in" class="anchor-point">
+        <h4 class="item-header">Q - Why shouldn't I run JSCrawler while logged in?</h4>
+        <p>
+          A - <strong>To prevent the crawler from visiting user or admin pages.</strong>
+          If there are links in a user-menu or admin-bar on the page, the crawler
+          will request them just like any other links on the page. There may be
+          hundreds of these pages, adding tons of noise to the data the crawler
+          produces.
+        </p>
+        <p>
+          If you did accidentally run the crawler while logged in, don't panic.
+          Simply refresh the browser window. You will see a dialogue warning you
+          to not leave the page while the script is running. Disregard it and
+          press <kbd>Enter</kbd> or "Reload" in the dialogue.
+        </p>
+      </li>
+      <li id="qa-dangerous" class="anchor-point">
+        <h4 class="item-header">Q - Is it dangerous to use JSCrawler?</h4>
+        <p>
+          A - <strong>Not directly.</strong> JSCrawler is not malware, and
+          will not harm you or your computer. It can, however, harm the websites
+          you operate it on. JSCrawler can request hundred of webpages per
+          second. This can slow down or even totally halt an unprepared server,
+          making the website unusable for other users.
+        </p>
+        <p>
+          It may also activate DDoS protection on some servers, which can result
+          in your IP being temporarily or permanently blacklisted from making
+          further requests to the site.
+        </p>
+        <p>
+          For this reason, you should always ensure you have permission from the
+          owner and operator of the site to make requests.
+        </p>
+      </li>
+    </ul>
+
   </main>
 
   <footer>

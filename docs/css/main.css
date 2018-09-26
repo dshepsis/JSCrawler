@@ -100,6 +100,14 @@ a:hover {
   color: inherit;
 }
 
+kbd {
+  border: 1px solid darkGray;
+  border-radius: 0.2em;
+  padding: 0px 0.1em;
+  margin: -1px 0;
+  background-color: #ebebee;
+}
+
 code {
   background-color: #e4e4ec;
 }
@@ -195,11 +203,10 @@ h2.anchor-point {
 /* Highlighting anchors: */
 /* The target element's header should be highlighted somehow: */
 h2.anchor-point:target {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-decoration: underline;
 }
 .anchor-point:target .item-header {
-  font-size: 1.1em;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  text-decoration: underline;
 }
 
 /* These will be positioned relative to the center-col, because that is the

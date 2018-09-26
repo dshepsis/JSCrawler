@@ -767,33 +767,34 @@ function classifyLinks(doc, recordCache) {
       /* Don't parse the link further. Banned-string links will not be crawled. */
       continue;
     }
-
-    const linkIsAbsolute = (hrefAttr === link.href.toLowerCase());
-    const linkProtocol = link.protocol.toLowerCase();
-    const linkIsToWebsite = /^https?:$/i.test(linkProtocol);
-    const linkIsInternal =
-        (linkIsToWebsite && (link.hostname.toLowerCase() === HOSTNAME));
-
     /* Anchor link: */
     if (link.hash !== '') {
       linkRecord.label("anchor");
       markElement(link, "pink", "Anchor link");
     }
-
+    /* Set flags based on URL: */
+    const linkIsAbsolute = (hrefAttr === link.href.toLowerCase());
+    const linkProtocol = link.protocol.toLowerCase();
+    const linkIsToWebsite = /^https?:$/i.test(linkProtocol);
+    const linkIsInternal = (
+      linkIsToWebsite && (link.hostname.toLowerCase() === HOSTNAME)
+    );
     const matchingProtocol = (linkProtocol === PROTOCOL);
-    /* @FIXME this should actually be lower down so RECOGNIZED_SCHEMES don't
-     * get categorized here: */
-    if (!matchingProtocol) linkRecord.group.label("http-httpsError");
 
+    /* Set labels based on flags: */
+    if (linkIsToWebsite && !matchingProtocol) {
+      linkRecord.group.label("http-httpsError");
+    }
     if (linkIsInternal) {
       linkRecord.group.label("internal");
+
       /* Store this record for return, because it is internal with a matching
        * protocol, so its page should be checked in visitLinks: */
       if (matchingProtocol) internalLinksFromThisPage.push(linkRecord);
       if (linkIsAbsolute) {
         if (link.matches('.field-name-field-related-links a')) {
           console.warn("absint link in related links", link);
-          // continue; //@debug
+          continue; //@debug
         }
         linkRecord.label("absoluteInternal");
       }
@@ -1079,6 +1080,10 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
     }
     /* Then, check the request's content-type: */
     const contentType = request.getResponseHeader('Content-Type');
+    if (contentType === null) {
+      pageRecordGroup.label("unknownContentType");
+      return;
+    }
     const validContentType = 'text/html';
     if (!contentType.startsWith(validContentType)) {
       if (!isRecognizedFile) {
@@ -1170,7 +1175,7 @@ function visitLinks(RecordList, curPage, robotsTxt, recursive) {
         msg += `response from another server before it closed the connection.`;
         break;
       default:
-        consoleWarnHigh("AN UNIDENTIFIED ERROR OCURRED!", request);
+        consoleWarnHigh(`**${msgHead}**. This error code is unrecognized.`, request);
         return;
     }
     consoleWarnHigh(msg + "\n\tLinked-to from: " + curPage);
